@@ -1,0 +1,24 @@
+# --- WoW Addon Spezifisch ---
+# Backup-Dateien, die WoW automatisch erstellt
+*.bak
+*.old
+*.tmp
+
+# --- VS Code Spezifisch ---
+.vscode/
+
+# --- Windows / OS Spezifisch ---
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# --- Cloud / OneDrive Spezifisch ---
+# Verhindert Konflikte durch OneDrive-Synchronisationsdateien
+.DS_Store
+*.sync
+*.nosync
+
+# --- Optionale Entwickler-Dateien ---
+# Falls du später Tools nutzt, die Metadaten erstellen
+.DS_Store
+*.log
