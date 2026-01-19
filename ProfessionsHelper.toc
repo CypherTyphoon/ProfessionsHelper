@@ -14,37 +14,25 @@
 # Libraries
 # -------------------------------------------------------
 
-# LibStub: Basis für alle Ace- und CallbackHandler-Libs
+# --- CORE LIBRARIES ---
 Libs\LibStub\LibStub.lua
-
-# CallbackHandler-1.0: Event-Handling / Callback-Management
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
 
-# AceTimer-3.0: Timer für verzögerte Funktionen
+# --- UTILITY LIBRARIES ---
 Libs\AceTimer-3.0\AceTimer-3.0.xml
-
-# AceSerializer-3.0: Daten serialisieren (für Kommunikation)
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
-
-# AceComm-3.0: Addon-Kommunikation zwischen Spielern
 Libs\AceComm-3.0\AceComm-3.0.xml
-
-# LibCustomGlow-1.0: Visuelle Effekte für Buttons / Frames
 Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml
-
-# LibDataBroker-1.1: Minimapsymbole / Datenobjekte
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
-
-# LibDBIcon-1.0: Minimapsymbole für DataBroker-Objekte
 Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
-
-# LibDeflate: Komprimierung / Dekomprimierung
 Libs\LibDeflate\LibDeflate.lua
-
-# LibGetFrame-1.0: Hilfsfunktionen für Frames
 Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua
-
-# LibSharedMedia: Fonts, Sounds, Textures
 Libs\LibSharedMedia-3.0\lib.xml
 
 # -------------------------------------------------------
@@ -53,5 +41,6 @@ Libs\LibSharedMedia-3.0\lib.xml
 Core.lua
 TheWarWithin.lua
 Midnight.lua
+Settings.lua
 Visuals.lua
 Craftables.lua
