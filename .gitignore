@@ -5,6 +5,7 @@
 *.tmp
 
 # --- VS Code Spezifisch ---
+.vs/
 .vscode/
 
 # --- Windows / OS Spezifisch ---
