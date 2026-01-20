@@ -43,4 +43,3 @@ TheWarWithin.lua
 Midnight.lua
 Settings.lua
 Visuals.lua
-Craftables.lua
