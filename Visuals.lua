@@ -42,6 +42,8 @@ local PlayerCanHandle = {}
 
 local function PerformCharacterScan()
     PlayerCanHandle = { ["AllProf"] = true }
+    
+    -- 1. Standard-Berufe scannen
     local profs = { GetProfessions() }
     for _, index in ipairs(profs) do
         if index then
@@ -50,8 +52,7 @@ local function PerformCharacterScan()
             if name then PlayerCanHandle[name] = true end
         end
     end
-    local beilID = 253580
-    if C_Item.GetItemCount(beilID, true, true, true, true) > 0 then 
+    if C_SpellBook.IsSpellKnownOrInSpellBook(1256697) then 
         PlayerCanHandle["Woodcutting"] = true 
     end
 end
