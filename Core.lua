@@ -13,10 +13,18 @@ local defaults = {
         locked = false,
         growUp = false,
         catSettings = {
-            [1] = { scale = 1.0, enabled = true, growUp = true, name = "Balken (Erze/Kräuter)", width = 30, height = 100, fontSize = 10, barTexture = "Cilo", fontName = "Friz Quadrata TT", },
-            [2] = { scale = 1.0, enabled = true, name = "Icons (Materialien)" },
-            [3] = { scale = 1.0, enabled = true, name = "Berufs-Icons" },
-            [4] = { scale = 1.0, enabled = true, name = "Angeln" },
+            [1] = { 
+                scale = 1.0, enabled = true, growUp = true, name = "Balken (Erze/Kräuter)", 
+                width = 30, height = 100, fontSize = 10, barTexture = "Cilo", fontName = "Friz Quadrata TT",
+                colorQ1 = {r=1, g=0.5, b=0},
+                colorQ2 = {r=0.8, g=0.8, b=0.8},
+                colorQ3 = {r=1, g=0.85, b=0},
+                showBackground = true,
+                backgroundColor = {r=0, g=0, b=0, a=0.5}
+            },
+            [2] = { scale = 1.0, enabled = true, name = "Icons (Materialien)" }, -- Text kommt aus profSubSettings
+            [3] = { scale = 1.0, enabled = true, name = "Berufs-Icons" },        -- KEIN Text vorgesehen
+            [4] = { scale = 1.0, enabled = true, name = "Angeln", textAlign = "BOTTOM" }, -- Nur Position für Angeln
         },
         enabledExpansions = {
             ["TWW"] = true,
@@ -32,18 +40,15 @@ local defaults = {
             [3] = { x = -450, y = 50 },
             [4] = { x = -300, y = 400 },
         },
+        -- Diese Settings gelten NUR für die Materialien (Kat 2)
         profSubSettings = {
-            ["Mining"] = { enabled = true, textAlign = "LEFT" },
-            ["Herbalism"] = { enabled = true, textAlign = "LEFT" },
-            ["Skinning"] = { enabled = true, textAlign = "LEFT" },
-            ["Fishing"] = { enabled = true, textAlign = "LEFT" },
-            ["Cooking"] = { enabled = true, textAlign = "LEFT" },
-            ["Tailoring"] = { enabled = true, textAlign = "LEFT" },
-            ["Leatherworking"] = { enabled = true, textAlign = "LEFT" },
-            ["Blacksmithing"] = { enabled = true, textAlign = "LEFT" },
-            ["Jewelcrafting"] = { enabled = true, textAlign = "LEFT" },
-            ["Other"] = { enabled = true, textAlign = "LEFT" },
-},
+            ["Mining"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
+            ["Herbalism"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
+            ["Skinning"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
+            ["Fishing"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
+            ["Cooking"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
+            ["Other"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
+        },
         itemSettings = {},
     }
 }

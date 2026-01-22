@@ -4,7 +4,7 @@ local Visuals = {}
 local LSM = LibStub("LibSharedMedia-3.0")
 
 -- ==========================================
--- 1. KONFIGURATION
+-- 1. KONFIGURATION & MAPPINGS
 -- ==========================================
 Visuals.ActiveFrames = {}
 
@@ -13,7 +13,6 @@ Visuals.Config = {
     SpacingX_Icon = 28,
     SpacingX_Prof = 48,
     SpacingX_Fish = 40,
-    
     MaxWidthMain = 600,
     MaxWidthFish = 500,
     RowHeight = 60
@@ -42,8 +41,6 @@ local PlayerCanHandle = {}
 
 local function PerformCharacterScan()
     PlayerCanHandle = { ["AllProf"] = true }
-    
-    -- 1. Standard-Berufe scannen
     local profs = { GetProfessions() }
     for _, index in ipairs(profs) do
         if index then
@@ -75,12 +72,12 @@ end
 -- ==========================================
 
 function Visuals:ClearFrames()
-    for _, frame in ipairs(Visuals.ActiveFrames) do
+    for _, frame in ipairs(self.ActiveFrames) do
         frame:Hide()
         frame:UnregisterAllEvents()
         frame:SetParent(nil)
     end
-    Visuals.ActiveFrames = {}
+    self.ActiveFrames = {}
 end
 
 local function MakeInteractive(frame, itemIDs)
@@ -91,160 +88,248 @@ local function MakeInteractive(frame, itemIDs)
     frame:SetScript("OnDragStart", function(self)
         if not ProfessionsHelper.db.profile.locked then
             self:StartMoving()
+            self.isDragging = true
         end
     end)
 
     frame:SetScript("OnDragStop", function(self)
+        if not self.isDragging then return end
         self:StopMovingOrSizing()
-        local centerX, centerY = self:GetCenter()
-        local uiX, uiY = UIParent:GetCenter()
-        local s = self:GetScale()
-        local newX = (centerX - uiX) / s
-        local newY = (centerY - uiY) / s
-        ProfessionsHelper.db.profile.positions[self.catID] = { x = newX, y = newY }
+        self.isDragging = false
+        
+        local parent = self:GetParent() or UIParent
+        local uiX, uiY = parent:GetCenter()
+        local frameX, frameY = self:GetCenter()
+        local s = self:GetEffectiveScale() / parent:GetEffectiveScale()
+        
+        local newX = (frameX - uiX) / s
+        local newY = (frameY - uiY) / s
+
+        local catID = self.catID
+        ProfessionsHelper.db.profile.positions[catID] = ProfessionsHelper.db.profile.positions[catID] or {x=0, y=0}
+        
+        local oldPos = { x = ProfessionsHelper.db.profile.positions[catID].x, y = ProfessionsHelper.db.profile.positions[catID].y }
+        local groupID = ProfessionsHelper.db.profile.catSettings[catID].groupID or 0
+        local deltaX = newX - oldPos.x
+        local deltaY = newY - oldPos.y
+
+        if groupID > 0 then
+            for id, settings in pairs(ProfessionsHelper.db.profile.catSettings) do
+                if settings.groupID == groupID then
+                    ProfessionsHelper.db.profile.positions[id] = ProfessionsHelper.db.profile.positions[id] or {x = 0, y = 0}
+                    ProfessionsHelper.db.profile.positions[id].x = ProfessionsHelper.db.profile.positions[id].x + deltaX
+                    ProfessionsHelper.db.profile.positions[id].y = ProfessionsHelper.db.profile.positions[id].y + deltaY
+                end
+            end
+        else
+            ProfessionsHelper.db.profile.positions[catID].x = newX
+            ProfessionsHelper.db.profile.positions[catID].y = newY
+        end
+
+        Visuals:Init()
     end)
 
     frame:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        local id = itemIDs[1]
-        if id then GameTooltip:SetItemByID(id) end
-        GameTooltip:Show()
+        if ProfessionsHelper.db.profile.locked then
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            local id = itemIDs[1]
+            if id then GameTooltip:SetItemByID(id) end
+            GameTooltip:Show()
+        end
     end)
     frame:SetScript("OnLeave", function() GameTooltip:Hide() end)
 end
 
 -- ==========================================
--- 4. RENDERING KOMPONENTEN
+-- 4. SPEZIALISIERTE RENDERING FUNKTIONEN
 -- ==========================================
 
+-- KATEGORIE 1: Balken
 function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor)
     local settings = ProfessionsHelper.db.profile.catSettings[1]
     local isGrowUp = settings.growUp
-    local barW = settings.width or 30
-    local barH = settings.height or 100
+    local barW, barH = settings.width or 30, settings.height or 100
     local fSize = settings.fontSize or 10
 
-    local frame = CreateFrame("Frame", "PH_Bar_"..name, parent)
+    local frame = CreateFrame("Frame", "PH_Bar_"..name, parent, "BackdropTemplate")
     frame.catID = 1
     frame:SetSize(barW, barH + barW + 5) 
     frame:SetPoint("CENTER", UIParent, "CENTER", posX, posY)
     frame:SetScale(settings.scale or 1)
     
+    if settings.showBackground then
+        local bg = settings.backgroundColor or {r=0, g=0, b=0, a=0.5}
+        frame:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground"})
+        frame:SetBackdropColor(bg.r, bg.g, bg.b, bg.a)
+    else
+        frame:SetBackdrop(nil)
+    end
+    
     local bar = CreateFrame("StatusBar", nil, frame)
     bar:SetSize(barW, barH)
-    
-    local texturePath = LSM:Fetch("statusbar", settings.barTexture or "Cilo")
-    bar:SetStatusBarTexture(texturePath)
+    bar:SetStatusBarTexture(LSM:Fetch("statusbar", settings.barTexture or "Cilo"))
     bar:SetStatusBarColor(unpack(barColor))
     
-    local bg = bar:CreateTexture(nil, "BACKGROUND")
-    bg:SetAllPoints()
-    bg:SetColorTexture(0.1, 0.1, 0.1, 0.6)
+    local barBg = bar:CreateTexture(nil, "BACKGROUND")
+    barBg:SetAllPoints(); barBg:SetColorTexture(0.1, 0.1, 0.1, 0.6)
 
     local icon = frame:CreateTexture(nil, "ARTWORK")
     icon:SetSize(barW, barW)
     
     if isGrowUp then
-        bar:SetOrientation("VERTICAL")
-        bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, barW + 2)
+        bar:SetOrientation("VERTICAL"); bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, barW + 2)
         icon:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
     else
-        bar:SetOrientation("VERTICAL")
-        bar:SetReverseFill(true)
-        bar:SetPoint("TOP", frame, "TOP", 0, -(barW + 2))
+        bar:SetOrientation("VERTICAL"); bar:SetReverseFill(true); bar:SetPoint("TOP", frame, "TOP", 0, -(barW + 2))
         icon:SetPoint("TOP", frame, "TOP", 0, 0)
     end
     
-    local function CreateCenteredText(offsetY, color)
+    local function CreateCenteredText(offsetY, colorKey)
         local t = bar:CreateFontString(nil, "OVERLAY")
-        local fontPath = LSM:Fetch("font", settings.fontName or "Friz Quadrata TT")
-        t:SetFont(fontPath, fSize, "OUTLINE")
-        t:SetTextColor(unpack(color))
+        t:SetFont(LSM:Fetch("font", settings.fontName or "Friz Quadrata TT"), fSize, "OUTLINE")
+        local c = settings[colorKey] or {r=1, g=1, b=1}
+        t:SetTextColor(c.r, c.g, c.b)
         t:SetPoint("CENTER", bar, "CENTER", 0, offsetY)
-        t:SetShadowOffset(1, -1)
         return t
     end
 
-    local tB = CreateCenteredText(15, {1, 0.35, 0})
-    local tS = CreateCenteredText(0, {0.75, 0.75, 0.75})
-    local tG = CreateCenteredText(-15, {1, 0.84, 0})
+    local tB = CreateCenteredText(15, "colorQ1")
+    local tS = CreateCenteredText(0, "colorQ2")
+    local tG = CreateCenteredText(-15, "colorQ3")
 
     local function Update()
         local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
         local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
         local g = C_Item.GetItemCount(itemIDs[3] or 0, true, true, true, true)
+        
+        if not itemIDs[3] then 
+            tB:SetPoint("CENTER", bar, "CENTER", 0, 10); tS:SetPoint("CENTER", bar, "CENTER", 0, -10)
+            tG:Hide(); tB:SetText(b > 0 and b or ""); tS:SetText(s > 0 and s or "")
+        else 
+            tB:SetPoint("CENTER", bar, "CENTER", 0, 15); tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
+            tG:Show(); tB:SetText(b > 0 and b or ""); tS:SetText(s > 0 and s or ""); tG:SetText(g > 0 and g or "")
+        end
+
         local total = b + s + g
-        bar:SetMinMaxValues(0, 1000)
-        bar:SetValue(total)
-        tB:SetText(b > 0 and b or "")
-        tS:SetText(s > 0 and s or "")
-        tG:SetText(g > 0 and g or "")
+        bar:SetMinMaxValues(0, 1000); bar:SetValue(total)
         local dID = (g > 0 and itemIDs[3]) or (s > 0 and itemIDs[2]) or itemIDs[1]
         if dID then icon:SetTexture(C_Item.GetItemIconByID(dID)) end
         frame:SetAlpha(total == 0 and 0.4 or 1.0)
-    end
-    
-    frame:RegisterEvent("BAG_UPDATE_DELAYED")
-    frame:SetScript("OnEvent", Update)
-    Update()
-    MakeInteractive(frame, itemIDs)
-    return frame
-end
-
-function Visuals:CreateIcon(parent, itemIDs, posX, posY, mode, profName)
-    local frame = CreateFrame("Frame", nil, parent)
-    frame.catID = mode
-    local size = (mode == 3) and 40 or (mode == 4 and 30 or 20)
-    frame:SetSize(size, size)
-    frame:SetPoint("CENTER", UIParent, "CENTER", posX, posY)
-    frame:SetScale(ProfessionsHelper.db.profile.catSettings[mode].scale or 1)
-    
-    local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
-    icon:SetTexture(C_Item.GetItemIconByID(itemIDs[1]))
-    
-    local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
-    
-    -- Dynamische Text-Positionierung für Kategorie 2 (Unterkategorien)
-    text:ClearAllPoints()
-    if mode == 2 and profName then
-        local pSettings = ProfessionsHelper.db.profile.profSubSettings[profName] or { textAlign = "LEFT" }
-        text:SetTextColor(0.3, 0.9, 0.25, 1) -- Standardfarbe für Mats
-        
-        if pSettings.textAlign == "LEFT" then
-            text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
-        elseif pSettings.textAlign == "RIGHT" then
-            text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
-        elseif pSettings.textAlign == "TOP" then
-            text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
-        elseif pSettings.textAlign == "BOTTOM" then
-            text:SetPoint("TOP", frame, "BOTTOM", 0, -4)
-        end
-    else
-        -- Standard-Positionen für Kat 3 und 4
-        if mode == 3 then 
-            text:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2); text:SetTextColor(0.05, 1, 0, 1)
-        else 
-            text:SetPoint("TOP", frame, "BOTTOM", 0, -4); text:SetTextColor(1, 1, 1, 1)
-        end
-    end
-    
-    local function Update()
-        local total = 0
-        for _, id in ipairs(itemIDs) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
-        text:SetText(total > 0 and total or "")
-        icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
     end
     
     frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
     MakeInteractive(frame, itemIDs); return frame
 end
 
+-- KATEGORIE 2: Material Icons (mit profSubSettings)
+function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
+    local frame = CreateFrame("Frame", nil, parent)
+    frame.catID = 2
+    local settings = ProfessionsHelper.db.profile.catSettings[2]
+    local sub = ProfessionsHelper.db.profile.profSubSettings[profName or "Other"] or {}
+    
+    frame:SetSize(20, 20) 
+    frame:SetScale(settings.scale or 1)
+    frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+
+    local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
+    icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
+
+    local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+    local align = sub.textAlign or "BOTTOM"
+    local color = sub.color or {r=0.3, g=0.9, b=0.25}
+
+    text:ClearAllPoints()
+    if align == "LEFT" then 
+        text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
+        text:SetJustifyH("RIGHT")
+    elseif align == "RIGHT" then 
+        text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
+        text:SetJustifyH("LEFT")
+    elseif align == "TOP" then 
+        text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
+        text:SetJustifyH("CENTER")
+    else 
+        text:SetPoint("TOP", frame, "BOTTOM", 0, -4) 
+        text:SetJustifyH("CENTER")
+    end
+    text:SetTextColor(color.r, color.g, color.b)
+
+    local function Update()
+        local total = 0
+        for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
+        text:SetText(total > 0 and total or "")
+        icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
+    end
+
+    frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
+    MakeInteractive(frame, ids); return frame
+end
+
+-- KATEGORIE 3: Berufs-Icons
+function Visuals:CreateProfessionIcon(parent, ids, x, y)
+    local frame = CreateFrame("Frame", nil, parent)
+    frame.catID = 3
+    frame:SetSize(40, 40)
+    frame:SetScale(ProfessionsHelper.db.profile.catSettings[3].scale or 1)
+    frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+
+    local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
+    icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
+
+    local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+    text:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+    text:SetTextColor(0.05, 1, 0, 1)
+
+    local function Update()
+        local total = 0
+        for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
+        text:SetText(total > 0 and total or "")
+        icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
+    end
+
+    frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
+    MakeInteractive(frame, ids); return frame
+end
+
+-- KATEGORIE 4: Angel-Icons
+function Visuals:CreateFishingIcon(parent, ids, x, y)
+    local frame = CreateFrame("Frame", nil, parent)
+    frame.catID = 4
+    local settings = ProfessionsHelper.db.profile.catSettings[4]
+    frame:SetSize(30, 30)
+    frame:SetScale(settings.scale or 1)
+    frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+
+    local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
+    icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
+
+    local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+    local align = settings.textAlign or "BOTTOM"
+    text:ClearAllPoints()
+    if align == "LEFT" then text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
+    elseif align == "RIGHT" then text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
+    elseif align == "TOP" then text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
+    else text:SetPoint("TOP", frame, "BOTTOM", 0, -4) end
+    text:SetTextColor(1, 1, 1)
+
+    local function Update()
+        local total = 0
+        for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
+        text:SetText(total > 0 and total or "")
+        icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
+    end
+
+    frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
+    MakeInteractive(frame, ids); return frame
+end
+
 -- ==========================================
--- 5. INITIALISIERUNG
+-- 5. INITIALISIERUNG (INIT)
 -- ==========================================
 
 function Visuals:Init()
-    Visuals:ClearFrames()
+    self:ClearFrames()
     PerformCharacterScan()
     
     local mapID = C_Map.GetBestMapForUnit("player")
@@ -255,15 +340,12 @@ function Visuals:Init()
     for expName, expData in pairs(ProfessionsHelperData) do
         local isCurrentExp, isInCity = false, false
         if expData.Config then
-            if expData.Config.CityMapIDs and expData.Config.CityMapIDs[mapID] then
-                isInCity, isCurrentExp = true, true
-            end
+            if expData.Config.CityMapIDs and expData.Config.CityMapIDs[mapID] then isInCity, isCurrentExp = true, true end
             if not isCurrentExp and expData.Config.ParentMapIDs then
                 local tempMap = mapID
                 while tempMap do
                     if expData.Config.ParentMapIDs[tempMap] then isCurrentExp = true; break end
-                    local info = C_Map.GetMapInfo(tempMap)
-                    tempMap = info and info.parentMapID
+                    local info = C_Map.GetMapInfo(tempMap); tempMap = info and info.parentMapID
                     if not tempMap or tempMap == 0 then break end
                 end
             end
@@ -294,7 +376,7 @@ function Visuals:Init()
         end
     end
 
-    local function AddToUI(f) if f then table.insert(Visuals.ActiveFrames, f) end end
+    local function AddToUI(f) if f then table.insert(self.ActiveFrames, f) end end
     local function HandleWrap(curX, startX, width) return (curX - startX) > width end
 
     -- 1. RENDERING BALKEN
@@ -302,32 +384,34 @@ function Visuals:Init()
     local bX, bY = pos1.x, pos1.y
     local bStartX = bX
     for _, item in ipairs(buckets[1]) do
-        if HandleWrap(bX, bStartX, 600) then bX = bStartX; bY = bY - 60 end
+        if HandleWrap(bX, bStartX, self.Config.MaxWidthMain) then bX = bStartX; bY = bY - self.Config.RowHeight end
         local hex = (item.data.color or "#FFFFFF"):gsub("#","")
         local r,g,b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
-        AddToUI(Visuals:CreateBar(item.name, UIParent, item.data.IDs, bX, bY, {r,g,b}))
-        bX = bX + Visuals.Config.SpacingX_Bar
+        AddToUI(self:CreateBar(item.name, UIParent, item.data.IDs, bX, bY, {r,g,b}))
+        bX = bX + self.Config.SpacingX_Bar
     end
 
-    -- 2. RENDERING PROF-ICONS (Kategorie 3)
+    -- 2. RENDERING PROF-ICONS
     local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
     local pX, pY = pos3.x, pos3.y
-    for _, item in ipairs(buckets[3]) do
-        AddToUI(Visuals:CreateIcon(UIParent, item.data.IDs, pX, pY, 3))
-        pX = pX + Visuals.Config.SpacingX_Prof
+    if ProfessionsHelper.db.profile.catSettings[3].enabled then
+        for _, item in ipairs(buckets[3]) do
+            AddToUI(self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY))
+            pX = pX + self.Config.SpacingX_Prof
+        end
     end
 
-    -- 3. RENDERING MAT-ICONS (Kategorie 2 mit Filter-Logik)
+    -- 3. RENDERING MAT-ICONS
     local pos2 = ProfessionsHelper.db.profile.positions[2] or {x = -450, y = 100}
     local iX, iY = pos2.x, pos2.y
-    for _, item in ipairs(buckets[2]) do
-        local pName = item.data.gatheringProf or "Other"
-        local pSettings = ProfessionsHelper.db.profile.profSubSettings[pName] or { enabled = true }
-        
-        -- Nur anzeigen, wenn die Unterkategorie aktiviert ist
-        if pSettings.enabled then
-            AddToUI(Visuals:CreateIcon(UIParent, item.data.IDs, iX, iY, 2, pName))
-            iX = iX + Visuals.Config.SpacingX_Icon
+    if ProfessionsHelper.db.profile.catSettings[2].enabled then
+        for _, item in ipairs(buckets[2]) do
+            local pName = item.data.gatheringProf or "Other"
+            local pSettings = ProfessionsHelper.db.profile.profSubSettings[pName] or { enabled = true }
+            if pSettings.enabled then
+                AddToUI(self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, pName))
+                iX = iX + self.Config.SpacingX_Icon
+            end
         end
     end
 
@@ -335,14 +419,15 @@ function Visuals:Init()
     local pos4 = ProfessionsHelper.db.profile.positions[4] or {x = -300, y = 400}
     local fX, fY = pos4.x, pos4.y
     local fStartX = fX
-    for _, item in ipairs(buckets[4]) do
-        if HandleWrap(fX, fStartX, 500) then fX = fStartX; fY = fY - 60 end
-        AddToUI(Visuals:CreateIcon(UIParent, item.data.IDs, fX, fY, 4))
-        fX = fX + Visuals.Config.SpacingX_Fish
+    if ProfessionsHelper.db.profile.catSettings[4].enabled then
+        for _, item in ipairs(buckets[4]) do
+            if HandleWrap(fX, fStartX, self.Config.MaxWidthFish) then fX = fStartX; fY = fY - self.Config.RowHeight end
+            AddToUI(self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY))
+            fX = fX + self.Config.SpacingX_Fish
+        end
     end
 end
 
--- Event-Trigger
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")

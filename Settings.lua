@@ -6,6 +6,7 @@ function PH:SetupOptions()
     local options = {
         name = "Professions Helper",
         type = "group",
+        childGroups = "tree",
         args = {
             general = {
                 type = "group",
@@ -14,6 +15,7 @@ function PH:SetupOptions()
                 args = {
                     lockFrames = {
                         name = "Alle Frames fixieren",
+                        desc = "Deaktiviert das Verschieben der Frames per Maus.",
                         type = "toggle",
                         set = function(info, val) PH.db.profile.locked = val end,
                         get = function(info) return PH.db.profile.locked end,
@@ -21,15 +23,28 @@ function PH:SetupOptions()
                     },
                 },
             },
+            categories = {
+                type = "group",
+                name = "Kategorien & Design",
+                order = 2,
+                childGroups = "tab",
+                args = {}
+            },
+            matFilters = {
+                name = "Material-Icons Filter",
+                type = "group",
+                order = 3,
+                args = {}
+            },
         },
     }
 
-    -- 2. Kategorien (Balken, Icons etc.) automatisch hinzufügen
+    -- 2. Dynamische Erstellung der Kategorien (Balken, Icons etc.)
     for id, data in pairs(PH.db.profile.catSettings) do
-        options.args["cat" .. id] = {
+        options.args.categories.args["cat" .. id] = {
             type = "group",
             name = data.name,
-            order = id + 1,
+            order = id,
             args = {
                 enabled = {
                     name = "Anzeigen",
@@ -55,58 +70,117 @@ function PH:SetupOptions()
                     end,
                     get = function(info) return PH.db.profile.catSettings[id].scale end,
                 },
-                -- Spezifische Einstellungen für Balken (Kat 1)
-                direction = (id == 1) and {
-                    name = "Von unten nach oben füllen",
-                    type = "toggle",
+
+                -- Spezifische Einstellung für Angeln (Kat 4)
+                textAlign = (id == 4) and {
+                    name = "Text Position",
+                    type = "select",
                     order = 3,
-                    set = function(info, val) PH.db.profile.catSettings[1].growUp = val; PH:GetModule("Visuals"):Init() end,
-                    get = function(info) return PH.db.profile.catSettings[1].growUp end,
+                    values = { ["LEFT"] = "Links", ["RIGHT"] = "Rechts", ["TOP"] = "Oben", ["BOTTOM"] = "Unten" },
+                    get = function() return PH.db.profile.catSettings[4].textAlign or "BOTTOM" end,
+                    set = function(_, val) 
+                        PH.db.profile.catSettings[4].textAlign = val
+                        PH:GetModule("Visuals"):Init() 
+                    end,
                 } or nil,
-                barWidth = (id == 1) and {
+                
+                -- BALKEN EINSTELLUNGEN (Nur Kat 1)
+                barHeader = (id == 1) and { name = "Balken-Design", type = "header", order = 10 } or nil,
+                growUp = (id == 1) and {
+                    name = "Von unten nach oben füllen",
+                    type = "toggle", order = 11,
+                    set = function(_, val) PH.db.profile.catSettings[1].growUp = val; PH:GetModule("Visuals"):Init() end,
+                    get = function() return PH.db.profile.catSettings[1].growUp end,
+                } or nil,
+                width = (id == 1) and {
                     name = "Breite",
-                    type = "range", order = 10, min = 5, max = 100, step = 1,
-                    set = function(info, val) PH.db.profile.catSettings[1].width = val; PH:GetModule("Visuals"):Init() end,
-                    get = function(info) return PH.db.profile.catSettings[1].width end,
+                    type = "range", order = 12, min = 5, max = 100, step = 1,
+                    set = function(_, val) PH.db.profile.catSettings[1].width = val; PH:GetModule("Visuals"):Init() end,
+                    get = function() return PH.db.profile.catSettings[1].width end,
                 } or nil,
-                barHeight = (id == 1) and {
+                height = (id == 1) and {
                     name = "Höhe",
-                    type = "range", order = 11, min = 20, max = 300, step = 1,
-                    set = function(info, val) PH.db.profile.catSettings[1].height = val; PH:GetModule("Visuals"):Init() end,
-                    get = function(info) return PH.db.profile.catSettings[1].height end,
+                    type = "range", order = 13, min = 20, max = 300, step = 1,
+                    set = function(_, val) PH.db.profile.catSettings[1].height = val; PH:GetModule("Visuals"):Init() end,
+                    get = function() return PH.db.profile.catSettings[1].height end,
                 } or nil,
                 fontSize = (id == 1) and {
                     name = "Schriftgröße",
-                    type = "range", order = 12, min = 6, max = 20, step = 1,
-                    set = function(info, val) PH.db.profile.catSettings[1].fontSize = val; PH:GetModule("Visuals"):Init() end,
-                    get = function(info) return PH.db.profile.catSettings[1].fontSize end,
+                    type = "range", order = 14, min = 6, max = 24, step = 1,
+                    set = function(_, val) PH.db.profile.catSettings[1].fontSize = val; PH:GetModule("Visuals"):Init() end,
+                    get = function() return PH.db.profile.catSettings[1].fontSize end,
                 } or nil,
                 barTexture = (id == 1) and {
                     name = "Balken-Textur",
-                    type = "select", order = 13, dialogControl = "LSM30_Statusbar",
+                    type = "select", order = 15, dialogControl = "LSM30_Statusbar",
                     values = AceGUIWidgetLSMlists.statusbar,
-                    set = function(info, val) PH.db.profile.catSettings[1].barTexture = val; PH:GetModule("Visuals"):Init() end,
-                    get = function(info) return PH.db.profile.catSettings[1].barTexture end,
+                    set = function(_, val) PH.db.profile.catSettings[1].barTexture = val; PH:GetModule("Visuals"):Init() end,
+                    get = function() return PH.db.profile.catSettings[1].barTexture end,
                 } or nil,
                 fontName = (id == 1) and {
                     name = "Schriftart",
-                    type = "select", order = 14, dialogControl = "LSM30_Font",
+                    type = "select", order = 16, dialogControl = "LSM30_Font",
                     values = AceGUIWidgetLSMlists.font,
-                    set = function(info, val) PH.db.profile.catSettings[1].fontName = val; PH:GetModule("Visuals"):Init() end,
-                    get = function(info) return PH.db.profile.catSettings[1].fontName end,
+                    set = function(_, val) PH.db.profile.catSettings[1].fontName = val; PH:GetModule("Visuals"):Init() end,
+                    get = function() return PH.db.profile.catSettings[1].fontName end,
                 } or nil,
+
+                -- QUALITÄTSFARBEN (Kat 1)
+                colorsHeader = (id == 1) and { name = "Textfarben (Qualität)", type = "header", order = 30 } or nil,
+                colorQ1 = (id == 1) and {
+                    name = "Farbe Q1", type = "color", order = 31,
+                    set = function(_,r,g,b) PH.db.profile.catSettings[1].colorQ1={r=r,g=g,b=b} PH:GetModule("Visuals"):Init() end,
+                    get = function() local c = PH.db.profile.catSettings[1].colorQ1; return c.r, c.g, c.b end,
+                } or nil,
+                colorQ2 = (id == 1) and {
+                    name = "Farbe Q2", type = "color", order = 32,
+                    set = function(_,r,g,b) PH.db.profile.catSettings[1].colorQ2={r=r,g=g,b=b} PH:GetModule("Visuals"):Init() end,
+                    get = function() local c = PH.db.profile.catSettings[1].colorQ2; return c.r, c.g, c.b end,
+                } or nil,
+                colorQ3 = (id == 1) and {
+                    name = "Farbe Q3", type = "color", order = 33,
+                    set = function(_,r,g,b) PH.db.profile.catSettings[1].colorQ3={r=r,g=g,b=b} PH:GetModule("Visuals"):Init() end,
+                    get = function() local c = PH.db.profile.catSettings[1].colorQ3; return c.r, c.g, c.b end,
+                } or nil,
+
+                -- HINTERGRUND (Kat 1)
+                bgHeader = (id == 1) and { name = "Hintergrund", type = "header", order = 40 } or nil,
+                showBackground = (id == 1) and {
+                    name = "Hintergrund anzeigen", type = "toggle", order = 41,
+                    set = function(_, val) PH.db.profile.catSettings[1].showBackground = val; PH:GetModule("Visuals"):Init() end,
+                    get = function() return PH.db.profile.catSettings[1].showBackground end,
+                } or nil,
+                backgroundColor = (id == 1) and {
+                    name = "Hintergrundfarbe", type = "color", hasAlpha = true, order = 42,
+                    set = function(_,r,g,b,a) PH.db.profile.catSettings[1].backgroundColor={r=r,g=g,b=b,a=a} PH:GetModule("Visuals"):Init() end,
+                    get = function() local c = PH.db.profile.catSettings[1].backgroundColor; return c.r, c.g, c.b, c.a end,
+                } or nil,
+
+                -- POSITIONIERUNG (Für alle Kategorien)
+                posHeader = { name = "Positionierung", type = "header", order = 100 },
+                posX = {
+                    name = "Position X", type = "range", order = 101, min = -2000, max = 2000, step = 1,
+                    set = function(info, val) PH.db.profile.positions[id].x = val; PH:GetModule("Visuals"):Init() end,
+                    get = function(info) return PH.db.profile.positions[id].x or 0 end,
+                },
+                posY = {
+                    name = "Position Y", type = "range", order = 102, min = -2000, max = 2000, step = 1,
+                    set = function(info, val) PH.db.profile.positions[id].y = val; PH:GetModule("Visuals"):Init() end,
+                    get = function(info) return PH.db.profile.positions[id].y or 0 end,
+                },
+                group = {
+                    name = "Sticky-Gruppe",
+                    desc = "Kategorien in der gleichen Gruppe bewegen sich gemeinsam.",
+                    type = "select", order = 103,
+                    values = { [0] = "Keine", [1] = "Gruppe A", [2] = "Gruppe B", [3] = "Gruppe C" },
+                    set = function(info, val) PH.db.profile.catSettings[id].groupID = val end,
+                    get = function(info) return PH.db.profile.catSettings[id].groupID or 0 end,
+                },
             },
         }
     end
 
-    -- 3. Material-Filter (Kat 2 Unterkategorien) hinzufügen
-    options.args.matFilters = {
-        name = "Material-Icons Filter (Kat 2)",
-        type = "group",
-        order = 25,
-        args = {}
-    }
-
+    -- 3. Material-Filter (Kat 2 Unterkategorien)
     local filterProfs = {"Mining", "Herbalism", "Skinning", "Fishing", "Cooking", "Other"}
     for i, prof in ipairs(filterProfs) do
         options.args.matFilters.args[prof] = {
@@ -116,24 +190,34 @@ function PH:SetupOptions()
             order = i,
             args = {
                 enabled = {
-                    name = "Anzeigen",
-                    type = "toggle",
-                    order = 1,
+                    name = "Anzeigen", type = "toggle", order = 1,
                     get = function() return PH.db.profile.profSubSettings[prof].enabled end,
-                    set = function(_, val) 
-                        PH.db.profile.profSubSettings[prof].enabled = val
+                    set = function(_, val) PH.db.profile.profSubSettings[prof].enabled = val; PH:GetModule("Visuals"):Init() end,
+                },
+                textAlign = {
+                    name = "Text Position", type = "select", order = 2,
+                    values = { ["LEFT"] = "Links", ["RIGHT"] = "Rechts", ["TOP"] = "Oben", ["BOTTOM"] = "Unten" },
+                    get = function() return PH.db.profile.profSubSettings[prof].textAlign or "BOTTOM" end,
+                    set = function(_, val) PH.db.profile.profSubSettings[prof].textAlign = val; PH:GetModule("Visuals"):Init() end,
+                },
+                color = {
+                    name = "Text Farbe", type = "color", order = 3,
+                    get = function() 
+                        local c = PH.db.profile.profSubSettings[prof].color or {r=0.3, g=0.9, b=0.25}
+                        return c.r, c.g, c.b 
+                    end,
+                    set = function(_, r, g, b) 
+                        PH.db.profile.profSubSettings[prof].color = {r=r, g=g, b=b}
                         PH:GetModule("Visuals"):Init() 
                     end,
                 },
-                textAlign = {
-                    name = "Text Position",
-                    type = "select",
-                    order = 2,
-                    values = { ["LEFT"] = "Links", ["RIGHT"] = "Rechts", ["TOP"] = "Oben", ["BOTTOM"] = "Unten" },
-                    get = function() return PH.db.profile.profSubSettings[prof].textAlign end,
-                    set = function(_, val) 
-                        PH.db.profile.profSubSettings[prof].textAlign = val
-                        PH:GetModule("Visuals"):Init() 
+                resetColor = {
+                    name = "Reset Farbe",
+                    type = "execute",
+                    order = 4,
+                    func = function()
+                        PH.db.profile.profSubSettings[prof].color = {r=0.3, g=0.9, b=0.25}
+                        PH:GetModule("Visuals"):Init()
                     end,
                 }
             }
