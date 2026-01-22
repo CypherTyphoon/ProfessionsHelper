@@ -49,6 +49,7 @@ local function PerformCharacterScan()
             if name then PlayerCanHandle[name] = true end
         end
     end
+    -- Check für Woodcutting (Spell ID aus Midnight/The War Within)
     if C_SpellBook.IsSpellKnownOrInSpellBook(1256697) then 
         PlayerCanHandle["Woodcutting"] = true 
     end
@@ -80,7 +81,8 @@ function Visuals:ClearFrames()
     self.ActiveFrames = {}
 end
 
-local function MakeInteractive(frame, itemIDs)
+-- NEU: groupKey erlaubt das Speichern pro Beruf
+local function MakeInteractive(frame, itemIDs, groupKey)
     frame:SetMovable(true)
     frame:EnableMouse(true)
     frame:RegisterForDrag("LeftButton")
@@ -105,26 +107,9 @@ local function MakeInteractive(frame, itemIDs)
         local newX = (frameX - uiX) / s
         local newY = (frameY - uiY) / s
 
-        local catID = self.catID
-        ProfessionsHelper.db.profile.positions[catID] = ProfessionsHelper.db.profile.positions[catID] or {x=0, y=0}
-        
-        local oldPos = { x = ProfessionsHelper.db.profile.positions[catID].x, y = ProfessionsHelper.db.profile.positions[catID].y }
-        local groupID = ProfessionsHelper.db.profile.catSettings[catID].groupID or 0
-        local deltaX = newX - oldPos.x
-        local deltaY = newY - oldPos.y
-
-        if groupID > 0 then
-            for id, settings in pairs(ProfessionsHelper.db.profile.catSettings) do
-                if settings.groupID == groupID then
-                    ProfessionsHelper.db.profile.positions[id] = ProfessionsHelper.db.profile.positions[id] or {x = 0, y = 0}
-                    ProfessionsHelper.db.profile.positions[id].x = ProfessionsHelper.db.profile.positions[id].x + deltaX
-                    ProfessionsHelper.db.profile.positions[id].y = ProfessionsHelper.db.profile.positions[id].y + deltaY
-                end
-            end
-        else
-            ProfessionsHelper.db.profile.positions[catID].x = newX
-            ProfessionsHelper.db.profile.positions[catID].y = newY
-        end
+        -- Speichere Position: Entweder für die Kategorie oder den spezifischen Beruf (Reihe)
+        local storageKey = groupKey or frame.catID
+        ProfessionsHelper.db.profile.positions[storageKey] = { x = newX, y = newY }
 
         Visuals:Init()
     end)
@@ -221,7 +206,7 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor)
     MakeInteractive(frame, itemIDs); return frame
 end
 
--- KATEGORIE 2: Material Icons (mit profSubSettings)
+-- KATEGORIE 2: Material Icons (mit profSubSettings und groupKey)
 function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     local frame = CreateFrame("Frame", nil, parent)
     frame.catID = 2
@@ -242,16 +227,12 @@ function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     text:ClearAllPoints()
     if align == "LEFT" then 
         text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
-        text:SetJustifyH("RIGHT")
     elseif align == "RIGHT" then 
         text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
-        text:SetJustifyH("LEFT")
     elseif align == "TOP" then 
         text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
-        text:SetJustifyH("CENTER")
     else 
         text:SetPoint("TOP", frame, "BOTTOM", 0, -4) 
-        text:SetJustifyH("CENTER")
     end
     text:SetTextColor(color.r, color.g, color.b)
 
@@ -263,7 +244,9 @@ function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     end
 
     frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
-    MakeInteractive(frame, ids); return frame
+    -- Übergabe des Berufsnamens als groupKey für Sticky-Movement
+    MakeInteractive(frame, ids, profName) 
+    return frame
 end
 
 -- KATEGORIE 3: Berufs-Icons
@@ -353,21 +336,20 @@ function Visuals:Init()
 
         for catName, items in pairs(expData) do
             if catName ~= "Config" then
-                local isWood = (catName == "Wood")
-                if isWood or isCurrentExp then
-                    for itemName, itemData in pairs(items) do
-                        if CanPlayerSeeItem(catName, itemData) then
-                            local cat = tonumber(itemData.displayCategory) or 0
-                            local showItem = false
-                            if isWood then showItem = true 
-                            elseif (cat == 1 or cat == 4) and isCurrentExp then showItem = true 
-                            elseif (cat == 2 or cat == 3) and isInCity then showItem = true end
+                for itemName, itemData in pairs(items) do
+                    if CanPlayerSeeItem(catName, itemData) then
+                        local cat = tonumber(itemData.displayCategory) or 0
+                        local showItem = false
+                        
+                        -- Woodcutting ist global sichtbar, andere nach Zone
+                        if catName == "Wood" then showItem = true 
+                        elseif (cat == 1 or cat == 4) and isCurrentExp then showItem = true 
+                        elseif (cat == 2 or cat == 3) and isInCity then showItem = true end
 
-                            if showItem and buckets[cat] then
-                                local settings = ProfessionsHelper.db.profile.catSettings[cat]
-                                if settings and settings.enabled then
-                                    table.insert(buckets[cat], { name = itemName, data = itemData })
-                                end
+                        if showItem and buckets[cat] then
+                            local settings = ProfessionsHelper.db.profile.catSettings[cat]
+                            if settings and settings.enabled then
+                                table.insert(buckets[cat], { name = itemName, data = itemData, prof = itemData.gatheringProf or "Other" })
                             end
                         end
                     end
@@ -379,7 +361,7 @@ function Visuals:Init()
     local function AddToUI(f) if f then table.insert(self.ActiveFrames, f) end end
     local function HandleWrap(curX, startX, width) return (curX - startX) > width end
 
-    -- 1. RENDERING BALKEN
+    -- 1. RENDERING BALKEN (Wie bisher)
     local pos1 = ProfessionsHelper.db.profile.positions[1] or {x = -450, y = 150}
     local bX, bY = pos1.x, pos1.y
     local bStartX = bX
@@ -391,7 +373,7 @@ function Visuals:Init()
         bX = bX + self.Config.SpacingX_Bar
     end
 
-    -- 2. RENDERING PROF-ICONS
+    -- 2. RENDERING PROF-ICONS (Wie bisher)
     local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
     local pX, pY = pos3.x, pos3.y
     if ProfessionsHelper.db.profile.catSettings[3].enabled then
@@ -401,21 +383,37 @@ function Visuals:Init()
         end
     end
 
-    -- 3. RENDERING MAT-ICONS
-    local pos2 = ProfessionsHelper.db.profile.positions[2] or {x = -450, y = 100}
-    local iX, iY = pos2.x, pos2.y
+    -- 3. RENDERING MAT-ICONS (NEUES REIHEN-SYSTEM)
     if ProfessionsHelper.db.profile.catSettings[2].enabled then
+        -- Erst nach Berufen sortieren
+        local profGroups = {}
         for _, item in ipairs(buckets[2]) do
-            local pName = item.data.gatheringProf or "Other"
-            local pSettings = ProfessionsHelper.db.profile.profSubSettings[pName] or { enabled = true }
+            profGroups[item.prof] = profGroups[item.prof] or {}
+            table.insert(profGroups[item.prof], item)
+        end
+
+        -- Jede Gruppe (Reihe) einzeln zeichnen
+        for prof, items in pairs(profGroups) do
+            local pSettings = ProfessionsHelper.db.profile.profSubSettings[prof] or { enabled = true }
             if pSettings.enabled then
-                AddToUI(self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, pName))
-                iX = iX + self.Config.SpacingX_Icon
+                -- Position aus dem Berufsspeicher laden (Mining, Herbalism, etc.)
+                -- Standardwerte leicht versetzt, damit sie nicht alle aufeinander liegen
+                local defaultY = 100
+                if prof == "Herbalism" then defaultY = 130 elseif prof == "Skinning" then defaultY = 70 end
+                
+                local pos = ProfessionsHelper.db.profile.positions[prof] or {x = -450, y = defaultY}
+                local iX, iY = pos.x, pos.y
+                
+                for i, item in ipairs(items) do
+                    -- Sticky-Logik: Erstes Icon ist Anker, Rest folgt mit Abstand
+                    local iconX = iX + ((i-1) * self.Config.SpacingX_Icon)
+                    AddToUI(self:CreateMaterialIcon(UIParent, item.data.IDs, iconX, iY, prof))
+                end
             end
         end
     end
 
-    -- 4. RENDERING FISHING
+    -- 4. RENDERING FISHING (Wie bisher)
     local pos4 = ProfessionsHelper.db.profile.positions[4] or {x = -300, y = 400}
     local fX, fY = pos4.x, pos4.y
     local fStartX = fX
