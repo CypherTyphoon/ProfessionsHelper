@@ -49,7 +49,7 @@ local function PerformCharacterScan()
             if name then PlayerCanHandle[name] = true end
         end
     end
-    -- Check für Woodcutting (Spell ID aus Midnight/The War Within)
+    -- Check für Woodcutting (Midnight / TWW Spell ID)
     if C_SpellBook.IsSpellKnownOrInSpellBook(1256697) then 
         PlayerCanHandle["Woodcutting"] = true 
     end
@@ -57,19 +57,47 @@ end
 
 local function CanPlayerSeeItem(category, itemData)
     if not itemData or not itemData.IDs then return false end
-    if itemData.gatheringProf then return PlayerCanHandle[itemData.gatheringProf] == true end
-    local target = professionMapping[category]
-    if target then return PlayerCanHandle[target] == true end
-    if itemData.processingProfs then
-        for _, pProf in ipairs(itemData.processingProfs) do 
-            if PlayerCanHandle[pProf] then return true end 
+
+    local function HasMatch(profEntry)
+        if not profEntry then return false end
+        if type(profEntry) == "table" then
+            for _, p in ipairs(profEntry) do
+                if PlayerCanHandle and PlayerCanHandle[p] then return true end
+            end
+        elseif type(profEntry) == "string" then
+            if PlayerCanHandle and PlayerCanHandle[profEntry] then return true end
         end
+        return false
     end
+
+    if category == "Fishing" or category == "Wood" then
+        return HasMatch(itemData.gatheringProf)
+    end
+
+    local cat = tonumber(itemData.displayCategory) or 0
+
+    if cat == 1 then
+        return HasMatch(itemData.gatheringProf)
+
+    elseif cat == 2 then
+        return HasMatch(itemData.processingProfs)
+
+    elseif cat == 3 then
+        -- SONDERLOGIK für Erzeuger:
+        -- Wenn ich der Hersteller bin, will ich es IMMER sehen.
+        local isMaker = HasMatch(itemData.gatheringProf)
+        if isMaker then return true end
+
+        -- Ansonsten (für alle anderen): Strenge Prüfung auf beide Listen
+        local matchProc = HasMatch(itemData.processingProfs)
+        return isMaker and matchProc
+    end
+
     return false
 end
 
 -- ==========================================
--- 3. UI HILFSFUNKTIONEN (INTERAKTION)
+-- 3. UI HILFSFUNKTIONEN
 -- ==========================================
 
 function Visuals:ClearFrames()
@@ -81,7 +109,6 @@ function Visuals:ClearFrames()
     self.ActiveFrames = {}
 end
 
--- NEU: groupKey erlaubt das Speichern pro Beruf
 local function MakeInteractive(frame, itemIDs, groupKey)
     frame:SetMovable(true)
     frame:EnableMouse(true)
@@ -107,10 +134,8 @@ local function MakeInteractive(frame, itemIDs, groupKey)
         local newX = (frameX - uiX) / s
         local newY = (frameY - uiY) / s
 
-        -- Speichere Position: Entweder für die Kategorie oder den spezifischen Beruf (Reihe)
         local storageKey = groupKey or frame.catID
         ProfessionsHelper.db.profile.positions[storageKey] = { x = newX, y = newY }
-
         Visuals:Init()
     end)
 
@@ -126,10 +151,9 @@ local function MakeInteractive(frame, itemIDs, groupKey)
 end
 
 -- ==========================================
--- 4. SPEZIALISIERTE RENDERING FUNKTIONEN
+-- 4. RENDERING FUNKTIONEN
 -- ==========================================
 
--- KATEGORIE 1: Balken
 function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor)
     local settings = ProfessionsHelper.db.profile.catSettings[1]
     local isGrowUp = settings.growUp
@@ -146,8 +170,6 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor)
         local bg = settings.backgroundColor or {r=0, g=0, b=0, a=0.5}
         frame:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground"})
         frame:SetBackdropColor(bg.r, bg.g, bg.b, bg.a)
-    else
-        frame:SetBackdrop(nil)
     end
     
     local bar = CreateFrame("StatusBar", nil, frame)
@@ -206,15 +228,13 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor)
     MakeInteractive(frame, itemIDs); return frame
 end
 
--- KATEGORIE 2: Material Icons (mit profSubSettings und groupKey)
 function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     local frame = CreateFrame("Frame", nil, parent)
     frame.catID = 2
     local settings = ProfessionsHelper.db.profile.catSettings[2]
     local sub = ProfessionsHelper.db.profile.profSubSettings[profName or "Other"] or {}
     
-    frame:SetSize(20, 20) 
-    frame:SetScale(settings.scale or 1)
+    frame:SetSize(20, 20); frame:SetScale(settings.scale or 1)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
 
     local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
@@ -225,15 +245,10 @@ function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     local color = sub.color or {r=0.3, g=0.9, b=0.25}
 
     text:ClearAllPoints()
-    if align == "LEFT" then 
-        text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
-    elseif align == "RIGHT" then 
-        text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
-    elseif align == "TOP" then 
-        text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
-    else 
-        text:SetPoint("TOP", frame, "BOTTOM", 0, -4) 
-    end
+    if align == "LEFT" then text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
+    elseif align == "RIGHT" then text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
+    elseif align == "TOP" then text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
+    else text:SetPoint("TOP", frame, "BOTTOM", 0, -4) end
     text:SetTextColor(color.r, color.g, color.b)
 
     local function Update()
@@ -244,49 +259,35 @@ function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     end
 
     frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
-    -- Übergabe des Berufsnamens als groupKey für Sticky-Movement
-    MakeInteractive(frame, ids, profName) 
-    return frame
+    MakeInteractive(frame, ids, profName); return frame
 end
 
--- KATEGORIE 3: Berufs-Icons
 function Visuals:CreateProfessionIcon(parent, ids, x, y)
     local frame = CreateFrame("Frame", nil, parent)
-    frame.catID = 3
-    frame:SetSize(40, 40)
+    frame.catID = 3; frame:SetSize(40, 40)
     frame:SetScale(ProfessionsHelper.db.profile.catSettings[3].scale or 1)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
-
     local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
     icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
-
     local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
-    text:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
-    text:SetTextColor(0.05, 1, 0, 1)
-
+    text:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2); text:SetTextColor(0.05, 1, 0, 1)
     local function Update()
         local total = 0
         for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
         text:SetText(total > 0 and total or "")
         icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
     end
-
     frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
     MakeInteractive(frame, ids); return frame
 end
 
--- KATEGORIE 4: Angel-Icons
 function Visuals:CreateFishingIcon(parent, ids, x, y)
     local frame = CreateFrame("Frame", nil, parent)
-    frame.catID = 4
-    local settings = ProfessionsHelper.db.profile.catSettings[4]
-    frame:SetSize(30, 30)
-    frame:SetScale(settings.scale or 1)
+    frame.catID = 4; local settings = ProfessionsHelper.db.profile.catSettings[4]
+    frame:SetSize(30, 30); frame:SetScale(settings.scale or 1)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
-
     local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
     icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
-
     local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
     local align = settings.textAlign or "BOTTOM"
     text:ClearAllPoints()
@@ -295,14 +296,12 @@ function Visuals:CreateFishingIcon(parent, ids, x, y)
     elseif align == "TOP" then text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
     else text:SetPoint("TOP", frame, "BOTTOM", 0, -4) end
     text:SetTextColor(1, 1, 1)
-
     local function Update()
         local total = 0
         for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
         text:SetText(total > 0 and total or "")
         icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
     end
-
     frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
     MakeInteractive(frame, ids); return frame
 end
@@ -341,7 +340,6 @@ function Visuals:Init()
                         local cat = tonumber(itemData.displayCategory) or 0
                         local showItem = false
                         
-                        -- Woodcutting ist global sichtbar, andere nach Zone
                         if catName == "Wood" then showItem = true 
                         elseif (cat == 1 or cat == 4) and isCurrentExp then showItem = true 
                         elseif (cat == 2 or cat == 3) and isInCity then showItem = true end
@@ -349,7 +347,21 @@ function Visuals:Init()
                         if showItem and buckets[cat] then
                             local settings = ProfessionsHelper.db.profile.catSettings[cat]
                             if settings and settings.enabled then
-                                table.insert(buckets[cat], { name = itemName, data = itemData, prof = itemData.gatheringProf or "Other" })
+                                -- KORREKTUR: Finde den passenden Berufsnamen für die Reihe
+                                local displayProf = "Other"
+                                if type(itemData.gatheringProf) == "table" then
+                                    for _, p in ipairs(itemData.gatheringProf) do
+                                        if PlayerCanHandle[p] then displayProf = p break end
+                                    end
+                                elseif type(itemData.gatheringProf) == "string" then
+                                    displayProf = itemData.gatheringProf
+                                end
+                                
+                                table.insert(buckets[cat], { 
+                                    name = itemName, 
+                                    data = itemData, 
+                                    prof = displayProf 
+                                })
                             end
                         end
                     end
@@ -361,7 +373,7 @@ function Visuals:Init()
     local function AddToUI(f) if f then table.insert(self.ActiveFrames, f) end end
     local function HandleWrap(curX, startX, width) return (curX - startX) > width end
 
-    -- 1. RENDERING BALKEN (Wie bisher)
+    -- 1. Balken
     local pos1 = ProfessionsHelper.db.profile.positions[1] or {x = -450, y = 150}
     local bX, bY = pos1.x, pos1.y
     local bStartX = bX
@@ -373,7 +385,7 @@ function Visuals:Init()
         bX = bX + self.Config.SpacingX_Bar
     end
 
-    -- 2. RENDERING PROF-ICONS (Wie bisher)
+    -- 2. Prof-Icons
     local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
     local pX, pY = pos3.x, pos3.y
     if ProfessionsHelper.db.profile.catSettings[3].enabled then
@@ -383,37 +395,28 @@ function Visuals:Init()
         end
     end
 
-    -- 3. RENDERING MAT-ICONS (NEUES REIHEN-SYSTEM)
+    -- 3. Mat-Icons
     if ProfessionsHelper.db.profile.catSettings[2].enabled then
-        -- Erst nach Berufen sortieren
         local profGroups = {}
         for _, item in ipairs(buckets[2]) do
             profGroups[item.prof] = profGroups[item.prof] or {}
             table.insert(profGroups[item.prof], item)
         end
-
-        -- Jede Gruppe (Reihe) einzeln zeichnen
         for prof, items in pairs(profGroups) do
             local pSettings = ProfessionsHelper.db.profile.profSubSettings[prof] or { enabled = true }
             if pSettings.enabled then
-                -- Position aus dem Berufsspeicher laden (Mining, Herbalism, etc.)
-                -- Standardwerte leicht versetzt, damit sie nicht alle aufeinander liegen
                 local defaultY = 100
                 if prof == "Herbalism" then defaultY = 130 elseif prof == "Skinning" then defaultY = 70 end
-                
                 local pos = ProfessionsHelper.db.profile.positions[prof] or {x = -450, y = defaultY}
-                local iX, iY = pos.x, pos.y
-                
                 for i, item in ipairs(items) do
-                    -- Sticky-Logik: Erstes Icon ist Anker, Rest folgt mit Abstand
-                    local iconX = iX + ((i-1) * self.Config.SpacingX_Icon)
-                    AddToUI(self:CreateMaterialIcon(UIParent, item.data.IDs, iconX, iY, prof))
+                    local iconX = pos.x + ((i-1) * self.Config.SpacingX_Icon)
+                    AddToUI(self:CreateMaterialIcon(UIParent, item.data.IDs, iconX, pos.y, prof))
                 end
             end
         end
     end
 
-    -- 4. RENDERING FISHING (Wie bisher)
+    -- 4. Fishing
     local pos4 = ProfessionsHelper.db.profile.positions[4] or {x = -300, y = 400}
     local fX, fY = pos4.x, pos4.y
     local fStartX = fX
@@ -430,5 +433,4 @@ local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:SetScript("OnEvent", function() Visuals:Init() end)
-
 ProfessionsHelper:RegisterModule("Visuals", Visuals)

@@ -112,7 +112,7 @@ ProfessionsHelperData["The War Within"].FinishingReagents = {
     StackOfPentagoldReviews = { IDs = { 225671 }, sources = { "Drop" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
     UnraveledInstructions = { IDs = { 225672 }, sources = { "Drop" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
     ArtisansConsortiumSealOfApproval = { IDs = { 225673 }, sources = { "Drop" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
-    HotHoneycomb = { IDs = { 225912 }, sources = { "Drop" }, gatheringProf = "Cooking", processingProfs = {}, displayCategory = 2 },
+    HotHoneycomb = { IDs = { 225912 }, sources = { "Drop" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 2 },
     AssortedChokingHazards = { IDs = { 225984, 225985, 225986 }, sources = { "Unknown" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
     -- Priority 2: Crafted
     BottledBrilliance = { IDs = { 225987, 225988, 225989 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "AllProf" }, displayCategory = 3 },
@@ -152,15 +152,15 @@ ProfessionsHelperData["The War Within"].Inscription = {
 -- ==========================================
 ProfessionsHelperData["The War Within"].Jewelcrafting = {
     -- Priority 1: Crafted (Base Reagents)
-    HandfulOfPebbles = { IDs = { 213398 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
+    HandfulOfPebbles = { IDs = { 213398 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 0 },
     GlitteringGlass = { IDs = { 213399 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
-    CrushedGemstones = { IDs = { 213219, 213220, 213221 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
+    CrushedGemstones = { IDs = { 213219, 213220, 213221 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
     AmbivalentAmber = { IDs = { 212498 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     ExtravagantEmerald = { IDs = { 212505 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     StunningSapphire = { IDs = { 212508 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     OstentatiousOnyx = { IDs = { 212511 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
-    MarbledStone = { IDs = { 213756, 213757, 213758 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
-    BlackBloodInfusedBar = { IDs = { 239107 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
+    MarbledStone = { IDs = { 213756, 213757, 213758 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
+    BlackBloodInfusedBar = { IDs = { 239107 }, sources = { "Drop" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     -- Priority 2: Crafted (Advanced Reagents)
     EngravedGemcutter = { IDs = { 213750, 213751, 213752 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
     DecorativeLens = { IDs = { 213753, 213754, 213755 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Engineering" }, displayCategory = 3 },
@@ -215,7 +215,7 @@ ProfessionsHelperData["The War Within"].Cooking = {
     Cinderbee_Belly = { IDs = { 225911 }, sources = { "Drop" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Undermine_Clam_Meat = { IDs = { 235845 }, sources = { "Drop" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     -- Priority 3: Crafted
-    Chopped_Mycobloom = { IDs = { 222737 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 2 },
+    Chopped_Mycobloom = { IDs = { 222737 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Spiced_Meat_Stock = { IDs = { 222739 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Fresh_Fillet = { IDs = { 222741 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Fine_Egg_Powder = { IDs = { 225876 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
@@ -243,7 +243,7 @@ ProfessionsHelperData["The War Within"].OptionalReagents = {
     Algari_Missive_of_the_Peerless = { IDs = { 222591, 222592, 222593 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_the_Quickblade = { IDs = { 222594, 222595, 222596 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Blame_Redirection_Device = { IDs = { 221926, 221927, 221928 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
-    Blessed_Weapon_Grip = { IDs = { 219495, 219496, 219497 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
+    Blessed_Weapon_Grip = { IDs = { 219495, 219496, 219497 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Inscription", "Enchanting" }, displayCategory = 3 },
     Captured_Starlight = { IDs = { 213774, 213775, 213776 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 3 },
     Complicated_Fuse_Box = { IDs = { 221932, 221933, 221934 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
     Concealed_Chaos_Module = { IDs = { 221938, 221939, 221940 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
@@ -257,7 +257,7 @@ ProfessionsHelperData["The War Within"].OptionalReagents = {
     Enchanted_Gilded_Harbinger_Crest = { IDs = { 224073 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
     Enchanted_Runed_Harbinger_Crest = { IDs = { 224072 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
     Enchanted_Weathered_Harbinger_Crest = { IDs = { 224069 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
-    Writhing_Armor_Banding = { IDs = { 219504, 219505, 219506 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
+    Writhing_Armor_Banding = { IDs = { 219504, 219505, 219506 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing"  }, displayCategory = 3 },
 }
 
 -- ==========================================
@@ -270,14 +270,14 @@ ProfessionsHelperData["The War Within"].Part = {
     Cataclysmic_Converter = { IDs = { 227772 }, sources = { "Vendor" }, processingProfs = { "Engineering" }, displayCategory = 2 },
     -- Priority 2: Drop
     Pile_of_Rusted_Scrap = { IDs = { 219150 }, sources = { "Drop" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
-    Handful_of_Bismuth_Bolts = { IDs = { 221853, 221854, 221855 }, sources = { "Crafted", "Drop" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Blacksmithing" }, displayCategory = 2 },
+    Handful_of_Bismuth_Bolts = { IDs = { 221853, 221854, 221855 }, sources = { "Crafted", "Drop" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Blacksmithing" }, displayCategory = 3 },
     -- Priority 3: Crafted
-    Bountiful_Bolts = { IDs = { 227769 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
-    Chaos_Circuit = { IDs = { 221865, 221866, 221867 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Tailoring" }, displayCategory = 2 },
-    Entropy_Enhancer = { IDs = { 221868, 221869, 221870 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
-    Gyrating_Gear = { IDs = { 221859, 221860, 221861 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
-    Safety_Switch = { IDs = { 221862, 221863, 221864 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Tailoring" }, displayCategory = 2 },
-    Whimsical_Wiring = { IDs = { 221856, 221857, 221858 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Leatherworking", "Blacksmithing" }, displayCategory = 2 },
+    Bountiful_Bolts = { IDs = { 227769 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Chaos_Circuit = { IDs = { 221865, 221866, 221867 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Tailoring" }, displayCategory = 3 },
+    Entropy_Enhancer = { IDs = { 221868, 221869, 221870 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Gyrating_Gear = { IDs = { 221859, 221860, 221861 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Safety_Switch = { IDs = { 221862, 221863, 221864 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Tailoring" }, displayCategory = 3 },
+    Whimsical_Wiring = { IDs = { 221856, 221857, 221858 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Leatherworking", "Blacksmithing" }, displayCategory = 3 },
 }
 
 -- ==========================================
@@ -288,7 +288,7 @@ ProfessionsHelperData["The War Within"].TradeGood = {
     Artisans_Acuity = { IDs = { 210814 }, sources = { "Drop" }, gatheringProf = "AllProf", processingProfs = "AllProf" ,displayCategory = 2 },
     Mosswool_Thread = { IDs = { 224764 }, sources = { "Vendor" }, processingProfs = { "Leatherworking", "Tailoring" }, displayCategory = 2 },
     -- Priority 2: Drop / Quest / Quest Reagents
-    Crystalline_Powder = { IDs = { 213610 }, sources = { "Drop" }, gatheringProf = { "Skinning", "Herbalism", "Mining"}, processingProfs = { "Blacksmithing", "Inscription", "Engineering", "Alchemy", "Enchanting", "Leatherworking", "Skinning" }, displayCategory = 2 },
+    Crystalline_Powder = { IDs = { 213610 }, sources = { "Drop" }, gatheringProf = { "Skinning", "Herbalism", "Mining" }, processingProfs = { "Blacksmithing", "Inscription", "Engineering", "Alchemy", "Enchanting", "Leatherworking", "Skinning" }, displayCategory = 2 },
     Gloomfathom_Hide = { IDs = { 221757 }, sources = { "Drop" }, processingProfs = { "Blacksmithing", "Leatherworking" }, displayCategory = 2 },
     Leyline_Residue = { IDs = { 213613 }, sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Enchanting", "Inscription", "Tailoring", "Engineering", "Alchemy", "Herbalism"}, displayCategory = 2 },
     Profaned_Tinderbox = { IDs = { 221758 }, sources = { "Drop", "Vendor" }, processingProfs = { "Leatherworking", "Enchanting", "Alchemy", "Blacksmithing" }, displayCategory = 2 },
