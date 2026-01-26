@@ -304,3 +304,13 @@ ProfessionsHelperData["The War Within"].TradeGood = {
     Volatile_Transmutagen = { IDs = { 211804 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 3 },
     Gleaming_Transmutagen = { IDs = { 211805 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 3 },
 }
+
+-- ==========================================
+-- Spells of professions
+-- ==========================================
+
+ProfessionsHelperData["The War Within"].Skills = {
+    --Skinning
+    Sharpen_Knife = {spellID = 440977, IDs = { 440977 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }},
+    Carve_Meat = {spellID = 442615, IDs = { 442615 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }},
+}

@@ -25,6 +25,7 @@ local defaults = {
             [2] = { scale = 1.0, enabled = true, name = "Icons (Materialien)" }, -- Text kommt aus profSubSettings
             [3] = { scale = 1.0, enabled = true, name = "Berufs-Icons" },        -- KEIN Text vorgesehen
             [4] = { scale = 1.0, enabled = true, name = "Angeln", textAlign = "BOTTOM" }, -- Nur Position für Angeln
+            [5] = { scale = 1.0, enabled = true},
         },
         enabledExpansions = {
             ["TWW"] = true,
@@ -39,6 +40,7 @@ local defaults = {
             [2] = { x = -450, y = 100 },
             [3] = { x = -450, y = 50 },
             [4] = { x = -300, y = 400 },
+            [5] = { x = 0, y = -100 },
         },
         -- Diese Settings gelten NUR für die Materialien (Kat 2)
         profSubSettings = {

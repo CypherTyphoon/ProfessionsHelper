@@ -13,6 +13,7 @@ Visuals.Config = {
     SpacingX_Icon = 28,
     SpacingX_Prof = 48,
     SpacingX_Fish = 40,
+    SpacingX_Skill = 40,
     MaxWidthMain = 600,
     MaxWidthFish = 500,
     RowHeight = 60
@@ -24,13 +25,6 @@ local skillLineMapping = {
     [182] = "Herbalism", [773] = "Inscription", [755] = "Jewelcrafting", 
     [165] = "Leatherworking", [186] = "Mining", [393] = "Skinning", 
     [197] = "Tailoring" 
-}
-
-local professionMapping = { 
-    Leather = "Skinning", Ores = "Mining", MetalAndStone = "Mining", 
-    Herbs = "Herbalism", Cloth = "Tailoring", Cooking = "Cooking", 
-    Fishing = "Fishing", Wood = "Woodcutting", Gems = "Jewelcrafting", 
-    Ingots = "Blacksmithing" 
 }
 
 local PlayerCanHandle = {}
@@ -49,14 +43,14 @@ local function PerformCharacterScan()
             if name then PlayerCanHandle[name] = true end
         end
     end
-    -- Check für Woodcutting (Midnight / TWW Spell ID)
+    -- Spezialfall Holzfällen (Spell-Check)
     if C_SpellBook.IsSpellKnownOrInSpellBook(1256697) then 
         PlayerCanHandle["Woodcutting"] = true 
     end
 end
 
 local function CanPlayerSeeItem(category, itemData)
-    if not itemData or not itemData.IDs then return false end
+    if not itemData or (not itemData.IDs and not itemData.spellID) then return false end
 
     local function HasMatch(profEntry)
         if not profEntry then return false end
@@ -76,19 +70,13 @@ local function CanPlayerSeeItem(category, itemData)
 
     local cat = tonumber(itemData.displayCategory) or 0
 
-    if cat == 1 then
+    if cat == 1 or cat == 5 then
         return HasMatch(itemData.gatheringProf)
-
     elseif cat == 2 then
         return HasMatch(itemData.processingProfs)
-
     elseif cat == 3 then
-        -- SONDERLOGIK für Erzeuger:
-        -- Wenn ich der Hersteller bin, will ich es IMMER sehen.
         local isMaker = HasMatch(itemData.gatheringProf)
         if isMaker then return true end
-
-        -- Ansonsten (für alle anderen): Strenge Prüfung auf beide Listen
         local matchProc = HasMatch(itemData.processingProfs)
         return isMaker and matchProc
     end
@@ -142,8 +130,11 @@ local function MakeInteractive(frame, itemIDs, groupKey)
     frame:SetScript("OnEnter", function(self)
         if ProfessionsHelper.db.profile.locked then
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            local id = itemIDs[1]
-            if id then GameTooltip:SetItemByID(id) end
+            if frame.catID == 5 then
+                GameTooltip:SetSpellByID(itemIDs[1])
+            else
+                GameTooltip:SetItemByID(itemIDs[1])
+            end
             GameTooltip:Show()
         end
     end)
@@ -306,6 +297,113 @@ function Visuals:CreateFishingIcon(parent, ids, x, y)
     MakeInteractive(frame, ids); return frame
 end
 
+local function FormatTime(seconds)
+    if seconds <= 0 then return "" end
+    if seconds < 60 then
+        return math.ceil(seconds) .. "s"
+    elseif seconds < 3600 then
+        return math.ceil(seconds / 60) .. "m"
+    else
+        return math.ceil(seconds / 3600) .. "h"
+    end
+end
+
+function Visuals:CreateSkillIcon(parent, spellID, x, y)
+    local frame = CreateFrame("Frame", nil, UIParent) 
+    frame:SetFrameStrata("MEDIUM")
+    frame.catID = 5
+    frame:SetSize(40, 40)
+    frame:SetPoint("CENTER", UIParent, "CENTER", x or 0, y or -100)
+
+    local config = {
+        showShadow = false,
+        timerColor = {r = 1, g = 0.8, b = 0},
+        chargeColor = {r = 1, g = 1, b = 1}
+    }
+
+    local icon = frame:CreateTexture(nil, "ARTWORK")
+    icon:SetAllPoints()
+    icon:SetTexture(C_Spell.GetSpellTexture(spellID) or "Interface\\Icons\\INV_Misc_QuestionMark")
+
+    local cd = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+    cd:SetAllPoints()
+    cd:SetHideCountdownNumbers(true) 
+    if not config.showShadow then cd:SetAlpha(0) end
+
+    local chargeText = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+    chargeText:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+    chargeText:SetTextColor(config.chargeColor.r, config.chargeColor.g, config.chargeColor.b)
+
+    local timerText = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+    timerText:SetPoint("CENTER", frame, "CENTER", 0, 0)
+    timerText:SetTextColor(config.timerColor.r, config.timerColor.g, config.timerColor.b)
+
+    local function Update()
+        local chargeInfo = C_Spell.GetSpellCharges(spellID)
+        
+        if chargeInfo then
+            local cur = chargeInfo.currentCharges
+            local max = chargeInfo.maxCharges
+            local start = chargeInfo.cooldownStartTime
+            local duration = chargeInfo.cooldownDuration
+
+            -- 1. Ladungen setzen
+            chargeText:SetText(cur > 0 and cur or "|cFFFF00000|r") 
+            
+            -- 2. Timer setzen
+            if cur < max and start > 0 and duration > 0 then
+                local remain = (start + duration) - GetTime()
+                timerText:SetText(FormatTime(remain))
+                cd:SetCooldown(start, duration)
+            else
+                timerText:SetText("")
+                cd:Clear()
+            end
+
+            -- 3. Optisches Feedback (Nur einmal prüfen)
+            if cur == 0 then
+                icon:SetDesaturated(true)
+                frame:SetAlpha(0.7)
+            else
+                icon:SetDesaturated(false)
+                frame:SetAlpha(1.0)
+            end
+        else
+            -- Fallback normaler Cooldown (z.B. wenn der Skill keine Ladungen hat)
+            local cdInfo = C_Spell.GetSpellCooldown(spellID)
+            local start = cdInfo and cdInfo.startTime or 0
+            local duration = cdInfo and cdInfo.duration or 0
+            
+            chargeText:SetText("")
+            if start > 0 and duration > 0 then
+                local remain = (start + duration) - GetTime()
+                timerText:SetText(FormatTime(remain)) -- Auch hier FormatTime nutzen!
+                cd:SetCooldown(start, duration)
+                icon:SetDesaturated(true)
+            else
+                timerText:SetText("")
+                cd:Clear()
+                icon:SetDesaturated(false)
+            end
+        end
+    end
+
+    frame:RegisterUnitEvent("UNIT_AURA", "player")
+    frame:RegisterEvent("SPELL_UPDATE_CHARGES")
+    frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+    
+    frame:SetScript("OnEvent", Update)
+    frame:SetScript("OnUpdate", function(self, elapsed)
+        self.timer = (self.timer or 0) + elapsed
+        if self.timer > 0.1 then Update(); self.timer = 0 end
+    end)
+
+    Update()
+    if type(MakeInteractive) == "function" then MakeInteractive(frame, {spellID}) end
+    table.insert(Visuals.ActiveFrames, frame)
+    return frame
+end
+
 -- ==========================================
 -- 5. INITIALISIERUNG (INIT)
 -- ==========================================
@@ -317,7 +415,7 @@ function Visuals:Init()
     local mapID = C_Map.GetBestMapForUnit("player")
     if not mapID or not ProfessionsHelperData then return end
 
-    local buckets = { [1] = {}, [2] = {}, [3] = {}, [4] = {} }
+    local buckets = { [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {} }
 
     for expName, expData in pairs(ProfessionsHelperData) do
         local isCurrentExp, isInCity = false, false
@@ -333,35 +431,30 @@ function Visuals:Init()
             end
         end
 
-        for catName, items in pairs(expData) do
+        for catName, subCatData in pairs(expData) do
             if catName ~= "Config" then
-                for itemName, itemData in pairs(items) do
+                for itemName, itemData in pairs(subCatData) do
                     if CanPlayerSeeItem(catName, itemData) then
                         local cat = tonumber(itemData.displayCategory) or 0
                         local showItem = false
                         
                         if catName == "Wood" then showItem = true 
-                        elseif (cat == 1 or cat == 4) and isCurrentExp then showItem = true 
+                        elseif (cat == 1 or cat == 5) and isCurrentExp then showItem = true 
+                        elseif (cat == 4) and isCurrentExp then showItem = true 
                         elseif (cat == 2 or cat == 3) and isInCity then showItem = true end
 
                         if showItem and buckets[cat] then
                             local settings = ProfessionsHelper.db.profile.catSettings[cat]
                             if settings and settings.enabled then
-                                -- KORREKTUR: Finde den passenden Berufsnamen für die Reihe
                                 local displayProf = "Other"
-                                if type(itemData.gatheringProf) == "table" then
-                                    for _, p in ipairs(itemData.gatheringProf) do
-                                        if PlayerCanHandle[p] then displayProf = p break end
-                                    end
-                                elseif type(itemData.gatheringProf) == "string" then
-                                    displayProf = itemData.gatheringProf
+                                local pData = itemData.gatheringProf or itemData.processingProfs
+                                if type(pData) == "table" then
+                                    for _, p in ipairs(pData) do if PlayerCanHandle[p] then displayProf = p break end end
+                                elseif type(pData) == "string" then
+                                    displayProf = pData
                                 end
                                 
-                                table.insert(buckets[cat], { 
-                                    name = itemName, 
-                                    data = itemData, 
-                                    prof = displayProf 
-                                })
+                                table.insert(buckets[cat], { name = itemName, data = itemData, prof = displayProf })
                             end
                         end
                     end
@@ -373,7 +466,7 @@ function Visuals:Init()
     local function AddToUI(f) if f then table.insert(self.ActiveFrames, f) end end
     local function HandleWrap(curX, startX, width) return (curX - startX) > width end
 
-    -- 1. Balken
+    -- Rendering Cat 1
     local pos1 = ProfessionsHelper.db.profile.positions[1] or {x = -450, y = 150}
     local bX, bY = pos1.x, pos1.y
     local bStartX = bX
@@ -385,17 +478,17 @@ function Visuals:Init()
         bX = bX + self.Config.SpacingX_Bar
     end
 
-    -- 2. Prof-Icons
+    -- Rendering Cat 3
     local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
-    local pX, pY = pos3.x, pos3.y
     if ProfessionsHelper.db.profile.catSettings[3].enabled then
+        local pX, pY = pos3.x, pos3.y
         for _, item in ipairs(buckets[3]) do
             AddToUI(self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY))
             pX = pX + self.Config.SpacingX_Prof
         end
     end
 
-    -- 3. Mat-Icons
+    -- Rendering Cat 2
     if ProfessionsHelper.db.profile.catSettings[2].enabled then
         local profGroups = {}
         for _, item in ipairs(buckets[2]) do
@@ -416,15 +509,27 @@ function Visuals:Init()
         end
     end
 
-    -- 4. Fishing
+    -- Rendering Cat 4
     local pos4 = ProfessionsHelper.db.profile.positions[4] or {x = -300, y = 400}
-    local fX, fY = pos4.x, pos4.y
-    local fStartX = fX
     if ProfessionsHelper.db.profile.catSettings[4].enabled then
+        local fX, fY = pos4.x, pos4.y
+        local fStartX = fX
         for _, item in ipairs(buckets[4]) do
             if HandleWrap(fX, fStartX, self.Config.MaxWidthFish) then fX = fStartX; fY = fY - self.Config.RowHeight end
             AddToUI(self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY))
             fX = fX + self.Config.SpacingX_Fish
+        end
+    end
+
+    -- Rendering Cat 5 (Skills)
+    local pos5 = (ProfessionsHelper.db.profile.positions and ProfessionsHelper.db.profile.positions[5]) or {x = 0, y = -100}
+    
+    local sX, sY = pos5.x, pos5.y
+    for _, item in ipairs(buckets[5]) do
+        local spellID = item.data.spellID
+        if spellID then
+            self:CreateSkillIcon(UIParent, spellID, sX, sY)
+            sX = sX + self.Config.SpacingX_Skill
         end
     end
 end
