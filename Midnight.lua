@@ -408,3 +408,13 @@ ProfessionsHelperData["Midnight"].HouseDecor = {
     Earthen_Hospitality_Cheese_Like_Brick = { IDs = { 246709 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
     Bruffalon_Rib_Platter = { IDs = { 247225 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
 }
+
+-- ==========================================
+-- Spells of professions
+-- ==========================================
+
+ProfessionsHelperData["Midnight"].Skills = {
+    --Skinning
+    Sharpen_Knife = {spellID = 440977, IDs = { 440977 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }},
+    Carve_Meat = {spellID = 442615, IDs = { 442615 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }},
+}

@@ -369,7 +369,6 @@ function Visuals:CreateSkillIcon(parent, spellID, x, y)
                 frame:SetAlpha(1.0)
             end
         else
-            -- Fallback normaler Cooldown (z.B. wenn der Skill keine Ladungen hat)
             local cdInfo = C_Spell.GetSpellCooldown(spellID)
             local start = cdInfo and cdInfo.startTime or 0
             local duration = cdInfo and cdInfo.duration or 0

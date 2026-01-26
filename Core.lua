@@ -7,7 +7,6 @@ ProfessionsHelper = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME, "AceConsole-3.0
 ProfessionsHelper.modules = ProfessionsHelper.modules or {}
 
 -- 2. Standardwerte für die Datenbank (Defaults)
--- Wenn ein Spieler das Addon neu installiert, werden diese Werte genutzt.
 local defaults = {
     profile = {
         locked = false,
