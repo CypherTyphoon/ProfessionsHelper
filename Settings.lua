@@ -41,9 +41,19 @@ function PH:SetupOptions()
 
     -- 2. Dynamische Erstellung der Kategorien
     for id, data in pairs(PH.db.profile.catSettings) do
+        -- FIX: Sicherstellen, dass der Name niemals nil ist (verhindert den AceConfig-Fehler)
+        local categoryName = data.name
+        if not categoryName or categoryName == "" then
+            if id == 5 then 
+                categoryName = "Berufs-Skills" 
+            else 
+                categoryName = "Kategorie " .. id 
+            end
+        end
+
         options.args.categories.args["cat" .. id] = {
             type = "group",
-            name = data.name,
+            name = categoryName,
             order = id,
             args = {
                 enabled = {
@@ -64,11 +74,12 @@ function PH:SetupOptions()
                     set = function(info, val) 
                         PH.db.profile.catSettings[id].scale = val 
                         local Visuals = PH:GetModule("Visuals")
+                        -- Live-Skalierung für alle aktiven Frames dieser Kategorie
                         for _, frame in ipairs(Visuals.ActiveFrames) do
                             if frame.catID == id then frame:SetScale(val) end
                         end
                     end,
-                    get = function(info) return PH.db.profile.catSettings[id].scale end,
+                    get = function(info) return PH.db.profile.catSettings[id].scale or 1 end,
                 },
 
                 -- Spezifische Einstellung für Angeln (Kat 4)
@@ -84,7 +95,7 @@ function PH:SetupOptions()
                     end,
                 } or nil,
                 
-                -- BALKEN EINSTELLUNGEN (Nur Kat 1) - WIEDER VOLLSTÄNDIG
+                -- BALKEN EINSTELLUNGEN (Nur Kat 1)
                 barHeader = (id == 1) and { name = "Balken-Design", type = "header", order = 10 } or nil,
                 growUp = (id == 1) and {
                     name = "Von unten nach oben füllen",
@@ -156,7 +167,7 @@ function PH:SetupOptions()
                     get = function() local c = PH.db.profile.catSettings[1].backgroundColor; return c.r, c.g, c.b, c.a end,
                 } or nil,
 
-                -- POSITIONIERUNG (ENTFERNT FÜR KAT 2)
+                -- POSITIONIERUNG (ENTFERNT FÜR KAT 2, da diese eigene Profile hat)
                 posHeader = (id ~= 2) and { name = "Positionierung", type = "header", order = 100 } or nil,
                 posX = (id ~= 2) and {
                     name = "Position X", type = "range", order = 101, min = -2000, max = 2000, step = 1,

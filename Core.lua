@@ -24,7 +24,7 @@ local defaults = {
             [2] = { scale = 1.0, enabled = true, name = "Icons (Materialien)" }, -- Text kommt aus profSubSettings
             [3] = { scale = 1.0, enabled = true, name = "Berufs-Icons" },        -- KEIN Text vorgesehen
             [4] = { scale = 1.0, enabled = true, name = "Angeln", textAlign = "BOTTOM" }, -- Nur Position für Angeln
-            [5] = { scale = 1.0, enabled = true},
+            [5] = { scale = 1.0, enabled = true, name = "Berufs-Sklills"},
         },
         enabledExpansions = {
             ["TWW"] = true,
