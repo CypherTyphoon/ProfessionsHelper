@@ -88,7 +88,7 @@ ProfessionsHelperData["The War Within"].MetalAndStone = {
 -- ==========================================
 ProfessionsHelperData["The War Within"].Cloth = {
     -- Priority 1: Drop (Gathering)
-    AlgariFowlfeather = { IDs = { 225570 }, sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    AlgariFowlfeather = { IDs = { 225570 }, sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 2 },
     Duskweave = { IDs = { 224824, 228233, 228234 }, color = "#7B12FF", gradient_End_color = "#8F85D1", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     Dawnweave = { IDs = { 224826, 228235, 228236 }, color = "#D1833F", gradient_End_color = "#FFFF00", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     Weavercloth = { IDs = { 224828, 228231, 228232 }, color = "#C69052", gradient_End_color = "#FFFF00", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Alchemy" }, displayCategory = 1 },
@@ -138,10 +138,10 @@ ProfessionsHelperData["The War Within"].FinishingReagents = {
 ProfessionsHelperData["The War Within"].Inscription = {
     -- Priority 1: Vendor / Crafted (Pigments)
     Distilled_Algari_Freshwater = { IDs = { 226205 }, sources = { "Vendor" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 2 },
-    Blossom_Pigment = { IDs = { 224803, 224804, 224805 }, color = "#D53026", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 2 },
-    Luredrop_Pigment = { IDs = { 222612, 222613, 222614 }, color = "#F29134", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 2 },
-    Nacreous_Pigment = { IDs = { 222618, 222619, 222620 }, color = "#B84945", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 2 },
-    Orbinid_Pigment = { IDs = { 224800, 224801, 224802 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 2 },
+    Blossom_Pigment = { IDs = { 224803, 224804, 224805 }, color = "#D53026", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
+    Luredrop_Pigment = { IDs = { 222612, 222613, 222614 }, color = "#F29134", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
+    Nacreous_Pigment = { IDs = { 222618, 222619, 222620 }, color = "#B84945", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
+    Orbinid_Pigment = { IDs = { 224800, 224801, 224802 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
     -- Priority 2: Crafted (Inks)
     Shadow_Ink = { IDs = { 222609, 222610, 222611 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
     Apricate_Ink = { IDs = { 222615, 222616, 222617 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Tailoring" }, displayCategory = 3 },

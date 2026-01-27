@@ -21,27 +21,39 @@ local defaults = {
                 showBackground = true,
                 backgroundColor = {r=0, g=0, b=0, a=0.5}
             },
-            [2] = { scale = 1.0, enabled = true, name = "Icons (Materialien)" }, -- Text kommt aus profSubSettings
-            [3] = { scale = 1.0, enabled = true, name = "Berufs-Icons" },        -- KEIN Text vorgesehen
-            [4] = { scale = 1.0, enabled = true, name = "Angeln", textAlign = "BOTTOM" }, -- Nur Position für Angeln
-            [5] = { scale = 1.0, enabled = true, name = "Berufs-Sklills"},
+            [2] = { scale = 1.0, enabled = true, name = "Icons (Materialien)" },
+            [3] = { scale = 1.0, enabled = true, name = "Berufs-Icons" },
+            [4] = { scale = 1.0, enabled = true, name = "Angeln", textAlign = "BOTTOM" },
+            [5] = { scale = 1.0, enabled = true, name = "Berufs-Skills"},
         },
-        enabledExpansions = {
-            ["TWW"] = true,
-            ["Midnight"] = true,
+        
+        -- NEU: Individuelle Balken-Settings pro Beruf
+        barSettings = {
+            ["Mining"]      = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
+            ["Herbalism"]   = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
+            ["Skinning"]    = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
+            ["Inscription"] = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
+            ["Tailoring"]   = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
+            ["Other"]       = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
         },
-        enabledResources = {
-            ["Ore"] = true,
-            ["Herbs"] = true,
-        },
+
+        enabledExpansions = { ["TWW"] = true, ["Midnight"] = true },
+        enabledResources = { ["Ore"] = true, ["Herbs"] = true },
+
         positions = {
             [1] = { x = -450, y = 150 },
             [2] = { x = -450, y = 100 },
             [3] = { x = -450, y = 50 },
             [4] = { x = -300, y = 400 },
             [5] = { x = 0, y = -100 },
+            -- NEU: Startpositionen für die Berufs-Balken-Gruppen
+            ["Mining_Bar"]      = { x = -450, y = 150 },
+            ["Herbalism_Bar"]   = { x = -400, y = 150 },
+            ["Skinning_Bar"]    = { x = -350, y = 150 },
+            ["Inscription_Bar"] = { x = -300, y = 150 },
+            ["Tailoring_Bar"]   = { x = -250, y = 150 },
         },
-        -- Diese Settings gelten NUR für die Materialien (Kat 2)
+
         profSubSettings = {
             ["Mining"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
             ["Herbalism"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },

@@ -145,78 +145,146 @@ end
 -- 4. RENDERING FUNKTIONEN
 -- ==========================================
 
-function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor)
-    local settings = ProfessionsHelper.db.profile.catSettings[1]
+function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSettings, profName)
+    -- 1. Einstellungs-Priorität festlegen
+    local settings = customSettings or ProfessionsHelper.db.profile.catSettings[1]
+    
     local isGrowUp = settings.growUp
-    local barW, barH = settings.width or 30, settings.height or 100
+    local barW = settings.width or 30
+    local barH = settings.height or 100
     local fSize = settings.fontSize or 10
 
+    -- 2. Frame-Erstellung
     local frame = CreateFrame("Frame", "PH_Bar_"..name, parent, "BackdropTemplate")
     frame.catID = 1
+    frame.profName = profName
+    
+    -- Der Frame muss so groß sein wie der Balken + das Icon + ein kleiner Puffer
     frame:SetSize(barW, barH + barW + 5) 
     frame:SetPoint("CENTER", UIParent, "CENTER", posX, posY)
     frame:SetScale(settings.scale or 1)
     
+    -- Hintergrund (optional)
     if settings.showBackground then
         local bg = settings.backgroundColor or {r=0, g=0, b=0, a=0.5}
         frame:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground"})
         frame:SetBackdropColor(bg.r, bg.g, bg.b, bg.a)
     end
     
+    -- 3. Die Statusbar
     local bar = CreateFrame("StatusBar", nil, frame)
     bar:SetSize(barW, barH)
     bar:SetStatusBarTexture(LSM:Fetch("statusbar", settings.barTexture or "Cilo"))
-    bar:SetStatusBarColor(unpack(barColor))
+    
+    -- FARB-LOGIK: Prüfen, ob wir einen Gradienten haben (6 Werte) oder Uni-Farbe (3 Werte)
+    if #barColor >= 6 then
+        -- Wir färben die Textur der Bar mit einem vertikalen Gradienten
+        local tex = bar:GetStatusBarTexture()
+        tex:SetGradient("VERTICAL", 
+            CreateColor(barColor[1], barColor[2], barColor[3], 1), -- Start (Unten)
+            CreateColor(barColor[4], barColor[5], barColor[6], 1)  -- Ende (Oben)
+        )
+    else
+        -- Normale Uni-Farbe
+        bar:SetStatusBarColor(barColor[1], barColor[2], barColor[3])
+    end
     
     local barBg = bar:CreateTexture(nil, "BACKGROUND")
     barBg:SetAllPoints(); barBg:SetColorTexture(0.1, 0.1, 0.1, 0.6)
 
+    -- 4. Das Icon
     local icon = frame:CreateTexture(nil, "ARTWORK")
     icon:SetSize(barW, barW)
     
+    -- Ausrichtung (GrowUp = Balken über Icon, sonst Icon über Balken)
     if isGrowUp then
-        bar:SetOrientation("VERTICAL"); bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, barW + 2)
+        bar:SetOrientation("VERTICAL")
+        bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, barW + 2)
         icon:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
     else
-        bar:SetOrientation("VERTICAL"); bar:SetReverseFill(true); bar:SetPoint("TOP", frame, "TOP", 0, -(barW + 2))
+        bar:SetOrientation("VERTICAL")
+        bar:SetReverseFill(true)
+        bar:SetPoint("TOP", frame, "TOP", 0, -(barW + 2))
         icon:SetPoint("TOP", frame, "TOP", 0, 0)
     end
     
-    local function CreateCenteredText(offsetY, colorKey)
-        local t = bar:CreateFontString(nil, "OVERLAY")
-        t:SetFont(LSM:Fetch("font", settings.fontName or "Friz Quadrata TT"), fSize, "OUTLINE")
-        local c = settings[colorKey] or {r=1, g=1, b=1}
+    -- 5. Texte (Zahlen auf dem Balken)
+    local textOverlay = CreateFrame("Frame", nil, frame)
+    textOverlay:SetAllPoints(bar)
+    textOverlay:SetFrameLevel(bar:GetFrameLevel() + 10) -- Setzt den Text weit vor die Bar
+
+    local function CreateCenteredText(colorKey)
+        -- Parent ist jetzt textOverlay statt frame
+        local t = textOverlay:CreateFontString(nil, "OVERLAY", nil, 7)
+        
+        local fontPath = LSM:Fetch("font", settings.fontName or "Friz Quadrata TT")
+        if not fontPath or fontPath == "" then fontPath = "Fonts\\FRIZQT__.TTF" end
+        
+        t:SetFont(fontPath, fSize, "OUTLINE")
+        
+        -- Schatten für maximale Lesbarkeit
+        t:SetShadowOffset(1, -1)
+        t:SetShadowColor(0, 0, 0, 1)
+
+        local c = settings[colorKey] or (ProfessionsHelper.db.profile.catSettings[1] and ProfessionsHelper.db.profile.catSettings[1][colorKey]) or {r=1, g=1, b=1}
         t:SetTextColor(c.r, c.g, c.b)
-        t:SetPoint("CENTER", bar, "CENTER", 0, offsetY)
+        
+        t:SetJustifyH("CENTER")
+        t:SetWidth(barW + 10)
+        
         return t
     end
 
-    local tB = CreateCenteredText(15, "colorQ1")
-    local tS = CreateCenteredText(0, "colorQ2")
-    local tG = CreateCenteredText(-15, "colorQ3")
+    local tB = CreateCenteredText("colorQ1")
+    local tS = CreateCenteredText("colorQ2")
+    local tG = CreateCenteredText("colorQ3")
 
+    -- 6. Update-Logik
     local function Update()
-        local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
-        local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
-        local g = C_Item.GetItemCount(itemIDs[3] or 0, true, true, true, true)
-        
-        if not itemIDs[3] then 
-            tB:SetPoint("CENTER", bar, "CENTER", 0, 10); tS:SetPoint("CENTER", bar, "CENTER", 0, -10)
-            tG:Hide(); tB:SetText(b > 0 and b or ""); tS:SetText(s > 0 and s or "")
-        else 
-            tB:SetPoint("CENTER", bar, "CENTER", 0, 15); tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
-            tG:Show(); tB:SetText(b > 0 and b or ""); tS:SetText(s > 0 and s or ""); tG:SetText(g > 0 and g or "")
-        end
+            local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
+            local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
+            local g = C_Item.GetItemCount(itemIDs[3] or 0, true, true, true, true)
+            
+            -- Positionierung basierend auf deiner Vorgabe
+            if not itemIDs[3] then 
+                -- Fall: Nur 2 Qualitäten (z.B. Fisch, Stoffe ohne Q3)
+                -- Qualität 1 = +8 (Bronze/Silber Position)
+                -- Qualität 2 = -8 (Silber/Gold Position)
+                tB:SetPoint("CENTER", bar, "CENTER", 0, 8)
+                tS:SetPoint("CENTER", bar, "CENTER", 0, -8)
+                tG:Hide()
+            else 
+                -- Fall: 3 Qualitäten (Klassisch Erze/Kräuter)
+                -- Bronze = +15, Silber = 0, Gold = -15
+                tB:SetPoint("CENTER", bar, "CENTER", 0, 15)
+                tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
+                tG:SetPoint("CENTER", bar, "CENTER", 0, -15)
+                tG:Show()
+            end
 
-        local total = b + s + g
-        bar:SetMinMaxValues(0, 1000); bar:SetValue(total)
-        local dID = (g > 0 and itemIDs[3]) or (s > 0 and itemIDs[2]) or itemIDs[1]
-        if dID then icon:SetTexture(C_Item.GetItemIconByID(dID)) end
-        frame:SetAlpha(total == 0 and 0.4 or 1.0)
-    end
+            -- Texte setzen (nur anzeigen wenn > 0)
+            tB:SetText(b > 0 and b or "")
+            tS:SetText(s > 0 and s or "")
+            tG:SetText(g > 0 and g or "")
+
+            local total = b + s + g
+            bar:SetMinMaxValues(0, 1000)
+            bar:SetValue(total)
+            
+            local dID = (g > 0 and itemIDs[3]) or (s > 0 and itemIDs[2]) or itemIDs[1]
+            if dID then icon:SetTexture(C_Item.GetItemIconByID(dID)) end
+            frame:SetAlpha(total == 0 and 0.4 or 1.0)
+        end
     
-    frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
-    MakeInteractive(frame, itemIDs); return frame
+    frame:RegisterEvent("BAG_UPDATE_DELAYED")
+    frame:SetScript("OnEvent", Update)
+    Update()
+
+    -- WICHTIG: Speicher-Key für Drag&Drop
+    local storageKey = profName and (profName .. "_Bar") or 1
+    MakeInteractive(frame, itemIDs, storageKey) 
+    
+    return frame
 end
 
 function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
@@ -512,17 +580,50 @@ function Visuals:Init()
     local function AddToUI(f) if f then table.insert(self.ActiveFrames, f) end end
     local function HandleWrap(curX, startX, width) return (curX - startX) > width end
 
-    -- Rendering Cat 1
-    local pos1 = ProfessionsHelper.db.profile.positions[1] or {x = -450, y = 150}
-    local bX, bY = pos1.x, pos1.y
-    local bStartX = bX
+-- Rendering Cat 1 (Balken)
+if ProfessionsHelper.db.profile.catSettings[1].enabled then
+    local barGroups = {}
     for _, item in ipairs(buckets[1]) do
-        if HandleWrap(bX, bStartX, self.Config.MaxWidthMain) then bX = bStartX; bY = bY - self.Config.RowHeight end
-        local hex = (item.data.color or "#FFFFFF"):gsub("#","")
-        local r,g,b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
-        AddToUI(self:CreateBar(item.name, UIParent, item.data.IDs, bX, bY, {r,g,b}))
-        bX = bX + self.Config.SpacingX_Bar
+        local p = item.prof or "Other"
+        barGroups[p] = barGroups[p] or {}
+        table.insert(barGroups[p], item)
     end
+
+    for prof, items in pairs(barGroups) do
+        -- Sicherheits-Check: Falls barSettings[prof] nil ist, nimm Cat 1 Defaults
+        local cSettings = (ProfessionsHelper.db.profile.barSettings and ProfessionsHelper.db.profile.barSettings[prof]) 
+        or ProfessionsHelper.db.profile.catSettings[1]
+        
+        -- Falls der Beruf deaktiviert wurde, überspringen
+        if cSettings.enabled ~= false then
+            local pos = ProfessionsHelper.db.profile.positions[prof .. "_Bar"] or {x = -450, y = 150}
+            local bX, bY = pos.x, pos.y
+            
+            for _, item in ipairs(items) do
+                -- Hauptfarbe umrechnen
+                local hex = (item.data.color or "#FFFFFF"):gsub("#","")
+                local r, g, b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
+                
+                -- NEU: Gradient-Endfarbe umrechnen (falls vorhanden)
+                local barColors = { r, g, b }
+                if item.data.gradient_End_color then
+                    local gHex = item.data.gradient_End_color:gsub("#","")
+                    local gr, gg, gb = tonumber(gHex:sub(1,2),16)/255, tonumber(gHex:sub(3,4),16)/255, tonumber(gHex:sub(5,6),16)/255
+                    table.insert(barColors, gr)
+                    table.insert(barColors, gg)
+                    table.insert(barColors, gb)
+                end
+
+                -- Erstellen des Balkens
+                AddToUI(self:CreateBar(item.name, UIParent, item.data.IDs, bX, bY, barColors, cSettings, prof))
+                
+                -- Dynamischer Abstand basierend auf der Breite des Balkens + kleiner Puffer
+                local spacing = (cSettings and cSettings.width and (cSettings.width + 8)) or self.Config.SpacingX_Bar
+                bX = bX + spacing
+            end
+        end
+    end
+end
 
     -- Rendering Cat 3
     local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
