@@ -315,6 +315,9 @@ function Visuals:CreateSkillIcon(parent, spellID, x, y)
     frame:SetSize(40, 40)
     frame:SetPoint("CENTER", UIParent, "CENTER", x or 0, y or -100)
 
+    -- Tresor mit echten Zahlen initialisieren (niemals nil oder secret)
+    frame.internal = { cur = 0, max = 1, start = 0, duration = 0 }
+
     local config = {
         showShadow = false,
         timerColor = {r = 1, g = 0.8, b = 0},
@@ -338,68 +341,112 @@ function Visuals:CreateSkillIcon(parent, spellID, x, y)
     timerText:SetPoint("CENTER", frame, "CENTER", 0, 0)
     timerText:SetTextColor(config.timerColor.r, config.timerColor.g, config.timerColor.b)
 
-    local function Update()
-        local chargeInfo = C_Spell.GetSpellCharges(spellID)
+    -- Teil 1: Der "Safe" Abgleich (Nur in der Stadt erlaubt)
+    local function RefreshData(force)
+        if InCombatLockdown() then return end
+
+        local mapID = C_Map.GetBestMapForUnit("player")
+        local isInCity = false
         
-        if chargeInfo then
-            local cur = chargeInfo.currentCharges
-            local max = chargeInfo.maxCharges
-            local start = chargeInfo.cooldownStartTime
-            local duration = chargeInfo.cooldownDuration
-
-            -- 1. Ladungen setzen
-            chargeText:SetText(cur > 0 and cur or "|cFFFF00000|r") 
-            
-            -- 2. Timer setzen
-            if cur < max and start > 0 and duration > 0 then
-                local remain = (start + duration) - GetTime()
-                timerText:SetText(FormatTime(remain))
-                cd:SetCooldown(start, duration)
-            else
-                timerText:SetText("")
-                cd:Clear()
-            end
-
-            -- 3. Optisches Feedback (Nur einmal prüfen)
-            if cur == 0 then
-                icon:SetDesaturated(true)
-                frame:SetAlpha(0.7)
-            else
-                icon:SetDesaturated(false)
-                frame:SetAlpha(1.0)
-            end
-        else
-            local cdInfo = C_Spell.GetSpellCooldown(spellID)
-            local start = cdInfo and cdInfo.startTime or 0
-            local duration = cdInfo and cdInfo.duration or 0
-            
-            chargeText:SetText("")
-            if start > 0 and duration > 0 then
-                local remain = (start + duration) - GetTime()
-                timerText:SetText(FormatTime(remain)) -- Auch hier FormatTime nutzen!
-                cd:SetCooldown(start, duration)
-                icon:SetDesaturated(true)
-            else
-                timerText:SetText("")
-                cd:Clear()
-                icon:SetDesaturated(false)
+        -- Stadt-Prüfung
+        if ProfessionsHelperData then
+            for _, expData in pairs(ProfessionsHelperData) do
+                if expData.Config and expData.Config.CityMapIDs and expData.Config.CityMapIDs[mapID] then
+                    isInCity = true
+                    break
+                end
             end
         end
+
+        -- "Time-Safe"
+        if not isInCity and not force then return end
+
+        pcall(function()
+            local info = C_Spell.GetSpellCharges(spellID)
+            if info and type(info.currentCharges) == "number" then
+                -- Tresor füllen
+                frame.internal.cur = info.currentCharges
+                frame.internal.max = info.maxCharges or 1
+                
+                -- Nur wenn wir laden, speichern wir die Zeiten
+                if info.currentCharges < (info.maxCharges or 1) then
+                    frame.internal.start = info.cooldownStartTime or 0
+                    frame.internal.duration = info.cooldownDuration or 0
+                    frame.internal.modRate = info.chargeModRate or 1
+                else
+                    frame.internal.start = 0
+                    frame.internal.duration = 0
+                    frame.internal.modRate = 1
+                end
+            end
+        end)
     end
 
-    frame:RegisterUnitEvent("UNIT_AURA", "player")
+    local function UpdateUI()
+        local data = frame.internal
+        local now = GetTime()
+        
+        -- Berechnung mit ModRate (wichtig für TWW Berufs-Boni!)
+        local remain = 0
+        if data.start > 0 and data.duration > 0 then
+            -- Formel: (Start + Dauer - Jetzt) / Rate
+            remain = ((data.start + data.duration) - now)
+            if data.modRate > 0 then
+                remain = remain / data.modRate
+            end
+        end
+
+        chargeText:SetText(data.cur > 0 and data.cur or "|cFFFF00000|r") 
+        
+        -- Wenn remain negativ ist oder sehr klein, ist die Ladung fertig
+        if remain > 0.1 then
+            timerText:SetText(FormatTime(remain))
+            local cdStart, cdDur = cd:GetCooldownTimes()
+            if math.abs((cdStart/1000) - data.start) > 0.5 then
+                cd:SetCooldown(data.start, data.duration)
+            end
+        else
+            timerText:SetText("")
+            -- Interner Auto-Refresh falls Zeit um ist aber API noch nicht "in der Stadt" war
+            if data.cur < data.max and data.start > 0 then
+                data.cur = data.cur + 1
+                data.start = 0
+                cd:Clear()
+            end
+        end
+
+        icon:SetDesaturated(data.cur == 0)
+        frame:SetAlpha(data.cur == 0 and 0.7 or 1.0)
+    end
+
+    -- Events
     frame:RegisterEvent("SPELL_UPDATE_CHARGES")
     frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+    frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     
-    frame:SetScript("OnEvent", Update)
-    frame:SetScript("OnUpdate", function(self, elapsed)
-        self.timer = (self.timer or 0) + elapsed
-        if self.timer > 0.1 then Update(); self.timer = 0 end
+    frame:SetScript("OnEvent", function()
+        RefreshData()
+        UpdateUI()
     end)
 
-    Update()
+frame:SetScript("OnUpdate", function(self, elapsed)
+        self.timer = (self.timer or 0) + elapsed
+        if self.timer > 0.1 then 
+            -- Wir versuchen Daten zu holen (geht nur in der Stadt/außerhalb Kampf)
+            RefreshData() 
+            
+            -- ABER: Wir updaten die UI IMMER, egal wo wir sind.
+            -- Die UI nimmt einfach das, was aktuell im Tresor liegt.
+            UpdateUI()
+            
+            self.timer = 0 
+        end
+    end)
+
+    RefreshData(true)
+    UpdateUI()
+
     if type(MakeInteractive) == "function" then MakeInteractive(frame, {spellID}) end
-    table.insert(Visuals.ActiveFrames, frame)
     return frame
 end
 
@@ -487,20 +534,34 @@ function Visuals:Init()
         end
     end
 
-    -- Rendering Cat 2
+-- Rendering Cat 2
     if ProfessionsHelper.db.profile.catSettings[2].enabled then
         local profGroups = {}
         for _, item in ipairs(buckets[2]) do
             profGroups[item.prof] = profGroups[item.prof] or {}
             table.insert(profGroups[item.prof], item)
         end
+        
         for prof, items in pairs(profGroups) do
+            -- NEU: Sortierung innerhalb der Berufsgruppe nach Expansion-ID
+            table.sort(items, function(a, b)
+                local expA = a.data.expID or 0
+                local expB = b.data.expID or 0
+                if expA ~= expB then
+                    return expA < expB
+                else
+                    return a.name < b.name -- Alphabetisch bei gleicher Expansion
+                end
+            end)
+
             local pSettings = ProfessionsHelper.db.profile.profSubSettings[prof] or { enabled = true }
             if pSettings.enabled then
                 local defaultY = 100
                 if prof == "Herbalism" then defaultY = 130 elseif prof == "Skinning" then defaultY = 70 end
                 local pos = ProfessionsHelper.db.profile.positions[prof] or {x = -450, y = defaultY}
+                
                 for i, item in ipairs(items) do
+                    -- Durch die Sortierung oben ist 'i' jetzt in der richtigen ExpID-Reihenfolge
                     local iconX = pos.x + ((i-1) * self.Config.SpacingX_Icon)
                     AddToUI(self:CreateMaterialIcon(UIParent, item.data.IDs, iconX, pos.y, prof))
                 end
@@ -520,15 +581,20 @@ function Visuals:Init()
         end
     end
 
-    -- Rendering Cat 5 (Skills)
+-- Rendering Cat 5 (Skills)
     local pos5 = (ProfessionsHelper.db.profile.positions and ProfessionsHelper.db.profile.positions[5]) or {x = 0, y = -100}
     
     local sX, sY = pos5.x, pos5.y
+    -- NEU: Ein lokaler Cache, um doppelte SpellIDs pro Init-Durchgang zu verhindern
+    local processedSpells = {} 
+
     for _, item in ipairs(buckets[5]) do
         local spellID = item.data.spellID
-        if spellID then
-            self:CreateSkillIcon(UIParent, spellID, sX, sY)
+        -- Nur erstellen, wenn diese SpellID in diesem Durchgang noch nicht gezeichnet wurde
+        if spellID and not processedSpells[spellID] then
+            AddToUI(self:CreateSkillIcon(UIParent, spellID, sX, sY))
             sX = sX + self.Config.SpacingX_Skill
+            processedSpells[spellID] = true
         end
     end
 end
