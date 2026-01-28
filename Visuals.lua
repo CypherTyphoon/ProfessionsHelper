@@ -130,21 +130,111 @@ local function MakeInteractive(frame, itemIDs, groupKey)
     frame:SetScript("OnEnter", function(self)
         if ProfessionsHelper.db.profile.locked then
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            if frame.catID == 5 then
-                GameTooltip:SetSpellByID(itemIDs[1])
-            else
-                GameTooltip:SetItemByID(itemIDs[1])
+            
+            -- FIX: Unterscheidung zwischen Tabelle (Item) und Zahl (Spell)
+            if type(itemIDs) == "table" then
+                if frame.catID == 5 then
+                    GameTooltip:SetSpellByID(itemIDs[1])
+                else
+                    GameTooltip:SetItemByID(itemIDs[1])
+                end
+            elseif type(itemIDs) == "number" then
+                -- Wenn es eine reine Zahl ist, behandeln wir es als Spell (Experiment)
+                GameTooltip:SetSpellByID(itemIDs)
             end
+            
             GameTooltip:Show()
         end
     end)
     frame:SetScript("OnLeave", function() GameTooltip:Hide() end)
 end
 
+function Visuals:GetCraftableAmount(recipeID)
+    local db = ProfessionsHelperData["The War Within"]
+    if not db or not db.RecipeDB then return 0 end
+    
+    local recipe = db.RecipeDB[recipeID]
+    if not recipe then return 0 end
+
+    local maxPossible = 99999
+    local slots = recipe.slots or recipe 
+
+    for _, slot in ipairs(slots) do
+        if type(slot) == "table" then
+            local totalStockInSlot = 0
+            local amountNeeded = slot.amount or 1
+            
+            -- FALL A: Spezial-Gruppe (z.B. Kräuter für Experimente)
+            if slot.type == "group" and slot.key == "ExperimentHerbs" then
+                local bestSingleStack = 0
+                -- Wir gehen durch alle Kräuter in der Datenbank
+                if db.Herbs then
+                    for _, herbData in pairs(db.Herbs) do
+                        if herbData.canExperiment then
+                            for _, id in ipairs(herbData.IDs) do
+                                local count = C_Item.GetItemCount(id, true, true, true, true, true)
+                                if count > bestSingleStack then bestSingleStack = count end
+                            end
+                        end
+                    end
+                end
+                totalStockInSlot = bestSingleStack
+            
+            -- FALL B: Normale ID-Liste
+            elseif slot.ids then
+                for _, id in ipairs(slot.ids) do
+                    totalStockInSlot = totalStockInSlot + C_Item.GetItemCount(id, true, true, true, true, true)
+                end
+            end
+            
+            local possibleWithThisSlot = math.floor((totalStockInSlot / amountNeeded) + 0.0001)
+            if possibleWithThisSlot < maxPossible then
+                maxPossible = possibleWithThisSlot
+            end
+        end
+    end
+
+    return (maxPossible == 99999) and 0 or maxPossible
+end
+
+function Visuals:GetSpellStatus(spellID)
+    if not spellID then return false, nil, nil end
+    local startTime, duration, enabled = GetSpellCooldown(spellID)
+    local charges, maxCharges, chargeStart, chargeDuration = C_Spell.GetSpellCharges(spellID)
+    
+    if charges and maxCharges then
+        return (charges == 0), tostring(charges), charges
+    elseif startTime and duration > 0 then
+        local timeLeft = (startTime + duration) - GetTime()
+        if timeLeft > 0 then
+            local hours = math.ceil(timeLeft / 3600)
+            return true, hours .. "h", 0
+        end
+    end
+    return false, nil, nil
+end
+
+local function FormatTime(s)
+    if not s or s <= 0 then return "" end
+    if s < 60 then return math.floor(s) .. "s" end
+    if s < 3600 then return math.ceil(s / 60) .. "m" end
+    
+    -- Anzeige bei Stunden: 1h 30m statt nur 2h
+    if s < 86400 then 
+        local h = math.floor(s / 3600)
+        local m = math.floor((s % 3600) / 60)
+        if h < 24 then -- Bei weniger als 10 Stunden zeigen wir Minuten dazu
+            return h .. "h" .. m .. "m"
+        end
+        return h .. "h" 
+    end
+    return math.ceil(s / 86400) .. "d"
+end
 -- ==========================================
 -- 4. RENDERING FUNKTIONEN
 -- ==========================================
 
+-- Bars
 function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSettings, profName)
     -- 1. Einstellungs-Priorität festlegen
     local settings = customSettings or ProfessionsHelper.db.profile.catSettings[1]
@@ -287,6 +377,7 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     return frame
 end
 
+-- Material Icons
 function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     local frame = CreateFrame("Frame", nil, parent)
     frame.catID = 2
@@ -321,25 +412,152 @@ function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
     MakeInteractive(frame, ids, profName); return frame
 end
 
+-- Profession Icons
 function Visuals:CreateProfessionIcon(parent, ids, x, y)
+    -- 1. FRAME INITIALISIERUNG (Das hat gefehlt!)
     local frame = CreateFrame("Frame", nil, parent)
     frame.catID = 3; frame:SetSize(40, 40)
+    frame.itemID = (type(ids) == "table") and ids[1] or ids
     frame:SetScale(ProfessionsHelper.db.profile.catSettings[3].scale or 1)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+    
     local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
-    icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
-    local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
-    text:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2); text:SetTextColor(0.05, 1, 0, 1)
+    icon:SetTexture(C_Item.GetItemIconByID(frame.itemID))
+
+    -- Schriftart-Pfad
+    local fontPath = "Fonts\\FRIZQT__.TTF"
+
+    -- 2. TEXT-ELEMENTE ERSTELLEN
+    -- Bestand Oben Links (Grün) - Schriftgröße 14
+    local textStock = frame:CreateFontString(nil, "OVERLAY")
+    textStock:SetFont(fontPath, 14, "OUTLINE")
+    textStock:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+    textStock:SetTextColor(0, 1, 0)
+
+    -- Ertrag Mitte Rechts (Orange) - Näher an die Menge geschoben (Y=4)
+    local textYield = frame:CreateFontString(nil, "OVERLAY")
+    textYield:SetFont(fontPath, 12, "OUTLINE") 
+    textYield:SetPoint("RIGHT", frame, "RIGHT", -2, 4) 
+    textYield:SetTextColor(1, 0.6, 0) 
+
+    -- Machbare Menge Unten Rechts (Gelb) - Schriftgröße 14
+    local textCraft = frame:CreateFontString(nil, "OVERLAY")
+    textCraft:SetFont(fontPath, 14, "OUTLINE")
+    textCraft:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+    textCraft:SetTextColor(1, 0.82, 0)
+
     local function Update()
-        local total = 0
-        for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
-        text:SetText(total > 0 and total or "")
-        icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
+        -- Bestand berechnen (mit allen 6 Parametern)
+        local totalOwned = 0
+        if type(ids) == "table" then
+            for _, id in ipairs(ids) do 
+                totalOwned = totalOwned + C_Item.GetItemCount(id, true, true, true, true, true) 
+            end
+        else
+            totalOwned = C_Item.GetItemCount(ids, true, true, true, true, true)
+        end
+        textStock:SetText(totalOwned > 0 and totalOwned or "")
+
+        -- Yield aus RecipeDB holen
+        local db = ProfessionsHelperData["The War Within"]
+        local recipe = db.RecipeDB and db.RecipeDB[frame.itemID]
+        
+        if recipe and recipe.yield and recipe.yield > 1 then
+            textYield:SetText("+" .. recipe.yield)
+        else
+            textYield:SetText("")
+        end
+
+        -- Craftable Menge berechnen
+        local craftCount = Visuals:GetCraftableAmount(frame.itemID)
+        textCraft:SetText(craftCount > 0 and "x" .. craftCount or "")
+        
+        -- Visuelles Feedback (Sättigung/Alpha)
+        local hasAnything = (totalOwned > 0 or craftCount > 0)
+        icon:SetDesaturated(not hasAnything)
+        icon:SetAlpha(hasAnything and 1.0 or 0.4)
     end
-    frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
-    MakeInteractive(frame, ids); return frame
+
+    frame:RegisterEvent("BAG_UPDATE_DELAYED")
+    frame:SetScript("OnEvent", Update)
+    Update()
+
+    MakeInteractive(frame, ids)
+    return frame
 end
 
+function Visuals:CreateSpecialActionIcon(parent, recipeID, x, y)
+    local recipe = nil
+    if ProfessionsHelperData then
+        for _, expData in pairs(ProfessionsHelperData) do
+            if expData.RecipeDB and expData.RecipeDB[recipeID] then
+                recipe = expData.RecipeDB[recipeID]; break
+            end
+        end
+    end
+    if not recipe then return nil end
+
+    local frame = CreateFrame("Frame", nil, parent)
+    frame.catID = 3; frame:SetSize(40, 40)
+    frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+    
+    local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
+    icon:SetTexture(recipe.isSpell and C_Spell.GetSpellTexture(recipe.spellID) or C_Item.GetItemIconByID(recipeID))
+
+    local textInfo = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+    textInfo:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
+    textInfo:SetTextColor(0.4, 0.8, 1)
+
+    local textCraft = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+    textCraft:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+
+    local cd = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+    cd:SetAlpha(0) 
+
+    local function Update()
+        local craftCount = Visuals:GetCraftableAmount(recipeID)
+        local remain = 0
+
+        if recipe.isSpell then
+            local sc = C_Spell.GetSpellCooldown(recipe.spellID)
+            local ch = C_Spell.GetSpellCharges(recipe.spellID)
+
+            if ch and ch.maxCharges and ch.maxCharges > 1 then
+                textInfo:SetText(ch.currentCharges or "0")
+                if ch.currentCharges < ch.maxCharges then
+                    remain = (ch.cooldownStartTime + ch.cooldownDuration) - GetTime()
+                end
+            elseif sc and sc.startTime > 0 then
+                remain = (sc.startTime + sc.duration) - GetTime()
+            else
+                textInfo:SetText("")
+            end
+            
+            -- Fix für Millisekunden
+            if remain > 500000 then remain = remain / 1000 end
+            
+            if remain > 0.1 then 
+                textInfo:SetText(FormatTime(remain)) 
+            end
+        end
+
+        textCraft:SetText(craftCount > 0 and "x"..craftCount or "")
+        cd:Clear() -- Verhindert Schatten-Wischer
+        icon:SetDesaturated(craftCount == 0)
+        frame:SetAlpha(craftCount == 0 and 0.5 or 1.0)
+    end
+
+    frame:RegisterEvent("BAG_UPDATE_DELAYED")
+    frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+    frame:RegisterEvent("SPELL_UPDATE_CHARGES")
+    frame:SetScript("OnEvent", Update)
+    Update()
+
+    MakeInteractive(frame, recipeID)
+    return frame
+end
+
+-- Fishing Matrix
 function Visuals:CreateFishingIcon(parent, ids, x, y)
     local frame = CreateFrame("Frame", nil, parent)
     frame.catID = 4; local settings = ProfessionsHelper.db.profile.catSettings[4]
@@ -365,17 +583,7 @@ function Visuals:CreateFishingIcon(parent, ids, x, y)
     MakeInteractive(frame, ids); return frame
 end
 
-local function FormatTime(seconds)
-    if seconds <= 0 then return "" end
-    if seconds < 60 then
-        return math.ceil(seconds) .. "s"
-    elseif seconds < 3600 then
-        return math.ceil(seconds / 60) .. "m"
-    else
-        return math.ceil(seconds / 3600) .. "h"
-    end
-end
-
+-- Skill Icons
 function Visuals:CreateSkillIcon(parent, spellID, x, y)
     local frame = CreateFrame("Frame", nil, UIParent) 
     frame:SetFrameStrata("MEDIUM")
@@ -383,69 +591,75 @@ function Visuals:CreateSkillIcon(parent, spellID, x, y)
     frame:SetSize(40, 40)
     frame:SetPoint("CENTER", UIParent, "CENTER", x or 0, y or -100)
 
-    -- Tresor mit echten Zahlen initialisieren (niemals nil oder secret)
-    frame.internal = { cur = 0, max = 1, start = 0, duration = 0 }
-
-    local config = {
-        showShadow = false,
-        timerColor = {r = 1, g = 0.8, b = 0},
-        chargeColor = {r = 1, g = 1, b = 1}
-    }
+    -- Interner Datenspeicher
+    frame.internal = { cur = 0, max = 0, start = 0, duration = 0, modRate = 1, hasCharges = false }
 
     local icon = frame:CreateTexture(nil, "ARTWORK")
     icon:SetAllPoints()
-    icon:SetTexture(C_Spell.GetSpellTexture(spellID) or "Interface\\Icons\\INV_Misc_QuestionMark")
-
-    local cd = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
-    cd:SetAllPoints()
-    cd:SetHideCountdownNumbers(true) 
-    if not config.showShadow then cd:SetAlpha(0) end
+    icon:SetTexture(C_Spell.GetSpellTexture(spellID) or 134400)
 
     local chargeText = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
     chargeText:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
-    chargeText:SetTextColor(config.chargeColor.r, config.chargeColor.g, config.chargeColor.b)
 
     local timerText = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
     timerText:SetPoint("CENTER", frame, "CENTER", 0, 0)
-    timerText:SetTextColor(config.timerColor.r, config.timerColor.g, config.timerColor.b)
+    timerText:SetTextColor(1, 0.8, 0)
 
-    -- Teil 1: Der "Safe" Abgleich (Nur in der Stadt erlaubt)
+    -- Tooltip Setup
+    frame:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetSpellByID(spellID)
+        GameTooltip:Show()
+    end)
+    frame:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
     local function RefreshData(force)
         if InCombatLockdown() then return end
-
-        local mapID = C_Map.GetBestMapForUnit("player")
-        local isInCity = false
         
-        -- Stadt-Prüfung
-        if ProfessionsHelperData then
-            for _, expData in pairs(ProfessionsHelperData) do
-                if expData.Config and expData.Config.CityMapIDs and expData.Config.CityMapIDs[mapID] then
-                    isInCity = true
-                    break
-                end
-            end
-        end
-
-        -- "Time-Safe"
-        if not isInCity and not force then return end
-
         pcall(function()
-            local info = C_Spell.GetSpellCharges(spellID)
-            if info and type(info.currentCharges) == "number" then
-                -- Tresor füllen
-                frame.internal.cur = info.currentCharges
-                frame.internal.max = info.maxCharges or 1
+            local charges = C_Spell.GetSpellCharges(spellID)
+            local cooldown = C_Spell.GetSpellCooldown(spellID)
+            
+            if charges and charges.maxCharges and charges.maxCharges > 1 then
+                -- FALL: Aufladungen (Kraut überladen)
+                local dur = charges.cooldownDuration or 0
+                local start = charges.cooldownStartTime or 0
                 
-                -- Nur wenn wir laden, speichern wir die Zeiten
-                if info.currentCharges < (info.maxCharges or 1) then
-                    frame.internal.start = info.cooldownStartTime or 0
-                    frame.internal.duration = info.cooldownDuration or 0
-                    frame.internal.modRate = info.chargeModRate or 1
-                else
-                    frame.internal.start = 0
-                    frame.internal.duration = 0
-                    frame.internal.modRate = 1
+                -- Radikaler Millisekunden-Fix: Alles über 24 Stunden wird durch 1000 geteilt
+                if dur > 86400 then 
+                    dur = dur / 1000 
+                    start = start / 1000 
                 end
+                
+                frame.internal.cur = charges.currentCharges or 0
+                frame.internal.max = charges.maxCharges
+                frame.internal.duration = dur
+                frame.internal.start = start
+                frame.internal.modRate = charges.chargeModRate or 1
+                frame.internal.hasCharges = true
+            elseif cooldown and cooldown.startTime > 0 then
+                -- FALL: Normaler Cooldown (Grüner Daumen)
+                local dur = cooldown.duration or 0
+                local start = cooldown.startTime or 0
+                
+                if dur > 86400 then 
+                    dur = dur / 1000 
+                    start = start / 1000 
+                end
+                
+                frame.internal.cur = 0
+                frame.internal.max = 0
+                frame.internal.duration = dur
+                frame.internal.start = start
+                frame.internal.modRate = 1
+                frame.internal.hasCharges = false
+            else
+                -- Bereit
+                frame.internal.cur = 1
+                frame.internal.max = 1
+                frame.internal.start = 0
+                frame.internal.duration = 0
+                frame.internal.hasCharges = (charges and charges.maxCharges and charges.maxCharges > 1)
             end
         end)
     end
@@ -453,67 +667,48 @@ function Visuals:CreateSkillIcon(parent, spellID, x, y)
     local function UpdateUI()
         local data = frame.internal
         local now = GetTime()
-        
-        -- Berechnung mit ModRate (wichtig für TWW Berufs-Boni!)
         local remain = 0
+
         if data.start > 0 and data.duration > 0 then
-            -- Formel: (Start + Dauer - Jetzt) / Rate
-            remain = ((data.start + data.duration) - now)
-            if data.modRate > 0 then
-                remain = remain / data.modRate
-            end
+            -- Berechnung der Restzeit unter Berücksichtigung der ModRate
+            local elapsed = (now - data.start)
+            remain = data.duration - (elapsed * data.modRate)
         end
 
-        chargeText:SetText(data.cur > 0 and data.cur or "|cFFFF00000|r") 
+        -- Ladungsanzeige (Nur wenn der Spell wirklich Charges hat)
+        if data.hasCharges then
+            chargeText:SetText(data.cur > 0 and data.cur or "|cFFFF00000|r")
+        else
+            chargeText:SetText("")
+        end
         
-        -- Wenn remain negativ ist oder sehr klein, ist die Ladung fertig
+        -- Zeit-Anzeige: KEIN FILTER. Wenn es 1198h sind, wollen wir sie sehen.
         if remain > 0.1 then
             timerText:SetText(FormatTime(remain))
-            local cdStart, cdDur = cd:GetCooldownTimes()
-            if math.abs((cdStart/1000) - data.start) > 0.5 then
-                cd:SetCooldown(data.start, data.duration)
-            end
         else
             timerText:SetText("")
-            -- Interner Auto-Refresh falls Zeit um ist aber API noch nicht "in der Stadt" war
-            if data.cur < data.max and data.start > 0 then
-                data.cur = data.cur + 1
-                data.start = 0
-                cd:Clear()
-            end
         end
 
-        icon:SetDesaturated(data.cur == 0)
-        frame:SetAlpha(data.cur == 0 and 0.7 or 1.0)
+        -- Visuelles Feedback
+        local isOnCD = (data.cur == 0 or (data.max > 1 and data.cur < data.max))
+        icon:SetDesaturated(isOnCD and remain > 0.1)
+        frame:SetAlpha((isOnCD and remain > 0.1) and 0.8 or 1.0)
     end
 
-    -- Events
     frame:RegisterEvent("SPELL_UPDATE_CHARGES")
     frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-    frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    frame:SetScript("OnEvent", function() RefreshData(); UpdateUI() end)
     
-    frame:SetScript("OnEvent", function()
-        RefreshData()
-        UpdateUI()
-    end)
-
-frame:SetScript("OnUpdate", function(self, elapsed)
+    frame:SetScript("OnUpdate", function(self, elapsed)
         self.timer = (self.timer or 0) + elapsed
         if self.timer > 0.1 then 
-            -- Wir versuchen Daten zu holen (geht nur in der Stadt/außerhalb Kampf)
-            RefreshData() 
-            
-            -- ABER: Wir updaten die UI IMMER, egal wo wir sind.
-            -- Die UI nimmt einfach das, was aktuell im Tresor liegt.
-            UpdateUI()
-            
+            RefreshData(); UpdateUI()
             self.timer = 0 
         end
     end)
 
     RefreshData(true)
     UpdateUI()
-
     if type(MakeInteractive) == "function" then MakeInteractive(frame, {spellID}) end
     return frame
 end
@@ -625,12 +820,23 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
     end
 end
 
-    -- Rendering Cat 3
+-- Rendering Cat 3
     local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
     if ProfessionsHelper.db.profile.catSettings[3].enabled then
         local pX, pY = pos3.x, pos3.y
         for _, item in ipairs(buckets[3]) do
-            AddToUI(self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY))
+            -- HIER IST DIE ABZWEIGUNG
+            -- Wir prüfen, ob das Rezept ein Spell ist oder spezielle Aufladungen hat
+            if item.data.isSpell or item.data.hasCharges then
+                -- Nutzt die Spezial-Logik für Experimente/Cooldowns
+                -- Wir nehmen die spellID als Referenz, falls vorhanden
+                local refID = item.data.spellID or item.data.IDs[1]
+                AddToUI(self:CreateSpecialActionIcon(UIParent, refID, pX, pY))
+            else
+                -- Standard-Logik für Tränke und Items
+                AddToUI(self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY))
+            end
+            
             pX = pX + self.Config.SpacingX_Prof
         end
     end
