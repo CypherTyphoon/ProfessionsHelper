@@ -3,8 +3,9 @@
 
 local ADDON_NAME, _ = ...
 ProfessionsHelperData = ProfessionsHelperData or {}
-ProfessionsHelperData["Midnight"] = {    Config = {
-ParentMapIDs = { 
+ProfessionsHelperData["Midnight"] = {    
+    Config = {
+        ParentMapIDs = { 
             [2274] = true, -- Khaz Algar (Beinhaltet Insel von Dorn, Schallende Tiefen, Undermine etc.)
             [2371] = true, -- K'aresh (Neuer Kontinent)
         },
@@ -14,96 +15,35 @@ ParentMapIDs = {
     },
 }
 
+-- ========================================
+-- Ressources
 -- ==========================================
--- LEATHER
--- ==========================================
-ProfessionsHelperData["Midnight"].Leather = {
+-- Gathered + Vendor (sources = Drop, Vendor, gatheringProf= Mining, Skinning, Herbalism, Fishing, Cooking)
 
-}
-
--- ==========================================
--- HERBS
--- ==========================================
 ProfessionsHelperData["Midnight"].Herbs = {
 
 }
 
--- ==========================================
--- ORES & METALS
--- ==========================================
 ProfessionsHelperData["Midnight"].Ores = {
+    -- Ores
+
+    -- Stones
 
 }
 
-ProfessionsHelperData["Midnight"].MetalAndStone = {
+ProfessionsHelperData["Midnight"].Leather = {
+
+    -- Beast Parts
 
 }
 
--- ==========================================
--- CLOTH
--- ==========================================
 ProfessionsHelperData["Midnight"].Cloth = {
-
 }
 
--- ==========================================
--- FINISHING REAGENTS
--- ==========================================
-ProfessionsHelperData["Midnight"].FinishingReagents = {
-
-}
-
--- ==========================================
--- INSCRIPTION
--- ==========================================
-ProfessionsHelperData["Midnight"].Inscription = {
-
-}
-
--- ==========================================
--- JEWELCRAFTING (Gems & Glass)
--- ==========================================
-ProfessionsHelperData["Midnight"].Jewelcrafting = {
-
-}
-
--- ==========================================
--- FISHING (DisplayCategory 4)
--- ==========================================
 ProfessionsHelperData["Midnight"].Fishing = {
 
 }
 
--- ==========================================
--- COOKING (Zutaten)
--- ==========================================
-ProfessionsHelperData["Midnight"].Cooking = {
-
-}
-
--- ==========================================
--- OPTIONAL REAGENTS (Missives & Crests)
--- ==========================================
-local opt = { sources = { "Crafted" }, displayCategory = 3 }
-ProfessionsHelperData["Midnight"].OptionalReagents = {
-
-}
-
--- ==========================================
--- PARTS (Engine Parts & Scrap)
--- ==========================================
-ProfessionsHelperData["Midnight"].Part = {
-
-}
-
--- ==========================================
--- TRADE GOODS (General Reagents)
--- ==========================================
-ProfessionsHelperData["Midnight"].TradeGood = {
-
-}
-
--- Wood
 ProfessionsHelperData["Midnight"].Wood = {
     -- expID Mapping: 0=Classic, 1=BC, 2=WotLK, 3=Cata, 4=MoP, 5=WoD, 6=Legion, 7=BfA, 8=SL, 9=DF, 10=TWW, 11=Midnight
     Olemba_Lumber = { IDs = { 242691 }, expID = 1, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
@@ -120,42 +60,73 @@ ProfessionsHelperData["Midnight"].Wood = {
     Thalassian_Lumber = { IDs = { 256963 }, expID = 11, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
 }
 
--- House Decor Items
--- ==========================================
--- HOUSE DECOR (Midnight Edition)
--- ==========================================
-ProfessionsHelperData["Midnight"].HouseDecor = {
-    -- ------------------------------------------
-    -- ALCHEMY
-    -- ------------------------------------------
-    Shadow_Council_Torch = { IDs = { 264706 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Glazed_Sindorei_Vial = { IDs = { 264705 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Nerubian_Alchemists_Retort = { IDs = { 257102 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Stranglekelp_Sack = { IDs = { 264709 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Apothecarys_Worktable = { IDs = { 257100 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Arcandor_Cutting_Fountain = { IDs = { 256680 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Starry_Scrying_Pool = { IDs = { 257045 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Verdant_Valdrakken_Vase = { IDs = { 248111 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Boulder_Springs_Hot_Tub = { IDs = { 252758 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Icecrown_Plague_Canister = { IDs = { 258213 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Gilnean_Cauldron = { IDs = { 245517 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Boralus_Bottle_Lamp = { IDs = { 257046 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Zandalari_Bottle_Shipment = { IDs = { 257047 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Sanlayn_Blood_Orb = { IDs = { 258212 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Orcish_Felblood_Cauldron = { IDs = { 257044 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Sintallow_Candles = { IDs = { 257051 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Pandaren_Alchemists_Kit = { IDs = { 258214 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Stoppered_Black_Potion = { IDs = { 257041 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Pandaren_Alchemists_Retort = { IDs = { 257043 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Veil_Secured_Animacone = { IDs = { 257050 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Dragons_Elixir_Bottle = { IDs = { 257052 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Wine_Barrel = { IDs = { 244318 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Gilnean_Green_Potion = { IDs = { 257694 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
-    Silvermoon_Spire_Fountain = { IDs = { 257420 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+ProfessionsHelperData["Midnight"].VendorDrop = {
+}
 
-    -- ------------------------------------------
-    -- BLACKSMITHING
-    -- ------------------------------------------
+
+-- ==========================================
+-- Materials
+-- ==========================================
+-- Crafted - Items (sources = Crafted; gatheringProf = <Category> (Herbalism, Skinning, Cooking, Leatherworking, Blacksmithing, Engineering, Enchanting, Inscription, Tailoring, Jewelcrafting))
+
+ProfessionsHelperData["Midnight"].Herbalism = {}
+
+ProfessionsHelperData["Midnight"].Skinning = {}
+
+ProfessionsHelperData["Midnight"].Cooking = {
+    -- House Decor
+    Caramel_Mint_Noodle_Dish = { IDs = { 246705 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Kaheti_Predators_Assortment = { IDs = { 245326 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Dornic_Sliced_Mineloaf = { IDs = { 246708 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Hungry_Humans_Platter = { IDs = { 245428 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Dornic_Mine_and_Cheese_Platter = { IDs = { 239170 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Mushan_Dumpling_Stack = { IDs = { 247220 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Boralus_Style_Lobster_Platter = { IDs = { 245484 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Drake_Kebab_Platter = { IDs = { 247222 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Valdrakken_Blossomfruit_Platter = { IDs = { 247224 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Earthen_Hospitality_Cheese_Like_Brick = { IDs = { 246709 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+    Bruffalon_Rib_Platter = { IDs = { 247225 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
+}
+
+ProfessionsHelperData["Midnight"].Leatherworking = {
+    -- Crafting Materials
+
+    -- Optional Reagents
+
+    -- House Decor
+    Gilnean_Spare_Saddle = { IDs = { 264712 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Rolled_Scarab_Rug = { IDs = { 264677 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Camp_Narache_Rug = { IDs = { 257725 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Sandfury_Diplomats_Banner = { IDs = { 258558 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Tauren_Fencepost = { IDs = { 245407 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Blackrock_Bunkbed = { IDs = { 245432 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Tauren_Leather_Fence = { IDs = { 245406 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Highmountain_Tanners_Frame = { IDs = { 257400 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Scaled_Twilight_Mosaic = { IDs = { 257806 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Outland_Maghar_Banner = { IDs = { 258190 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Well_Lit_Incontinental_Couch = { IDs = { 239214 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Wolvar_Postbag = { IDs = { 258205 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Arakkoa_Decoy_Scarecrow = { IDs = { 258191 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Maldraxxian_Crate = { IDs = { 258238 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Serenity_Peak_Tent = { IDs = { 247856 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Valdrakken_Market_Tent = { IDs = { 248657 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Margraves_Stitched_Leather_Rug = { IDs = { 258248 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Loch_Modan_Bearskin_Rug = { IDs = { 242948 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Orcish_Sleeping_Cot = { IDs = { 244323 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Snowfall_Tribe_Scare_Totem = { IDs = { 257693 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Zandalari_Ritual_Drum = { IDs = { 245412 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Draconic_Nesting_Bed = { IDs = { 248114 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Wise_Pandarens_Bed = { IDs = { 247767 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Zhevra_Stripe_Rug = { IDs = { 243327 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+    Haranir_Canopy_Bed = { IDs = { 263038 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
+}
+
+ProfessionsHelperData["Midnight"].Blacksmithing = {
+    -- Alloys
+
+    -- Frameworks
+
+    -- House Decor
     Dalaran_Sun_Sconce = { IDs = { 264710 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", displayCategory = 0 },
     Dalaran_Sewer_Gate = { IDs = { 264676 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", displayCategory = 0 },
     Pandaren_Fireplace = { IDs = { 247752 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", displayCategory = 0 },
@@ -182,36 +153,16 @@ ProfessionsHelperData["Midnight"].HouseDecor = {
     Bronze_Banner_of_the_Exiled = { IDs = { 257035 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", displayCategory = 0 },
     Wingrest_Signal_Brazier = { IDs = { 256427 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", displayCategory = 0 },
 
-    -- ------------------------------------------
-    -- ENCHANTING
-    -- ------------------------------------------
-    Dornogal_Hanging_Sconce = { IDs = { 253039 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Ardenweald_Lamppost = { IDs = { 258237 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Nightspire_Fountain = { IDs = { 256681 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Five_Flights_Grimoire = { IDs = { 256171 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Darkmasters_Mystical_Brazier = { IDs = { 263027 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Tirisfal_Hollow_Campfire = { IDs = { 253250 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Suramar_Containment_Cell = { IDs = { 247923 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Aldor_Stellar_Console = { IDs = { 257093 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Replica_Awakening_Machine_Stasis_Pod = { IDs = { 253171 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Mark_of_the_Mages_Eye = { IDs = { 257094 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Tidesages_Totem = { IDs = { 258559 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Ancestral_Signal_Brazier = { IDs = { 245601 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Draenethyst_String_Lights = { IDs = { 251655 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Venthyr_Anima_Bottle = { IDs = { 257098 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Draconic_Scribes_Basin = { IDs = { 256170 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Draenei_Holo_Path = { IDs = { 257038 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Stampwhistles_Postal_Portal = { IDs = { 257101 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Intense_Mogu_Brazier = { IDs = { 257097 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Twilight_Fire_Canister = { IDs = { 257095 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Drust_Enchanters_Rod = { IDs = { 258560 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Pandaren_Table_Lamp = { IDs = { 257096 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Draenei_Holo_Dais = { IDs = { 257037 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
-    Pyrewood_Glass_Bottle = { IDs = { 257404 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+}
 
-    -- ------------------------------------------
-    -- ENGINEERING
-    -- ------------------------------------------
+ProfessionsHelperData["Midnight"].Engineering = {
+    -- Crafting Materials
+
+    -- Optional Reagents
+
+    -- Finishing Reagents
+
+    -- House Decor
     Home_Defense_Gadget = { IDs = { 264708 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 0 },
     Joybuzzs_Joyful_Wall_of_Trains = { IDs = { 264711 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 0 },
     Resizable_All_Purpose_Gear = { IDs = { 264707 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 0 },
@@ -237,10 +188,125 @@ ProfessionsHelperData["Midnight"].HouseDecor = {
     Gnomish_Steam_Powered_Bed = { IDs = { 246700 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 0 },
     Draenei_Holo_Projector_Pedestal = { IDs = { 258193 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 0 },
     Replica_Rumbling_Wastes_Drill_Pod = { IDs = { 253252 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 0 },
+}
 
-    -- ------------------------------------------
-    -- INSCRIPTION
-    -- ------------------------------------------
+ProfessionsHelperData["Midnight"].Tailoring = {
+    -- Spools
+
+    -- Bolts
+
+    -- Optional Reagents
+
+    -- Finishing Reagents
+
+    -- House Decor
+    Heart_of_the_Forest_Banner = { IDs = { 264713 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Aspirants_Ringed_Banner = { IDs = { 264678 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Dornogal_Framed_Rug = { IDs = { 252755 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Undermine_Bean_Bag_Chair = { IDs = { 245305 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Draconic_Circular_Rug = { IDs = { 248121 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Dawnthread_Lining = { IDs = { 222868 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Duskthread_Lining = { IDs = { 222871 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Shaldorei_Open_Air_Tent = { IDs = { 248010 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Zanchuli_Tapestry = { IDs = { 245418 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Unity_of_Thorns_Tapestry = { IDs = { 257402 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Beloved_Raptor_Plushie = { IDs = { 258557 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Circular_Shaldorei_Rug = { IDs = { 247920 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Karabor_Bed = { IDs = { 245421 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Tapestry_of_the_Five_Flights = { IDs = { 257053 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Elder_Rise_Rug = { IDs = { 243336 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Pandaren_Meander_Rug = { IDs = { 247738 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Beloved_Elekk_Plushie = { IDs = { 258303 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Gilded_Dalaran_Banner = { IDs = { 258206 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Draenei_Weavers_Loom = { IDs = { 258195 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Kirin_Tor_Skyline_Banner = { IDs = { 258298 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Red_Dazaralor_Rug = { IDs = { 243101 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Kyrian_Aspirants_Rolled_Cushion = { IDs = { 258561 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Argussian_Circular_Rug = { IDs = { 251546 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Grand_Drape_of_the_Exiles = { IDs = { 258202 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Surwich_Expedition_Tent = { IDs = { 245618 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Dwarven_District_Banner = { IDs = { 246685 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+    Pandaren_Fishing_Net = { IDs = { 258302 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
+}
+
+ProfessionsHelperData["Midnight"].Alchemy = {
+    -- Crafting Materials
+
+
+    -- Finishing Reagents
+
+
+    -- Endproduct or Others
+
+
+    -- Mutagens
+
+    -- House Decor
+    Shadow_Council_Torch = { IDs = { 264706 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Glazed_Sindorei_Vial = { IDs = { 264705 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Nerubian_Alchemists_Retort = { IDs = { 257102 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Stranglekelp_Sack = { IDs = { 264709 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Apothecarys_Worktable = { IDs = { 257100 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Arcandor_Cutting_Fountain = { IDs = { 256680 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Starry_Scrying_Pool = { IDs = { 257045 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Verdant_Valdrakken_Vase = { IDs = { 248111 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Boulder_Springs_Hot_Tub = { IDs = { 252758 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Icecrown_Plague_Canister = { IDs = { 258213 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Gilnean_Cauldron = { IDs = { 245517 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Boralus_Bottle_Lamp = { IDs = { 257046 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Zandalari_Bottle_Shipment = { IDs = { 257047 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Sanlayn_Blood_Orb = { IDs = { 258212 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Orcish_Felblood_Cauldron = { IDs = { 257044 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Sintallow_Candles = { IDs = { 257051 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Pandaren_Alchemists_Kit = { IDs = { 258214 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Stoppered_Black_Potion = { IDs = { 257041 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Pandaren_Alchemists_Retort = { IDs = { 257043 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Veil_Secured_Animacone = { IDs = { 257050 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Dragons_Elixir_Bottle = { IDs = { 257052 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Wine_Barrel = { IDs = { 244318 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Gilnean_Green_Potion = { IDs = { 257694 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+    Silvermoon_Spire_Fountain = { IDs = { 257420 }, sources = { "Crafted" }, gatheringProf = "Alchemy", displayCategory = 0 },
+}
+
+ProfessionsHelperData["Midnight"].Enchanting = {
+    -- Optional Reagents
+
+    -- Finishing Reagents
+
+    -- House Decor
+    Dornogal_Hanging_Sconce = { IDs = { 253039 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Ardenweald_Lamppost = { IDs = { 258237 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Nightspire_Fountain = { IDs = { 256681 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Five_Flights_Grimoire = { IDs = { 256171 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Darkmasters_Mystical_Brazier = { IDs = { 263027 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Tirisfal_Hollow_Campfire = { IDs = { 253250 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Suramar_Containment_Cell = { IDs = { 247923 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Aldor_Stellar_Console = { IDs = { 257093 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Replica_Awakening_Machine_Stasis_Pod = { IDs = { 253171 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Mark_of_the_Mages_Eye = { IDs = { 257094 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Tidesages_Totem = { IDs = { 258559 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Ancestral_Signal_Brazier = { IDs = { 245601 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Draenethyst_String_Lights = { IDs = { 251655 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Venthyr_Anima_Bottle = { IDs = { 257098 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Draconic_Scribes_Basin = { IDs = { 256170 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Draenei_Holo_Path = { IDs = { 257038 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Stampwhistles_Postal_Portal = { IDs = { 257101 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Intense_Mogu_Brazier = { IDs = { 257097 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Twilight_Fire_Canister = { IDs = { 257095 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Drust_Enchanters_Rod = { IDs = { 258560 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Pandaren_Table_Lamp = { IDs = { 257096 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Draenei_Holo_Dais = { IDs = { 257037 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+    Pyrewood_Glass_Bottle = { IDs = { 257404 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },
+}
+
+ProfessionsHelperData["Midnight"].Inscription = {
+    -- Pigments
+
+    -- Inks
+
+    -- Optional Reagents
+
+    -- House Decor
     Valdrakken_Wall_Shelf = { IDs = { 264679 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 0 },
     Suramar_Dresser = { IDs = { 245396 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 0 },
     Brill_Coffin_Lid = { IDs = { 245503 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 0 },
@@ -303,10 +369,20 @@ ProfessionsHelperData["Midnight"].HouseDecor = {
     Aspiring_Souls_Chair = { IDs = { 258235 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 0 },
     Gilnean_Rocking_Chair = { IDs = { 245623 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 0 },
     Wild_Hanging_Scroll = { IDs = { 262601 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 0 },
+}
 
-    -- ------------------------------------------
-    -- JEWELCRAFTING
-    -- ------------------------------------------
+ProfessionsHelperData["Midnight"].Jewelcrafting = {
+    -- Base Reagents
+
+    -- Optional Reagents
+
+    -- Advanced Reagents
+
+    -- Finishing Reagents
+
+    -- Endproduct
+
+    -- House Decor
     Jade_Temple_Dragon_Fountain = { IDs = { 247736 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 0 },
     Octagonal_Ochre_Window = { IDs = { 245559 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 0 },
     Kyrian_Floating_Lamp = { IDs = { 262663 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 0 },
@@ -333,104 +409,34 @@ ProfessionsHelperData["Midnight"].HouseDecor = {
     Shattrath_Sconce = { IDs = { 258200 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 0 },
     Draenei_Crystal_Chandelier = { IDs = { 262347 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 0 },
 
-    -- ------------------------------------------
-    -- LEATHERWORKING
-    -- ------------------------------------------
-    Gilnean_Spare_Saddle = { IDs = { 264712 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Rolled_Scarab_Rug = { IDs = { 264677 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Camp_Narache_Rug = { IDs = { 257725 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Sandfury_Diplomats_Banner = { IDs = { 258558 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Tauren_Fencepost = { IDs = { 245407 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Blackrock_Bunkbed = { IDs = { 245432 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Tauren_Leather_Fence = { IDs = { 245406 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Highmountain_Tanners_Frame = { IDs = { 257400 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Scaled_Twilight_Mosaic = { IDs = { 257806 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Outland_Maghar_Banner = { IDs = { 258190 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Well_Lit_Incontinental_Couch = { IDs = { 239214 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Wolvar_Postbag = { IDs = { 258205 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Arakkoa_Decoy_Scarecrow = { IDs = { 258191 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Maldraxxian_Crate = { IDs = { 258238 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Serenity_Peak_Tent = { IDs = { 247856 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Valdrakken_Market_Tent = { IDs = { 248657 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Margraves_Stitched_Leather_Rug = { IDs = { 258248 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Loch_Modan_Bearskin_Rug = { IDs = { 242948 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Orcish_Sleeping_Cot = { IDs = { 244323 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Snowfall_Tribe_Scare_Totem = { IDs = { 257693 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Zandalari_Ritual_Drum = { IDs = { 245412 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Draconic_Nesting_Bed = { IDs = { 248114 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Wise_Pandarens_Bed = { IDs = { 247767 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Zhevra_Stripe_Rug = { IDs = { 243327 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-    Haranir_Canopy_Bed = { IDs = { 263038 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 0 },
-
-    -- ------------------------------------------
-    -- TAILORING
-    -- ------------------------------------------
-    Heart_of_the_Forest_Banner = { IDs = { 264713 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Aspirants_Ringed_Banner = { IDs = { 264678 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Dornogal_Framed_Rug = { IDs = { 252755 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Undermine_Bean_Bag_Chair = { IDs = { 245305 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Draconic_Circular_Rug = { IDs = { 248121 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Dawnthread_Lining = { IDs = { 222868 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Duskthread_Lining = { IDs = { 222871 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Shaldorei_Open_Air_Tent = { IDs = { 248010 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Zanchuli_Tapestry = { IDs = { 245418 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Unity_of_Thorns_Tapestry = { IDs = { 257402 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Beloved_Raptor_Plushie = { IDs = { 258557 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Circular_Shaldorei_Rug = { IDs = { 247920 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Karabor_Bed = { IDs = { 245421 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Tapestry_of_the_Five_Flights = { IDs = { 257053 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Elder_Rise_Rug = { IDs = { 243336 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Pandaren_Meander_Rug = { IDs = { 247738 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Beloved_Elekk_Plushie = { IDs = { 258303 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Gilded_Dalaran_Banner = { IDs = { 258206 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Draenei_Weavers_Loom = { IDs = { 258195 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Kirin_Tor_Skyline_Banner = { IDs = { 258298 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Red_Dazaralor_Rug = { IDs = { 243101 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Kyrian_Aspirants_Rolled_Cushion = { IDs = { 258561 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Argussian_Circular_Rug = { IDs = { 251546 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Grand_Drape_of_the_Exiles = { IDs = { 258202 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Surwich_Expedition_Tent = { IDs = { 245618 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Dwarven_District_Banner = { IDs = { 246685 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-    Pandaren_Fishing_Net = { IDs = { 258302 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 0 },
-
-    -- ------------------------------------------
-    -- COOKING
-    -- ------------------------------------------
-    Caramel_Mint_Noodle_Dish = { IDs = { 246705 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Kaheti_Predators_Assortment = { IDs = { 245326 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Dornic_Sliced_Mineloaf = { IDs = { 246708 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Hungry_Humans_Platter = { IDs = { 245428 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Dornic_Mine_and_Cheese_Platter = { IDs = { 239170 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Mushan_Dumpling_Stack = { IDs = { 247220 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Boralus_Style_Lobster_Platter = { IDs = { 245484 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Drake_Kebab_Platter = { IDs = { 247222 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Valdrakken_Blossomfruit_Platter = { IDs = { 247224 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Earthen_Hospitality_Cheese_Like_Brick = { IDs = { 246709 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Bruffalon_Rib_Platter = { IDs = { 247225 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
 }
+
+ProfessionsHelperData["Midnight"].Other = {}
 
 -- ==========================================
 -- Spells of professions
 -- ==========================================
 
 ProfessionsHelperData["Midnight"].Skills = {
+    
     --Skinning
+    Sharpen_Knife = {spellID = 440977, IDs = { 440977 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
+    Carve_Meat = {spellID = 442615, IDs = { 442615 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
 
     --Herbalism
+    Green_Thumb = {spellID = 439871, IDs = { 439871 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},
+    Overload_Herb = {spellID = 423395, IDs = { 423395 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
+    ArcaneDuplication = {spellID = 439190, IDs = { 439190 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},
 }
+
 
 -- ==========================================
 -- Recipes of professions
 -- ==========================================
 
     --Alchemy
-
-    local recipe_algarHealPotion = {
-
-}
-
+    -- local recipe_algarManaPotion = {}
 
 -- 2. Das Rezept allen drei Qualitätsstufen des Endprodukts zuweisen
 ProfessionsHelperData["Midnight"].RecipeDB = {
-
 }

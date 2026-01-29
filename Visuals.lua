@@ -526,36 +526,29 @@ function Visuals:CreateSpecialActionIcon(parent, recipeID, x, y)
         local remain = 0
 
         if recipe.isSpell then
-            local ch = C_Spell.GetSpellCharges(recipe.spellID)
             local sc = C_Spell.GetSpellCooldown(recipe.spellID)
+            local ch = C_Spell.GetSpellCharges(recipe.spellID)
 
-            -- Check für Aufladungen (Reload-Typen wie Sharpen Knife / Carve Meat)
             if ch and ch.maxCharges and ch.maxCharges > 1 then
                 textInfo:SetText(ch.currentCharges or "0")
                 if ch.currentCharges < ch.maxCharges then
-                    -- Wir nehmen die Duration, die Blizzard aktuell als 'echt' meldet
-                    -- math.max hilft hier, falls sc.duration durch Talente genauer ist
-                    local actualDuration = math.max(ch.cooldownDuration, (sc and sc.duration or 0))
-                    remain = (ch.cooldownStartTime + actualDuration) - GetTime()
+                    remain = (ch.cooldownStartTime + ch.cooldownDuration) - GetTime()
                 end
-            
-            -- Check für normale Cooldowns (CD-Typen)
             elseif sc and sc.startTime > 0 then
                 remain = (sc.startTime + sc.duration) - GetTime()
             else
                 textInfo:SetText("")
             end
             
-            -- Blizzard API Fix (Millisekunden vs Sekunden)
             if remain > 500000 then remain = remain / 1000 end
             
-            -- Anzeige-Update: Nur wenn Zeit übrig ist, sonst bleibt die Charge-Zahl stehen
             if remain > 0.1 then 
-                textInfo:SetText(FormatTime(math.ceil(remain))) 
+                textInfo:SetText(FormatTime(remain)) 
             end
         end
 
         textCraft:SetText(craftCount > 0 and "x"..craftCount or "")
+        cd:Clear()
         icon:SetDesaturated(craftCount == 0)
         frame:SetAlpha(craftCount == 0 and 0.5 or 1.0)
     end
@@ -768,15 +761,37 @@ function Visuals:Init()
                         if showItem and buckets[cat] then
                             local settings = ProfessionsHelper.db.profile.catSettings[cat]
                             if settings and settings.enabled then
+                                -- Intelligenz-Logik für die Bucket-Zuordnung (Priorisierung)
+                                local bucketToUse = catName -- Standard aus der Datei (z.B. "VendorDrop")
                                 local displayProf = "Other"
+                                
+                                -- 1. Überprüfe Berufe (Gathering & Processing)
                                 local pData = itemData.gatheringProf or itemData.processingProfs
+                                
                                 if type(pData) == "table" then
-                                    for _, p in ipairs(pData) do if PlayerCanHandle[p] then displayProf = p break end end
+                                    for _, p in ipairs(pData) do 
+                                        if PlayerCanHandle[p] then 
+                                            displayProf = p
+                                            -- Wenn es Kategorie 2 (Icons) ist, soll das Item 
+                                            -- in den Bucket des Berufs rutschen statt VendorDrop/Other
+                                            if cat == 2 then bucketToUse = p end
+                                            break 
+                                        end 
+                                    end
                                 elseif type(pData) == "string" then
                                     displayProf = pData
+                                    if cat == 2 and PlayerCanHandle[pData] then
+                                        bucketToUse = pData
+                                    end
                                 end
-                                
-                                table.insert(buckets[cat], { name = itemName, data = itemData, prof = displayProf })
+
+                                -- 2. In die Liste einfügen (mit dem neuen bucketToUse)
+                                table.insert(buckets[cat], { 
+                                    name = itemName, 
+                                    data = itemData, 
+                                    prof = displayProf, 
+                                    bucketName = bucketToUse 
+                                })
                             end
                         end
                     end
@@ -833,6 +848,72 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
     end
 end
 
+-- Rendering Cat 2
+if ProfessionsHelper.db.profile.catSettings[2].enabled then
+    local groupedBuckets = {}
+    for _, item in ipairs(buckets[2]) do
+        local bName = item.bucketName or "Other"
+        groupedBuckets[bName] = groupedBuckets[bName] or {}
+        table.insert(groupedBuckets[bName], item)
+    end
+
+    for bName, items in pairs(groupedBuckets) do
+        local pSet = ProfessionsHelper.db.profile.profSubSettings[bName] or { growth = "LEFT_RIGHT", textAlign = "BOTTOM", enabled = true }
+        
+        if pSet.enabled ~= false then
+            -- Startpunkt der Gruppe
+            local pos = ProfessionsHelper.db.profile.positions[bName] or ProfessionsHelper.db.profile.positions[2] or {x = -450, y = 100}
+            
+            table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
+
+            -- WICHTIG: Dieser Zähler muss pro Gruppe bei 0 starten!
+            local visibleIdx = 0 
+            for _, item in ipairs(items) do
+                if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                    -- Berechne den Versatz basierend auf dem Icon-Abstand (Config.SpacingX_Icon)
+                    local offset = visibleIdx * self.Config.SpacingX_Icon
+                    local iX, iY = pos.x, pos.y
+                    
+                    -- Hier wird entschieden, ob das nächste Icon daneben oder darunter landet
+                    if pSet.growth == "LEFT_RIGHT" then 
+                        iX = pos.x + offset 
+                    elseif pSet.growth == "RIGHT_LEFT" then 
+                        iX = pos.x - offset 
+                    elseif pSet.growth == "TOP_BOTTOM" then 
+                        iY = pos.y - offset 
+                    elseif pSet.growth == "BOTTOM_TOP" then 
+                        iY = pos.y + offset 
+                    else
+                        -- Fallback, falls im Menü noch nichts gewählt wurde
+                        iX = pos.x + offset
+                    end
+
+                    local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, bName)
+                    
+                    if iconFrame and iconFrame.Count then
+                        -- Farbe setzen
+                        if pSet.color then 
+                            iconFrame.Count:SetTextColor(pSet.color.r, pSet.color.g, pSet.color.b) 
+                        end
+                        
+                        -- Text-Ausrichtung setzen
+                        iconFrame.Count:ClearAllPoints()
+                        local align = pSet.textAlign or "BOTTOM"
+                        if align == "TOP" then iconFrame.Count:SetPoint("BOTTOM", iconFrame, "TOP", 0, 2)
+                        elseif align == "BOTTOM" then iconFrame.Count:SetPoint("TOP", iconFrame, "BOTTOM", 0, -2)
+                        elseif align == "LEFT" then iconFrame.Count:SetPoint("RIGHT", iconFrame, "LEFT", -4, 0)
+                        elseif align == "RIGHT" then iconFrame.Count:SetPoint("LEFT", iconFrame, "RIGHT", 4, 0)
+                        end
+                    end
+
+                    AddToUI(iconFrame)
+                    visibleIdx = visibleIdx + 1 -- Nächstes Icon eins weiter schieben!
+                end
+            end
+        end
+    end
+end
+
 -- Rendering Cat 3
     local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
     if ProfessionsHelper.db.profile.catSettings[3].enabled then
@@ -851,41 +932,6 @@ end
             end
             
             pX = pX + self.Config.SpacingX_Prof
-        end
-    end
-
--- Rendering Cat 2
-    if ProfessionsHelper.db.profile.catSettings[2].enabled then
-        local profGroups = {}
-        for _, item in ipairs(buckets[2]) do
-            profGroups[item.prof] = profGroups[item.prof] or {}
-            table.insert(profGroups[item.prof], item)
-        end
-        
-        for prof, items in pairs(profGroups) do
-            -- NEU: Sortierung innerhalb der Berufsgruppe nach Expansion-ID
-            table.sort(items, function(a, b)
-                local expA = a.data.expID or 0
-                local expB = b.data.expID or 0
-                if expA ~= expB then
-                    return expA < expB
-                else
-                    return a.name < b.name -- Alphabetisch bei gleicher Expansion
-                end
-            end)
-
-            local pSettings = ProfessionsHelper.db.profile.profSubSettings[prof] or { enabled = true }
-            if pSettings.enabled then
-                local defaultY = 100
-                if prof == "Herbalism" then defaultY = 130 elseif prof == "Skinning" then defaultY = 70 end
-                local pos = ProfessionsHelper.db.profile.positions[prof] or {x = -450, y = defaultY}
-                
-                for i, item in ipairs(items) do
-                    -- Durch die Sortierung oben ist 'i' jetzt in der richtigen ExpID-Reihenfolge
-                    local iconX = pos.x + ((i-1) * self.Config.SpacingX_Icon)
-                    AddToUI(self:CreateMaterialIcon(UIParent, item.data.IDs, iconX, pos.y, prof))
-                end
-            end
         end
     end
 

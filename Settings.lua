@@ -116,65 +116,105 @@ function PH:SetupOptions()
     end
 
     -- 3. Material-Filter (Kat 2 Unterkategorien)
-    local filterProfs = {"Mining", "Herbalism", "Skinning", "Woodcutting", "Fishing", "Cooking", "Tailoring", "Jewelcrafting", "Other"}
-    for i, prof in ipairs(filterProfs) do
-        options.args.matFilters.args[prof] = {
-            name = prof,
-            type = "group",
-            inline = true,
-            order = i,
-            args = {
-                enabled = {
-                    name = "Anzeigen", type = "toggle", order = 1,
-                    get = function() 
-                        PH.db.profile.profSubSettings[prof] = PH.db.profile.profSubSettings[prof] or {enabled = true}
-                        return PH.db.profile.profSubSettings[prof].enabled 
-                    end,
-                    set = function(_, val) 
-                        PH.db.profile.profSubSettings[prof] = PH.db.profile.profSubSettings[prof] or {enabled = true}
-                        PH.db.profile.profSubSettings[prof].enabled = val; PH:GetModule("Visuals"):Init() 
-                    end,
-                },
-                textAlign = {
-                    name = "Text Position", type = "select", order = 2,
-                    values = { ["LEFT"] = "Links", ["RIGHT"] = "Rechts", ["TOP"] = "Oben", ["BOTTOM"] = "Unten" },
-                    get = function() return PH.db.profile.profSubSettings[prof] and PH.db.profile.profSubSettings[prof].textAlign or "BOTTOM" end,
-                    set = function(_, val) 
-                        PH.db.profile.profSubSettings[prof] = PH.db.profile.profSubSettings[prof] or {}
-                        PH.db.profile.profSubSettings[prof].textAlign = val; PH:GetModule("Visuals"):Init() 
-                    end,
-                },
-                color = {
-                    name = "Text Farbe", type = "color", order = 3,
-                    get = function() 
-                        local c = (PH.db.profile.profSubSettings[prof] and PH.db.profile.profSubSettings[prof].color) or {r=0.3, g=0.9, b=0.25}
-                        return c.r, c.g, c.b 
-                    end,
-                    set = function(_, r, g, b) 
-                        PH.db.profile.profSubSettings[prof] = PH.db.profile.profSubSettings[prof] or {}
-                        PH.db.profile.profSubSettings[prof].color = {r=r, g=g, b=b}
-                        PH:GetModule("Visuals"):Init() 
-                    end,
-                },
-                posX = {
-                    name = "Position X", type = "range", order = 11, min = -2000, max = 2000, step = 1,
-                    get = function() return PH.db.profile.positions[prof] and PH.db.profile.positions[prof].x or 0 end,
-                    set = function(_, val) 
-                        PH.db.profile.positions[prof] = PH.db.profile.positions[prof] or {x=0, y=0}
-                        PH.db.profile.positions[prof].x = val; PH:GetModule("Visuals"):Init() 
-                    end,
-                },
-                posY = {
-                    name = "Position Y", type = "range", order = 12, min = -2000, max = 2000, step = 1,
-                    get = function() return PH.db.profile.positions[prof] and PH.db.profile.positions[prof].y or 0 end,
-                    set = function(_, val) 
-                        PH.db.profile.positions[prof] = PH.db.profile.positions[prof] or {x=0, y=0}
-                        PH.db.profile.positions[prof].y = val; PH:GetModule("Visuals"):Init() 
-                    end,
-                },
+for addonName, addonData in pairs(ProfessionsHelperData) do
+    options.args.matFilters.args[addonName] = {
+        name = addonName,
+        type = "group",
+        childGroups = "tree",
+        order = (addonName == "The War Within" and 1 or 2),
+        args = {}
+    }
+
+    for bucketName, bucketData in pairs(addonData) do
+        if bucketName ~= "Config" and type(bucketData) == "table" then
+            options.args.matFilters.args[addonName].args[bucketName] = {
+                name = bucketName,
+                type = "group",
+                order = 10,
+                args = {
+                    headerSettings = { name = "Kategorie-Einstellungen", type = "header", order = 1 },
+                    enabled = {
+                        name = "Ganze Gruppe anzeigen", type = "toggle", order = 2,
+                        set = function(_, val) 
+                            PH.db.profile.profSubSettings[bucketName] = PH.db.profile.profSubSettings[bucketName] or {enabled = true}
+                            PH.db.profile.profSubSettings[bucketName].enabled = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() return (PH.db.profile.profSubSettings[bucketName] and PH.db.profile.profSubSettings[bucketName].enabled ~= false) end,
+                    },
+                    -- NEU: Wachstumsrichtung
+                    growthDirection = {
+                        name = "Anordnung", type = "select", order = 3,
+                        values = { ["LEFT_RIGHT"] = "L -> R", ["RIGHT_LEFT"] = "R -> L", ["TOP_BOTTOM"] = "O -> U", ["BOTTOM_TOP"] = "U -> O" },
+                        set = function(_, val) 
+                            PH.db.profile.profSubSettings[bucketName] = PH.db.profile.profSubSettings[bucketName] or {}
+                            PH.db.profile.profSubSettings[bucketName].growth = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() return PH.db.profile.profSubSettings[bucketName] and PH.db.profile.profSubSettings[bucketName].growth or "LEFT_RIGHT" end,
+                    },
+                    posX = {
+                        name = "Position X", type = "range", order = 4, min = -2000, max = 2000, step = 1,
+                        set = function(_, val) 
+                            PH.db.profile.positions[bucketName] = PH.db.profile.positions[bucketName] or {x=0, y=0}
+                            PH.db.profile.positions[bucketName].x = val; PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() return PH.db.profile.positions[bucketName] and PH.db.profile.positions[bucketName].x or 0 end,
+                    },
+                    posY = {
+                        name = "Position Y", type = "range", order = 5, min = -2000, max = 2000, step = 1,
+                        set = function(_, val) 
+                            PH.db.profile.positions[bucketName] = PH.db.profile.positions[bucketName] or {x=0, y=0}
+                            PH.db.profile.positions[bucketName].y = val; PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() return PH.db.profile.positions[bucketName] and PH.db.profile.positions[bucketName].y or 0 end,
+                    },
+                    -- NEU: Text-Optionen (Ausrichtung & Farbe)
+                    headerText = { name = "Text-Design", type = "header", order = 10 },
+                    textAlign = {
+                        name = "Text Ausrichtung", type = "select", order = 11,
+                        values = { ["TOP"] = "Oben", ["BOTTOM"] = "Unten", ["LEFT"] = "Links", ["RIGHT"] = "Rechts" },
+                        set = function(_, val) 
+                            PH.db.profile.profSubSettings[bucketName] = PH.db.profile.profSubSettings[bucketName] or {}
+                            PH.db.profile.profSubSettings[bucketName].textAlign = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() return PH.db.profile.profSubSettings[bucketName] and PH.db.profile.profSubSettings[bucketName].textAlign or "BOTTOM" end,
+                    },
+                    textColor = {
+                        name = "Text Farbe", type = "color", order = 12,
+                        set = function(_, r, g, b) 
+                            PH.db.profile.profSubSettings[bucketName] = PH.db.profile.profSubSettings[bucketName] or {}
+                            PH.db.profile.profSubSettings[bucketName].color = {r=r, g=g, b=b}
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() 
+                            local c = (PH.db.profile.profSubSettings[bucketName] and PH.db.profile.profSubSettings[bucketName].color) or {r=1, g=1, b=1}
+                            return c.r, c.g, c.b
+                        end,
+                    },
+                    headerItems = { name = "Einzelne Items filtern", type = "header", order = 20 },
+                }
             }
-        }
+
+            for itemName, itemInfo in pairs(bucketData) do
+                if itemInfo.displayCategory == 2 then
+                    options.args.matFilters.args[addonName].args[bucketName].args[itemName] = {
+                        name = itemName:gsub("_", " "), type = "toggle", order = 30,
+                        set = function(_, val) 
+                            PH.db.profile.itemFilters[itemName] = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() 
+                            if PH.db.profile.itemFilters[itemName] == nil then return true end
+                            return PH.db.profile.itemFilters[itemName]
+                        end,
+                    }
+                end
+            end
+        end
     end
+end
 
     -- 4. Balken-Individualisierung (Die neuen Profi-Einstellungen)
     local gatheringProfs = {"Mining", "Herbalism", "Skinning", "Inscription", "Tailoring"}
