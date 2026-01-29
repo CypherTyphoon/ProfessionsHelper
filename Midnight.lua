@@ -414,15 +414,9 @@ ProfessionsHelperData["Midnight"].HouseDecor = {
 -- ==========================================
 
 ProfessionsHelperData["Midnight"].Skills = {
-    
     --Skinning
-    Sharpen_Knife = {spellID = 440977, IDs = { 440977 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
-    Carve_Meat = {spellID = 442615, IDs = { 442615 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
 
     --Herbalism
-    Green_Thumb = {spellID = 439871, IDs = { 439871 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},
-    Overload_Herb = {spellID = 423395, IDs = { 423395 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
-    ArcaneDuplication = {spellID = 439190, IDs = { 439190 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},
 }
 
 -- ==========================================
@@ -430,43 +424,13 @@ ProfessionsHelperData["Midnight"].Skills = {
 -- ==========================================
 
     --Alchemy
-    local recipe_algarManaPotion = {
-    yield = 5,
-    { ids = {211806, 211807, 211808}, amount = 1 }, -- Vials
-    { ids = {210796, 210797, 210798}, amount = 6 }, -- Mycobloom
-    { ids = {210805, 210806, 210807}, amount = 3 }, -- BlessingBlossom
-}
 
     local recipe_algarHealPotion = {
-    yield = 5,
-    { ids = {211806, 211807, 211808}, amount = 1 }, -- Vials
-    { ids = {210796, 210797, 210798}, amount = 6 }, -- Mycobloom
+
 }
 
-    local recipe_formCour = {
-    yield = 1,
-    { ids = {211806, 211807, 211808}, amount = 1 }, -- Vials
-    { ids = {210796, 210797, 210798}, amount = 8 }, -- Mycobloom
-    { ids = {210805, 210806, 210807}, amount = 4 }, -- BlessingBlossom
-}
 
 -- 2. Das Rezept allen drei Qualitätsstufen des Endprodukts zuweisen
 ProfessionsHelperData["Midnight"].RecipeDB = {
-    [212239] = recipe_algarManaPotion, -- Q1 Manapot
-    [212240] = recipe_algarManaPotion, -- Q2 Manapot
-    [212241] = recipe_algarManaPotion, -- Q3 Manapot
 
-    [211878] = recipe_algarHealPotion, -- Q1 Healpot
-    [211879] = recipe_algarHealPotion, -- Q2 Healpot
-    [211880] = recipe_algarHealPotion, -- Q3 Healpot
-
-    [212781] = recipe_formCour,
-
-    [430345] = { isSpell = true, spellID = 430345,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 10 },
-        { ids = {210815}, amount = 6 }, -- CoreWayCatalyst
-        { ids = {210814}, amount = 5 }, -- ArtisansAcuity
-        },
-    },
 }

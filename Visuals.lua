@@ -150,51 +150,53 @@ local function MakeInteractive(frame, itemIDs, groupKey)
 end
 
 function Visuals:GetCraftableAmount(recipeID)
-    local db = ProfessionsHelperData["The War Within"]
-    if not db or not db.RecipeDB then return 0 end
+    if not ProfessionsHelperData then return 0 end
     
-    local recipe = db.RecipeDB[recipeID]
+    local recipe = nil
+    for _, expData in pairs(ProfessionsHelperData) do
+        if expData.RecipeDB and expData.RecipeDB[recipeID] then
+            recipe = expData.RecipeDB[recipeID]
+            break
+        end
+    end
     if not recipe then return 0 end
-
-    local maxPossible = 99999
-    local slots = recipe.slots or recipe 
-
-    for _, slot in ipairs(slots) do
+    local finalMax = 99999
+    local data = recipe.slots or recipe
+    for i = 1, #data do
+        local slot = data[i]
         if type(slot) == "table" then
-            local totalStockInSlot = 0
-            local amountNeeded = slot.amount or 1
-            
-            -- FALL A: Spezial-Gruppe (z.B. Kräuter für Experimente)
+            local needed = slot.amount or 1
+            local currentSlotPossible = 0
             if slot.type == "group" and slot.key == "ExperimentHerbs" then
-                local bestSingleStack = 0
-                -- Wir gehen durch alle Kräuter in der Datenbank
-                if db.Herbs then
-                    for _, herbData in pairs(db.Herbs) do
-                        if herbData.canExperiment then
-                            for _, id in ipairs(herbData.IDs) do
-                                local count = C_Item.GetItemCount(id, true, true, true, true, true)
-                                if count > bestSingleStack then bestSingleStack = count end
+                local totalApps = 0
+                for _, expData in pairs(ProfessionsHelperData) do
+                    if expData.Herbs then
+                        for _, herbData in pairs(expData.Herbs) do
+                            if herbData.canExperiment then
+                                for _, id in ipairs(herbData.IDs) do
+                                    local count = C_Item.GetItemCount(id, true, true, true, true, true)
+                                    if count >= needed then
+                                        totalApps = totalApps + math.floor(count / needed)
+                                    end
+                                end
                             end
                         end
                     end
                 end
-                totalStockInSlot = bestSingleStack
-            
-            -- FALL B: Normale ID-Liste
+                currentSlotPossible = totalApps
             elseif slot.ids then
+                local stock = 0
                 for _, id in ipairs(slot.ids) do
-                    totalStockInSlot = totalStockInSlot + C_Item.GetItemCount(id, true, true, true, true, true)
+                    stock = stock + C_Item.GetItemCount(id, true, true, true, true, true)
                 end
+                currentSlotPossible = math.floor(stock / needed)
             end
-            
-            local possibleWithThisSlot = math.floor((totalStockInSlot / amountNeeded) + 0.0001)
-            if possibleWithThisSlot < maxPossible then
-                maxPossible = possibleWithThisSlot
+            if currentSlotPossible < finalMax then
+                finalMax = currentSlotPossible
             end
         end
     end
-
-    return (maxPossible == 99999) and 0 or maxPossible
+    return (finalMax == 99999) and 0 or finalMax
 end
 
 function Visuals:GetSpellStatus(spellID)
@@ -459,8 +461,13 @@ function Visuals:CreateProfessionIcon(parent, ids, x, y)
         textStock:SetText(totalOwned > 0 and totalOwned or "")
 
         -- Yield aus RecipeDB holen
-        local db = ProfessionsHelperData["The War Within"]
-        local recipe = db.RecipeDB and db.RecipeDB[frame.itemID]
+        local recipe = nil
+        for _, expData in pairs(ProfessionsHelperData) do
+            if expData.RecipeDB and expData.RecipeDB[frame.itemID] then
+                recipe = expData.RecipeDB[frame.itemID]
+                break
+            end
+        end
         
         if recipe and recipe.yield and recipe.yield > 1 then
             textYield:SetText("+" .. recipe.yield)
@@ -519,30 +526,36 @@ function Visuals:CreateSpecialActionIcon(parent, recipeID, x, y)
         local remain = 0
 
         if recipe.isSpell then
-            local sc = C_Spell.GetSpellCooldown(recipe.spellID)
             local ch = C_Spell.GetSpellCharges(recipe.spellID)
+            local sc = C_Spell.GetSpellCooldown(recipe.spellID)
 
+            -- Check für Aufladungen (Reload-Typen wie Sharpen Knife / Carve Meat)
             if ch and ch.maxCharges and ch.maxCharges > 1 then
                 textInfo:SetText(ch.currentCharges or "0")
                 if ch.currentCharges < ch.maxCharges then
-                    remain = (ch.cooldownStartTime + ch.cooldownDuration) - GetTime()
+                    -- Wir nehmen die Duration, die Blizzard aktuell als 'echt' meldet
+                    -- math.max hilft hier, falls sc.duration durch Talente genauer ist
+                    local actualDuration = math.max(ch.cooldownDuration, (sc and sc.duration or 0))
+                    remain = (ch.cooldownStartTime + actualDuration) - GetTime()
                 end
+            
+            -- Check für normale Cooldowns (CD-Typen)
             elseif sc and sc.startTime > 0 then
                 remain = (sc.startTime + sc.duration) - GetTime()
             else
                 textInfo:SetText("")
             end
             
-            -- Fix für Millisekunden
+            -- Blizzard API Fix (Millisekunden vs Sekunden)
             if remain > 500000 then remain = remain / 1000 end
             
+            -- Anzeige-Update: Nur wenn Zeit übrig ist, sonst bleibt die Charge-Zahl stehen
             if remain > 0.1 then 
-                textInfo:SetText(FormatTime(remain)) 
+                textInfo:SetText(FormatTime(math.ceil(remain))) 
             end
         end
 
         textCraft:SetText(craftCount > 0 and "x"..craftCount or "")
-        cd:Clear() -- Verhindert Schatten-Wischer
         icon:SetDesaturated(craftCount == 0)
         frame:SetAlpha(craftCount == 0 and 0.5 or 1.0)
     end

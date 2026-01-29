@@ -319,7 +319,6 @@ ProfessionsHelperData["The War Within"].Alchemy = {
 -- ==========================================
 
 ProfessionsHelperData["The War Within"].Skills = {
-    
     --Skinning
     Sharpen_Knife = {spellID = 440977, IDs = { 440977 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
     Carve_Meat = {spellID = 442615, IDs = { 442615 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
@@ -368,10 +367,8 @@ ProfessionsHelperData["The War Within"].RecipeDB = {
     [212781] = recipe_formCour,
 
     [430345] = { isSpell = true, spellID = 430345,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 10 },
-        { ids = {210815}, amount = 6 }, -- CoreWayCatalyst
-        { ids = {210814}, amount = 5 }, -- ArtisansAcuity
-        },
-    },
+    { type = "group", key = "ExperimentHerbs", amount = 10 },
+    { ids = {210815}, amount = 6 }, -- CoreWayCatalyst
+    { ids = {210814}, amount = 5 }, -- ArtisansAcuity
+    },    
 }
