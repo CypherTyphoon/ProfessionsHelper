@@ -8,26 +8,36 @@ ProfessionsHelper.modules = ProfessionsHelper.modules or {}
 
 -- 2. Standardwerte für die Datenbank (Defaults)
 local defaults = {
+    -- GLOBAL: Account-weite Design-Einstellungen
+    global = {
+        barTexture = "Cilo",
+        fontName = "Friz Quadrata TT",
+        fontSize = 10,
+        backgroundColor = {r=0, g=0, b=0, a=0.5},
+        colorQ1 = {r=1, g=0.5, b=0},
+        colorQ2 = {r=0.8, g=0.8, b=0.8},
+        colorQ3 = {r=1, g=0.85, b=0},
+    },
+    -- PROFILE: Charakter-spezifische Logik & Filter
     profile = {
         locked = false,
-        growUp = false,
+        learnedProfessions = {}, -- WICHTIG: Hier speichern wir die Berufe
+        
+        -- Filter-Einstellungen (Charakter-individuell sinnvoll)
+        enabledExpansions = { ["TWW"] = true, ["Midnight"] = true },
+        enabledResources = { ["Ore"] = true, ["Herbs"] = true },
+        itemFilters = {}, -- Deine Checkboxen für einzelne Items
+        
+        -- Layout-Einstellungen (Kategorien)
         catSettings = {
-            [1] = { 
-                scale = 1.0, enabled = true, growUp = true, name = "Balken (Erze/Kräuter)", 
-                width = 30, height = 100, fontSize = 10, barTexture = "Cilo", fontName = "Friz Quadrata TT",
-                colorQ1 = {r=1, g=0.5, b=0},
-                colorQ2 = {r=0.8, g=0.8, b=0.8},
-                colorQ3 = {r=1, g=0.85, b=0},
-                showBackground = true,
-                backgroundColor = {r=0, g=0, b=0, a=0.5}
-            },
-            [2] = { scale = 1.0, enabled = true, name = "Icons (Materialien)" },
+            [1] = { scale = 1.0, enabled = true, name = "Balken" },
+            [2] = { scale = 1.0, enabled = true, name = "Material-Icons" },
             [3] = { scale = 1.0, enabled = true, name = "Berufs-Icons" },
             [4] = { scale = 1.0, enabled = true, name = "Angeln", textAlign = "BOTTOM" },
             [5] = { scale = 1.0, enabled = true, name = "Berufs-Skills"},
         },
         
-        -- NEU: Individuelle Balken-Settings pro Beruf
+        -- Layout-Einstellungen (Spezifische Berufe)
         barSettings = {
             ["Mining"]      = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
             ["Herbalism"]   = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
@@ -37,16 +47,12 @@ local defaults = {
             ["Other"]       = { enabled = true, width = 30, height = 100, growUp = true, fontSize = 10 },
         },
 
-        enabledExpansions = { ["TWW"] = true, ["Midnight"] = true },
-        enabledResources = { ["Ore"] = true, ["Herbs"] = true },
-
         positions = {
             [1] = { x = -450, y = 150 },
             [2] = { x = -450, y = 100 },
             [3] = { x = -450, y = 50 },
             [4] = { x = -300, y = 400 },
             [5] = { x = 0, y = -100 },
-            -- NEU: Startpositionen für die Berufs-Balken-Gruppen
             ["Mining_Bar"]      = { x = -450, y = 150 },
             ["Herbalism_Bar"]   = { x = -400, y = 150 },
             ["Skinning_Bar"]    = { x = -350, y = 150 },
@@ -54,15 +60,7 @@ local defaults = {
             ["Tailoring_Bar"]   = { x = -250, y = 150 },
         },
 
-        profSubSettings = {
-            ["Mining"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
-            ["Herbalism"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
-            ["Skinning"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
-            ["Fishing"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
-            ["Cooking"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
-            ["Other"] = { enabled = true, textAlign = "LEFT", color = {r=0.3, g=0.9, b=0.25} },
-        },
-        itemSettings = {},
+        profSubSettings = {}, -- Dynamische Einstellungen für Berufs-Icons (Wachstum etc.)
     }
 }
 

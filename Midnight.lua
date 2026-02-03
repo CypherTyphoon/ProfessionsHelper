@@ -6,11 +6,13 @@ ProfessionsHelperData = ProfessionsHelperData or {}
 ProfessionsHelperData["Midnight"] = {    
     Config = {
         ParentMapIDs = { 
-            [2274] = true, -- Khaz Algar (Beinhaltet Insel von Dorn, Schallende Tiefen, Undermine etc.)
-            [2371] = true, -- K'aresh (Neuer Kontinent)
+            [2537] = true, -- Quel'Thalas 
+            [2395] = false, -- Immersangwald
+            [2405] = false, -- Leerensturm
+            [2413] = false, -- Harandar
         },
         CityMapIDs = { 
-            [2339] = true, -- Dornogal
+            [2393] = true, -- "Neu"-Silbermond
         },
     },
 }
@@ -420,8 +422,9 @@ ProfessionsHelperData["Midnight"].Other = {}
 ProfessionsHelperData["Midnight"].Skills = {
     
     --Skinning
-    Sharpen_Knife = {spellID = 440977, IDs = { 440977 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
-    Carve_Meat = {spellID = 442615, IDs = { 442615 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
+    Sharpen_Knife = {spellID = 1223388, IDs = { 1223388 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
+    Carve_Meat = {spellID = 1226037, IDs = { 1226037 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
+    Find_High_Value_Beasts = {spellID = 1250491, IDs = {1250491}, gatheringProf = "Skinning", displayCategory = 0, sources = { "Spell"}, time = "CD"},
 
     --Herbalism
     Green_Thumb = {spellID = 439871, IDs = { 439871 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},

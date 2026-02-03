@@ -34,32 +34,43 @@ local PlayerCanHandle = {}
 -- ==========================================
 
 local function PerformCharacterScan()
-    PlayerCanHandle = { ["AllProf"] = true }
+    -- Wir greifen direkt auf das Profil in der DB zu
+    local profile = ProfessionsHelper.db.profile
+    -- Reset der Liste, aber wir behalten "AllProf" als Standard
+    profile.learnedProfessions = { ["AllProf"] = true }
     local profs = { GetProfessions() }
     for _, index in ipairs(profs) do
         if index then
             local _, _, _, _, _, _, skillLine = GetProfessionInfo(index)
             local name = skillLineMapping[skillLine]
-            if name then PlayerCanHandle[name] = true end
+            if name then 
+                profile.learnedProfessions[name] = true 
+            end
         end
     end
+
     -- Spezialfall Holzfällen (Spell-Check)
     if C_SpellBook.IsSpellKnownOrInSpellBook(1256697) then 
-        PlayerCanHandle["Woodcutting"] = true 
+        profile.learnedProfessions["Woodcutting"] = true 
     end
 end
 
 local function CanPlayerSeeItem(category, itemData)
     if not itemData or (not itemData.IDs and not itemData.spellID) then return false end
 
+    -- Wir legen uns eine lokale Referenz an, damit der Code lesbar bleibt
+    local learned = ProfessionsHelper.db.profile.learnedProfessions
+
     local function HasMatch(profEntry)
         if not profEntry then return false end
         if type(profEntry) == "table" then
             for _, p in ipairs(profEntry) do
-                if PlayerCanHandle and PlayerCanHandle[p] then return true end
+                -- GEÄNDERT: Zugriff auf das Profil
+                if learned and learned[p] then return true end
             end
         elseif type(profEntry) == "string" then
-            if PlayerCanHandle and PlayerCanHandle[profEntry] then return true end
+            -- GEÄNDERT: Zugriff auf das Profil
+            if learned and learned[profEntry] then return true end
         end
         return false
     end
@@ -240,25 +251,28 @@ end
 function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSettings, profName)
     -- 1. Einstellungs-Priorität festlegen
     local settings = customSettings or ProfessionsHelper.db.profile.catSettings[1]
+    -- NEU: Kurzform für globalen Zugriff
+    local gDB = ProfessionsHelper.db.global
     
     local isGrowUp = settings.growUp
     local barW = settings.width or 30
     local barH = settings.height or 100
-    local fSize = settings.fontSize or 10
+    -- NEU: fontSize aus global, falls nicht in settings
+    local fSize = settings.fontSize or gDB.fontSize or 10
 
     -- 2. Frame-Erstellung
     local frame = CreateFrame("Frame", "PH_Bar_"..name, parent, "BackdropTemplate")
     frame.catID = 1
     frame.profName = profName
     
-    -- Der Frame muss so groß sein wie der Balken + das Icon + ein kleiner Puffer
     frame:SetSize(barW, barH + barW + 5) 
     frame:SetPoint("CENTER", UIParent, "CENTER", posX, posY)
     frame:SetScale(settings.scale or 1)
     
-    -- Hintergrund (optional)
+    -- Hintergrund
     if settings.showBackground then
-        local bg = settings.backgroundColor or {r=0, g=0, b=0, a=0.5}
+        -- NEU: backgroundColor aus global
+        local bg = settings.backgroundColor or gDB.backgroundColor or {r=0, g=0, b=0, a=0.5}
         frame:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground"})
         frame:SetBackdropColor(bg.r, bg.g, bg.b, bg.a)
     end
@@ -266,18 +280,17 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     -- 3. Die Statusbar
     local bar = CreateFrame("StatusBar", nil, frame)
     bar:SetSize(barW, barH)
-    bar:SetStatusBarTexture(LSM:Fetch("statusbar", settings.barTexture or "Cilo"))
+    -- NEU: barTexture aus global
+    bar:SetStatusBarTexture(LSM:Fetch("statusbar", settings.barTexture or gDB.barTexture or "Cilo"))
     
-    -- FARB-LOGIK: Prüfen, ob wir einen Gradienten haben (6 Werte) oder Uni-Farbe (3 Werte)
+    -- FARB-LOGIK (bleibt wie sie ist, da barColor als Parameter übergeben wird)
     if #barColor >= 6 then
-        -- Wir färben die Textur der Bar mit einem vertikalen Gradienten
         local tex = bar:GetStatusBarTexture()
         tex:SetGradient("VERTICAL", 
-            CreateColor(barColor[1], barColor[2], barColor[3], 1), -- Start (Unten)
-            CreateColor(barColor[4], barColor[5], barColor[6], 1)  -- Ende (Oben)
+            CreateColor(barColor[1], barColor[2], barColor[3], 1),
+            CreateColor(barColor[4], barColor[5], barColor[6], 1)
         )
     else
-        -- Normale Uni-Farbe
         bar:SetStatusBarColor(barColor[1], barColor[2], barColor[3])
     end
     
@@ -288,7 +301,6 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     local icon = frame:CreateTexture(nil, "ARTWORK")
     icon:SetSize(barW, barW)
     
-    -- Ausrichtung (GrowUp = Balken über Icon, sonst Icon über Balken)
     if isGrowUp then
         bar:SetOrientation("VERTICAL")
         bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, barW + 2)
@@ -303,22 +315,21 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     -- 5. Texte (Zahlen auf dem Balken)
     local textOverlay = CreateFrame("Frame", nil, frame)
     textOverlay:SetAllPoints(bar)
-    textOverlay:SetFrameLevel(bar:GetFrameLevel() + 10) -- Setzt den Text weit vor die Bar
+    textOverlay:SetFrameLevel(bar:GetFrameLevel() + 10)
 
     local function CreateCenteredText(colorKey)
-        -- Parent ist jetzt textOverlay statt frame
         local t = textOverlay:CreateFontString(nil, "OVERLAY", nil, 7)
         
-        local fontPath = LSM:Fetch("font", settings.fontName or "Friz Quadrata TT")
+        -- NEU: fontName aus global
+        local fontPath = LSM:Fetch("font", settings.fontName or gDB.fontName or "Friz Quadrata TT")
         if not fontPath or fontPath == "" then fontPath = "Fonts\\FRIZQT__.TTF" end
         
         t:SetFont(fontPath, fSize, "OUTLINE")
-        
-        -- Schatten für maximale Lesbarkeit
         t:SetShadowOffset(1, -1)
         t:SetShadowColor(0, 0, 0, 1)
 
-        local c = settings[colorKey] or (ProfessionsHelper.db.profile.catSettings[1] and ProfessionsHelper.db.profile.catSettings[1][colorKey]) or {r=1, g=1, b=1}
+        -- NEU: Farbwahl (Check: 1. settings, 2. catSettings, 3. global)
+        local c = settings[colorKey] or (ProfessionsHelper.db.profile.catSettings[1] and ProfessionsHelper.db.profile.catSettings[1][colorKey]) or gDB[colorKey] or {r=1, g=1, b=1}
         t:SetTextColor(c.r, c.g, c.b)
         
         t:SetJustifyH("CENTER")
@@ -726,7 +737,8 @@ end
 function Visuals:Init()
     self:ClearFrames()
     PerformCharacterScan()
-    
+
+    local learned = ProfessionsHelper.db.profile.learnedProfessions
     local mapID = C_Map.GetBestMapForUnit("player")
     if not mapID or not ProfessionsHelperData then return end
 
@@ -770,7 +782,7 @@ function Visuals:Init()
                                 
                                 if type(pData) == "table" then
                                     for _, p in ipairs(pData) do 
-                                        if PlayerCanHandle[p] then 
+                                        if learned[p] then 
                                             displayProf = p
                                             -- Wenn es Kategorie 2 (Icons) ist, soll das Item 
                                             -- in den Bucket des Berufs rutschen statt VendorDrop/Other
@@ -780,7 +792,7 @@ function Visuals:Init()
                                     end
                                 elseif type(pData) == "string" then
                                     displayProf = pData
-                                    if cat == 2 and PlayerCanHandle[pData] then
+                                    if cat == 2 and learned[pData] then
                                         bucketToUse = pData
                                     end
                                 end
