@@ -113,6 +113,7 @@ local function MakeInteractive(frame, itemIDs, groupKey)
     frame:EnableMouse(true)
     frame:RegisterForDrag("LeftButton")
 
+    -- 1. ZIEHEN STARTEN
     frame:SetScript("OnDragStart", function(self)
         if not ProfessionsHelper.db.profile.locked then
             self:StartMoving()
@@ -120,6 +121,7 @@ local function MakeInteractive(frame, itemIDs, groupKey)
         end
     end)
 
+    -- 2. ZIEHEN STOPPEN & SPEICHERN
     frame:SetScript("OnDragStop", function(self)
         if not self.isDragging then return end
         self:StopMovingOrSizing()
@@ -133,16 +135,24 @@ local function MakeInteractive(frame, itemIDs, groupKey)
         local newX = (frameX - uiX) / s
         local newY = (frameY - uiY) / s
 
+        -- Hier nutzen wir deinen groupKey (z.B. "Mining_c1")
         local storageKey = groupKey or frame.catID
-        ProfessionsHelper.db.profile.positions[storageKey] = { x = newX, y = newY }
-        Visuals:Init()
+        if storageKey then
+            ProfessionsHelper.db.profile.positions = ProfessionsHelper.db.profile.positions or {}
+            ProfessionsHelper.db.profile.positions[storageKey] = { x = newX, y = newY }
+            
+            -- WICHTIG: Visuals:Init() aufrufen, damit alle Icons des Berufs mitziehen
+            -- (In Visuals.lua meist direkt über self:Init() oder ProfessionsHelper:GetModule("Visuals"):Init())
+            ProfessionsHelper:GetModule("Visuals"):Init()
+        end
     end)
 
+    -- 3. TOOLTIP ANZEIGEN
     frame:SetScript("OnEnter", function(self)
+        -- Tooltip nur zeigen, wenn die Frames fixiert sind (damit er beim Schieben nicht stört)
         if ProfessionsHelper.db.profile.locked then
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             
-            -- FIX: Unterscheidung zwischen Tabelle (Item) und Zahl (Spell)
             if type(itemIDs) == "table" then
                 if frame.catID == 5 then
                     GameTooltip:SetSpellByID(itemIDs[1])
@@ -150,13 +160,14 @@ local function MakeInteractive(frame, itemIDs, groupKey)
                     GameTooltip:SetItemByID(itemIDs[1])
                 end
             elseif type(itemIDs) == "number" then
-                -- Wenn es eine reine Zahl ist, behandeln wir es als Spell (Experiment)
                 GameTooltip:SetSpellByID(itemIDs)
             end
             
             GameTooltip:Show()
         end
     end)
+
+    -- 4. TOOLTIP AUSBLENDEN
     frame:SetScript("OnLeave", function() GameTooltip:Hide() end)
 end
 
@@ -251,13 +262,12 @@ end
 function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSettings, profName)
     -- 1. Einstellungs-Priorität festlegen
     local settings = customSettings or ProfessionsHelper.db.profile.catSettings[1]
-    -- NEU: Kurzform für globalen Zugriff
     local gDB = ProfessionsHelper.db.global
     
-    local isGrowUp = settings.growUp
+    local isGrowUp = settings.growUp 
+    
     local barW = settings.width or 30
     local barH = settings.height or 100
-    -- NEU: fontSize aus global, falls nicht in settings
     local fSize = settings.fontSize or gDB.fontSize or 10
 
     -- 2. Frame-Erstellung
@@ -269,24 +279,23 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     frame:SetPoint("CENTER", UIParent, "CENTER", posX, posY)
     frame:SetScale(settings.scale or 1)
     
-    -- Hintergrund
-    if settings.showBackground then
-        -- NEU: backgroundColor aus global
-        local bg = settings.backgroundColor or gDB.backgroundColor or {r=0, g=0, b=0, a=0.5}
-        frame:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground"})
-        frame:SetBackdropColor(bg.r, bg.g, bg.b, bg.a)
-    end
-    
     -- 3. Die Statusbar
     local bar = CreateFrame("StatusBar", nil, frame)
     bar:SetSize(barW, barH)
-    -- NEU: barTexture aus global
-    bar:SetStatusBarTexture(LSM:Fetch("statusbar", settings.barTexture or gDB.barTexture or "Cilo"))
+
+    ---------------------------------------------------------
+    -- FIX: BALKEN-TEXTUR (LSM muss zwingend gesetzt werden)
+    ---------------------------------------------------------
+    local rawTexture = gDB.barTexture or settings.barTexture or "Cilo"
+    local texturePath = LSM:Fetch("statusbar", rawTexture)
     
-    -- FARB-LOGIK (bleibt wie sie ist, da barColor als Parameter übergeben wird)
+    bar:SetStatusBarTexture(texturePath)
+    -- Sicherstellen, dass die Textur auch gezeichnet wird:
+    bar:GetStatusBarTexture():SetHorizTile(false)
+    bar:GetStatusBarTexture():SetVertTile(false)
+    
     if #barColor >= 6 then
-        local tex = bar:GetStatusBarTexture()
-        tex:SetGradient("VERTICAL", 
+        bar:GetStatusBarTexture():SetGradient("VERTICAL", 
             CreateColor(barColor[1], barColor[2], barColor[3], 1),
             CreateColor(barColor[4], barColor[5], barColor[6], 1)
         )
@@ -301,15 +310,23 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     local icon = frame:CreateTexture(nil, "ARTWORK")
     icon:SetSize(barW, barW)
     
+    ---------------------------------------------------------
+    -- FIX: WUCHSRICHTUNG & ANKER
+    ---------------------------------------------------------
+    bar:ClearAllPoints()
+    icon:ClearAllPoints()
+    bar:SetOrientation("VERTICAL") -- Wichtig für vertikale Balken
+
     if isGrowUp then
-        bar:SetOrientation("VERTICAL")
-        bar:SetPoint("BOTTOM", frame, "BOTTOM", 0, barW + 2)
+        -- Symbol unten, Balken wächst nach OBEN
         icon:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
+        bar:SetPoint("BOTTOM", icon, "TOP", 0, 2)
+        bar:SetReverseFill(false) -- Standard: Füllt von unten nach oben
     else
-        bar:SetOrientation("VERTICAL")
-        bar:SetReverseFill(true)
-        bar:SetPoint("TOP", frame, "TOP", 0, -(barW + 2))
+        -- Symbol oben, Balken wächst nach UNTEN
         icon:SetPoint("TOP", frame, "TOP", 0, 0)
+        bar:SetPoint("TOP", icon, "BOTTOM", 0, -2)
+        bar:SetReverseFill(true) -- Umkehren: Füllt von oben nach unten
     end
     
     -- 5. Texte (Zahlen auf dem Balken)
@@ -319,22 +336,14 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
 
     local function CreateCenteredText(colorKey)
         local t = textOverlay:CreateFontString(nil, "OVERLAY", nil, 7)
-        
-        -- NEU: fontName aus global
         local fontPath = LSM:Fetch("font", settings.fontName or gDB.fontName or "Friz Quadrata TT")
         if not fontPath or fontPath == "" then fontPath = "Fonts\\FRIZQT__.TTF" end
         
         t:SetFont(fontPath, fSize, "OUTLINE")
-        t:SetShadowOffset(1, -1)
-        t:SetShadowColor(0, 0, 0, 1)
-
-        -- NEU: Farbwahl (Check: 1. settings, 2. catSettings, 3. global)
-        local c = settings[colorKey] or (ProfessionsHelper.db.profile.catSettings[1] and ProfessionsHelper.db.profile.catSettings[1][colorKey]) or gDB[colorKey] or {r=1, g=1, b=1}
+        local c = settings[colorKey] or gDB[colorKey] or {r=1, g=1, b=1}
         t:SetTextColor(c.r, c.g, c.b)
-        
         t:SetJustifyH("CENTER")
         t:SetWidth(barW + 10)
-        
         return t
     end
 
@@ -342,51 +351,45 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     local tS = CreateCenteredText("colorQ2")
     local tG = CreateCenteredText("colorQ3")
 
-    -- 6. Update-Logik
+    -- 6. Update-Logik (Die Positions-Fixes im Update)
     local function Update()
-            local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
-            local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
-            local g = C_Item.GetItemCount(itemIDs[3] or 0, true, true, true, true)
-            
-            -- Positionierung basierend auf deiner Vorgabe
-            if not itemIDs[3] then 
-                -- Fall: Nur 2 Qualitäten (z.B. Fisch, Stoffe ohne Q3)
-                -- Qualität 1 = +8 (Bronze/Silber Position)
-                -- Qualität 2 = -8 (Silber/Gold Position)
-                tB:SetPoint("CENTER", bar, "CENTER", 0, 8)
-                tS:SetPoint("CENTER", bar, "CENTER", 0, -8)
-                tG:Hide()
-            else 
-                -- Fall: 3 Qualitäten (Klassisch Erze/Kräuter)
-                -- Bronze = +15, Silber = 0, Gold = -15
-                tB:SetPoint("CENTER", bar, "CENTER", 0, 15)
-                tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
-                tG:SetPoint("CENTER", bar, "CENTER", 0, -15)
-                tG:Show()
-            end
+        local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
+        local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
+        local g = C_Item.GetItemCount(itemIDs[3] or 0, true, true, true, true)
+        
+        -- Text-Anker basierend auf der aktuellen Balken-Mitte
+        tB:ClearAllPoints()
+        tS:ClearAllPoints()
+        tG:ClearAllPoints()
 
-            -- Texte setzen (nur anzeigen wenn > 0)
-            tB:SetText(b > 0 and b or "")
-            tS:SetText(s > 0 and s or "")
-            tG:SetText(g > 0 and g or "")
-
-            local total = b + s + g
-            bar:SetMinMaxValues(0, 1000)
-            bar:SetValue(total)
-            
-            local dID = (g > 0 and itemIDs[3]) or (s > 0 and itemIDs[2]) or itemIDs[1]
-            if dID then icon:SetTexture(C_Item.GetItemIconByID(dID)) end
-            frame:SetAlpha(total == 0 and 0.4 or 1.0)
+        if not itemIDs[3] then 
+            tB:SetPoint("CENTER", bar, "CENTER", 0, 8)
+            tS:SetPoint("CENTER", bar, "CENTER", 0, -8)
+            tG:Hide()
+        else 
+            tB:SetPoint("CENTER", bar, "CENTER", 0, 15)
+            tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
+            tG:SetPoint("CENTER", bar, "CENTER", 0, -15)
+            tG:Show()
         end
+
+        tB:SetText(b > 0 and b or "")
+        tS:SetText(s > 0 and s or "")
+        tG:SetText(g > 0 and g or "")
+
+        local total = b + s + g
+        bar:SetMinMaxValues(0, 1000)
+        bar:SetValue(total)
+        
+        local dID = (g > 0 and itemIDs[3]) or (s > 0 and itemIDs[2]) or itemIDs[1]
+        if dID then icon:SetTexture(C_Item.GetItemIconByID(dID)) end
+        frame:SetAlpha(total == 0 and 0.4 or 1.0)
+    end
     
     frame:RegisterEvent("BAG_UPDATE_DELAYED")
     frame:SetScript("OnEvent", Update)
     Update()
 
-    -- WICHTIG: Speicher-Key für Drag&Drop
-    local storageKey = profName and (profName .. "_Bar") or 1
-    MakeInteractive(frame, itemIDs, storageKey) 
-    
     return frame
 end
 
@@ -819,42 +822,52 @@ function Visuals:Init()
 if ProfessionsHelper.db.profile.catSettings[1].enabled then
     local barGroups = {}
     for _, item in ipairs(buckets[1]) do
-        local p = item.prof or "Other"
+        -- Wir nutzen den bucketName (z.B. "Mining"), um den Key "Mining_c1" zu bauen
+        local p = item.bucketName or "Other"
         barGroups[p] = barGroups[p] or {}
         table.insert(barGroups[p], item)
     end
 
-    for prof, items in pairs(barGroups) do
-        -- Sicherheits-Check: Falls barSettings[prof] nil ist, nimm Cat 1 Defaults
-        local cSettings = (ProfessionsHelper.db.profile.barSettings and ProfessionsHelper.db.profile.barSettings[prof]) 
-        or ProfessionsHelper.db.profile.catSettings[1]
+    for bucketName, items in pairs(barGroups) do
+        -- WICHTIG: Dieser Key MUSS exakt so wie in der Settings.lua sein (Name_c1)
+        local settingKey = bucketName .. "_c1" 
         
-        -- Falls der Beruf deaktiviert wurde, überspringen
-        if cSettings.enabled ~= false then
-            local pos = ProfessionsHelper.db.profile.positions[prof .. "_Bar"] or {x = -450, y = 150}
+        local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
+        local baseSettings = ProfessionsHelper.db.profile.catSettings[1]
+        
+        -- Checkbox "Anzeigen" prüfen
+        if subSettings.enabled ~= false then 
+            
+            -- Position laden (Nutzt jetzt den korrekten Key "Mining_c1")
+            local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = -450, y = 150}
             local bX, bY = pos.x, pos.y
             
-            for _, item in ipairs(items) do
-                -- Hauptfarbe umrechnen
-                local hex = (item.data.color or "#FFFFFF"):gsub("#","")
-                local r, g, b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
-                
-                -- NEU: Gradient-Endfarbe umrechnen (falls vorhanden)
-                local barColors = { r, g, b }
-                if item.data.gradient_End_color then
-                    local gHex = item.data.gradient_End_color:gsub("#","")
-                    local gr, gg, gb = tonumber(gHex:sub(1,2),16)/255, tonumber(gHex:sub(3,4),16)/255, tonumber(gHex:sub(5,6),16)/255
-                    table.insert(barColors, gr)
-                    table.insert(barColors, gg)
-                    table.insert(barColors, gb)
-                end
+            table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
 
-                -- Erstellen des Balkens
-                AddToUI(self:CreateBar(item.name, UIParent, item.data.IDs, bX, bY, barColors, cSettings, prof))
-                
-                -- Dynamischer Abstand basierend auf der Breite des Balkens + kleiner Puffer
-                local spacing = (cSettings and cSettings.width and (cSettings.width + 8)) or self.Config.SpacingX_Bar
-                bX = bX + spacing
+            for _, item in ipairs(items) do
+                if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                    local hex = (item.data.color or "#FFFFFF"):gsub("#","")
+                    local r, g, b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
+                    local barColors = { r, g, b }
+                    if item.data.gradient_End_color then
+                        local gHex = item.data.gradient_End_color:gsub("#","")
+                        local gr, gg, gb = tonumber(gHex:sub(1,2),16)/255, tonumber(gHex:sub(3,4),16)/255, tonumber(gHex:sub(5,6),16)/255
+                        table.insert(barColors, gr)
+                        table.insert(barColors, gg)
+                        table.insert(barColors, gb)
+                    end
+
+                    -- Erstellen des Balkens
+                    local barFrame = self:CreateBar(item.name, UIParent, item.data.IDs, bX, bY, barColors, baseSettings, bucketName)
+                    
+                    -- Hier übergeben wir den settingKey für die Maus-Interaktion
+                    MakeInteractive(barFrame, item.data.IDs, settingKey)
+                    
+                    AddToUI(barFrame)
+                    
+                    local spacing = (baseSettings.width or 30) + 8
+                    bX = bX + spacing
+                end
             end
         end
     end
@@ -927,25 +940,49 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
 end
 
 -- Rendering Cat 3
-    local pos3 = ProfessionsHelper.db.profile.positions[3] or {x = -450, y = 50}
-    if ProfessionsHelper.db.profile.catSettings[3].enabled then
-        local pX, pY = pos3.x, pos3.y
-        for _, item in ipairs(buckets[3]) do
-            -- HIER IST DIE ABZWEIGUNG
-            -- Wir prüfen, ob das Rezept ein Spell ist oder spezielle Aufladungen hat
-            if item.data.isSpell or item.data.hasCharges then
-                -- Nutzt die Spezial-Logik für Experimente/Cooldowns
-                -- Wir nehmen die spellID als Referenz, falls vorhanden
-                local refID = item.data.spellID or item.data.IDs[1]
-                AddToUI(self:CreateSpecialActionIcon(UIParent, refID, pX, pY))
-            else
-                -- Standard-Logik für Tränke und Items
-                AddToUI(self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY))
-            end
+if ProfessionsHelper.db.profile.catSettings[3].enabled then
+    local profGroups = {}
+    
+    -- 1. Gruppierung nach gatheringProf (z.B. Skinning) oder prof
+    for _, item in ipairs(buckets[3]) do
+        -- FIX: Nutze gatheringProf für die Trennung (z.B. Leder von Kürschnerei)
+        local groupKey = item.data.gatheringProf or item.prof or "Other"
+        profGroups[groupKey] = profGroups[groupKey] or {}
+        table.insert(profGroups[groupKey], item)
+    end
+
+    for groupName, items in pairs(profGroups) do
+        -- Wir müssen den gleichen Key wie in der Settings.lua bauen
+        local settingKey = groupName .. "_c3"
+        local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
+        
+        if subSettings.enabled ~= false then
+            local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = 200, y = 0}
             
-            pX = pX + self.Config.SpacingX_Prof
+            table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
+
+            local maxCols = subSettings.maxColumns or 5
+            local spacingX = self.Config.SpacingX_Prof or 48
+            local spacingY = self.Config.RowHeight or 50
+
+            local vIdx = 0
+            for _, item in ipairs(items) do
+                if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                    -- GRID-BERECHNUNG für den Block
+                    local col = vIdx % maxCols
+                    local row = math.floor(vIdx / maxCols)
+                    
+                    local pX = pos.x + (col * spacingX)
+                    local pY = pos.y - (row * spacingY)
+                    
+                    -- WICHTIG: Wir übergeben settingKey am Ende, damit der ganze Block verschiebbar ist
+                    AddToUI(self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY, settingKey))
+                    vIdx = vIdx + 1
+                end
+            end
         end
     end
+end
 
     -- Rendering Cat 4
     local pos4 = ProfessionsHelper.db.profile.positions[4] or {x = -300, y = 400}

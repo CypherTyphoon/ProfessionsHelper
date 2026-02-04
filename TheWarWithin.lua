@@ -118,7 +118,25 @@ ProfessionsHelperData["The War Within"].VendorDrop = {
 
 ProfessionsHelperData["The War Within"].Herbalism = {}
 
-ProfessionsHelperData["The War Within"].Skinning = {}
+ProfessionsHelperData["The War Within"].Skinning = {
+	-- Baits
+    ElusiveCreatureLure = { IDs = { 219007 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
+    SupremeBeastLure = { IDs = { 219008 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
+    BeastLureScent = { IDs = { 219019 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
+
+	-- Infused Baits
+    CrystallineCreatureLure = { IDs = { 219009 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
+    WrithingCreatureLure = { IDs = { 219010 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
+    SporefusedCreatureLure = { IDs = { 219011 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
+
+
+	-- Fishbait
+    SpecularRainbowfishLure = { IDs = { 219002 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
+    QuietRiverBassLure = { IDs = { 219003 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
+    DornishPikeLure = { IDs = { 219004 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
+    ArathorHammerfishLure = { IDs = { 219005 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
+    RoaringAnglerseekerLure = { IDs = { 219006 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
+}
 
 ProfessionsHelperData["The War Within"].Cooking = {
     -- Drop or Vendor
@@ -346,6 +364,71 @@ ProfessionsHelperData["The War Within"].Skills = {
 -- Recipes of professions
 -- ==========================================
 
+    -- Skinning
+    -- Baits
+    local recipe_elusiveCreatureLure = {
+    yield = 1,
+    { ids = {223512}, amount = 10 }, -- Basic_Meat
+}
+
+    local recipe_writhingCreatureLure = {
+    yield = 1,
+    { ids = {219007}, amount = 1 }, -- Basic_Lure
+    { ids = {213611}, amount = 1 }, -- Element
+}
+
+    local recipe_sporefusedCreatureLure = {
+    yield = 1,
+    { ids = {219007}, amount = 1 }, -- Basic_Lure
+    { ids = {213612}, amount = 3 }, -- Element
+}
+
+    local recipe_crystallineCreatureLure = {
+    yield = 1,
+    { ids = {219007}, amount = 1 }, -- Basic_Lure
+    { ids = {213610}, amount = 3 }, -- Element
+}
+
+    local recipe_supremeBeastLure = {
+    yield = 1,
+    { ids = {222739}, amount = 1 }, -- Cooked_Meat
+}
+
+    local recipe_beastLureScent = {
+    yield = 1,
+    { ids = {219007}, amount = 3 }, -- Basic_Lure
+    { ids = {222700}, amount = 5 }, -- Spice
+}
+
+    -- Fishbaits
+    local recipe_arathorHammerfishLure = {
+    yield = 1,
+    { ids = {220137}, amount = 2 }, -- Fish
+}
+
+    local recipe_dornishPikeLure = {
+    yield = 1,
+    { ids = {220136}, amount = 2 }, -- Fish
+}
+
+    local recipe_specularRainbowfishLure = {
+    yield = 1,
+    { ids = {220134}, amount = 2 }, -- Fish
+}
+
+    local recipe_quietRiverBassLure = {
+    yield = 1,
+    { ids = {220135}, amount = 2 }, -- Fish
+}
+
+    local recipe_roaringAnglerseekerLure = {
+    yield = 1,
+    { ids = {220134}, amount = 1 }, -- 1.Fish
+    { ids = {220135}, amount = 1 }, -- 2.Fish
+    { ids = {220136}, amount = 1 }, -- 3.Fish
+    { ids = {220137}, amount = 1 }, -- 4.Fish
+}
+
     --Alchemy
     local recipe_algarManaPotion = {
     yield = 5,
@@ -369,6 +452,23 @@ ProfessionsHelperData["The War Within"].Skills = {
 
 -- 2. Das Rezept allen drei Qualitätsstufen des Endprodukts zuweisen
 ProfessionsHelperData["The War Within"].RecipeDB = {
+    -- Skinning
+    -- Baits
+    [219007] = recipe_elusiveCreatureLure, -- BasicLure
+    [219008] = recipe_supremeBeastLure, -- AdvancedLure
+    [219019] = recipe_beastLureScent, -- "GetThemAll"
+    [219009] = recipe_crystallineCreatureLure, -- InfusedLure
+    [219010] = recipe_writhingCreatureLure, -- 2ndInfusedLure
+    [219011] = recipe_sporefusedCreatureLure, -- 3rdInfusedLure
+
+    -- Fishbait
+    [219002] = recipe_specularRainbowfishLure,
+    [219003] = recipe_quietRiverBassLure,
+    [219004] = recipe_dornishPikeLure,
+    [219005] = recipe_arathorHammerfishLure,
+    [219006] = recipe_roaringAnglerseekerLure,
+
+    -- Alchemy
     [212239] = recipe_algarManaPotion, -- Q1 Manapot
     [212240] = recipe_algarManaPotion, -- Q2 Manapot
     [212241] = recipe_algarManaPotion, -- Q3 Manapot
@@ -386,4 +486,6 @@ ProfessionsHelperData["The War Within"].RecipeDB = {
         { ids = {210814}, amount = 5 }, -- ArtisansAcuity
         },
     },
+
+    
 }
