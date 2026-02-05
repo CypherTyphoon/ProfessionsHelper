@@ -1,7 +1,7 @@
 ## X-Flavor: retail
 ## X-Expansion: TWW
 ## Interface: 63906, 110100, 110205, 110207, 120000
-## Version: 0.4.9.9
+## Version: 0.5.0
 
 ## Title: Professions Helper
 ## Notes: Shows your mats and the items you can craft.

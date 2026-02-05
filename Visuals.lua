@@ -538,33 +538,42 @@ function Visuals:CreateSpecialActionIcon(parent, recipeID, x, y)
     local function Update()
         local craftCount = Visuals:GetCraftableAmount(recipeID)
         local remain = 0
+        local currentText = ""
 
         if recipe.isSpell then
             local sc = C_Spell.GetSpellCooldown(recipe.spellID)
             local ch = C_Spell.GetSpellCharges(recipe.spellID)
 
+            -- 1. Ladungen prüfen (z.B. Experimente)
             if ch and ch.maxCharges and ch.maxCharges > 1 then
-                textInfo:SetText(ch.currentCharges or "0")
-                if ch.currentCharges < ch.maxCharges then
+                currentText = tostring(ch.currentCharges or "0")
+                if ch.currentCharges < ch.maxCharges and ch.cooldownStartTime > 0 then
                     remain = (ch.cooldownStartTime + ch.cooldownDuration) - GetTime()
                 end
+            -- 2. Normaler Cooldown prüfen
             elseif sc and sc.startTime > 0 then
                 remain = (sc.startTime + sc.duration) - GetTime()
-            else
-                textInfo:SetText("")
             end
             
-            if remain > 500000 then remain = remain / 1000 end
-            
+            -- Zeit formatieren, falls Cooldown läuft
             if remain > 0.1 then 
-                textInfo:SetText(FormatTime(remain)) 
+                -- Falls die Zeit absurd hoch ist (Server-Bug), fixen
+                if remain > 1000000 then remain = 0 end 
+                currentText = FormatTime(remain)
             end
         end
 
+        textInfo:SetText(currentText)
         textCraft:SetText(craftCount > 0 and "x"..craftCount or "")
-        cd:Clear()
-        icon:SetDesaturated(craftCount == 0)
-        frame:SetAlpha(craftCount == 0 and 0.5 or 1.0)
+        
+        -- VISUELLE KORREKTUR:
+        -- Das Icon soll NICHT grau sein, wenn nur die Materialien fehlen.
+        -- Es soll nur grau sein, wenn es auf Cooldown ist ODER man gar nichts machen kann.
+        local isOnCD = (remain > 0.1)
+        icon:SetDesaturated(isOnCD) 
+        
+        -- Alpha-Feedback: Etwas blasser wenn keine Mats da sind, aber sichtbar
+        frame:SetAlpha((craftCount == 0 and not isOnCD) and 0.6 or 1.0)
     end
 
     frame:RegisterEvent("BAG_UPDATE_DELAYED")
