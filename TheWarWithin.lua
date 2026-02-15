@@ -226,15 +226,15 @@ ProfessionsHelperData["The War Within"].Engineering = {
 
 ProfessionsHelperData["The War Within"].Tailoring = {
     -- Spools
-    SpoolOfDuskthread = { IDs = { 222789, 222790, 222791 }, color = "#8F85D1", gradient_End_color = "#ED2EFF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 2 },
-    SpoolOfDawnthread = { IDs = { 222792, 222793, 222794 }, color = "#6C77D1", gradient_End_color = "#D1833F", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 2 },
-    SpoolOfWeaverthread = { IDs = { 222795, 222796, 222797 }, color = "#FFB841", gradient_End_color = "#C64DA1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 2 },
+    SpoolOfDuskthread = { IDs = { 222789, 222790, 222791 }, color = "#8F85D1", gradient_End_color = "#ED2EFF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    SpoolOfDawnthread = { IDs = { 222792, 222793, 222794 }, color = "#6C77D1", gradient_End_color = "#D1833F", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    SpoolOfWeaverthread = { IDs = { 222795, 222796, 222797 }, color = "#FFB841", gradient_End_color = "#C64DA1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
 
     -- Bolts
-    DuskweaveBolt = { IDs = { 222798, 222799, 222800 }, color = "#7250D1", gradient_End_color = "#A939FF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
-    DawnweaveBolt = { IDs = { 222801, 222802, 222803 }, color = "#FFFF00", gradient_End_color = "#D1833F", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
-    WeaverclothBolt = { IDs = { 222804, 222805, 222806 }, color = "#7B12FF", gradient_End_color = "#8F85D1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
-    ExquisiteWeaverclothBolt = { IDs = { 224832, 224833, 224834 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
+    DuskweaveBolt = { IDs = { 222798, 222799, 222800 }, color = "#7250D1", gradient_End_color = "#A939FF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    DawnweaveBolt = { IDs = { 222801, 222802, 222803 }, color = "#FFFF00", gradient_End_color = "#D1833F", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    WeaverclothBolt = { IDs = { 222804, 222805, 222806 }, color = "#7B12FF", gradient_End_color = "#8F85D1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    ExquisiteWeaverclothBolt = { IDs = { 224832, 224833, 224834 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
 
     -- Optional Reagents
     Dawnthread_Lining = { IDs = { 222868, 222869, 222870 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 3 },
