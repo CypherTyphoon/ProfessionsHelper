@@ -895,53 +895,95 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
         local pSet = ProfessionsHelper.db.profile.profSubSettings[bName] or { growth = "LEFT_RIGHT", textAlign = "BOTTOM", enabled = true }
         
         if pSet.enabled ~= false then
-            -- Startpunkt der Gruppe
             local pos = ProfessionsHelper.db.profile.positions[bName] or ProfessionsHelper.db.profile.positions[2] or {x = -450, y = 100}
             
             table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
 
-            -- WICHTIG: Dieser Zähler muss pro Gruppe bei 0 starten!
             local visibleIdx = 0 
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                    -- Berechne den Versatz basierend auf dem Icon-Abstand (Config.SpacingX_Icon)
                     local offset = visibleIdx * self.Config.SpacingX_Icon
                     local iX, iY = pos.x, pos.y
                     
-                    -- Hier wird entschieden, ob das nächste Icon daneben oder darunter landet
-                    if pSet.growth == "LEFT_RIGHT" then 
-                        iX = pos.x + offset 
-                    elseif pSet.growth == "RIGHT_LEFT" then 
-                        iX = pos.x - offset 
-                    elseif pSet.growth == "TOP_BOTTOM" then 
-                        iY = pos.y - offset 
-                    elseif pSet.growth == "BOTTOM_TOP" then 
-                        iY = pos.y + offset 
-                    else
-                        -- Fallback, falls im Menü noch nichts gewählt wurde
-                        iX = pos.x + offset
-                    end
+                    if pSet.growth == "LEFT_RIGHT" then iX = pos.x + offset 
+                    elseif pSet.growth == "RIGHT_LEFT" then iX = pos.x - offset 
+                    elseif pSet.growth == "TOP_BOTTOM" then iY = pos.y - offset 
+                    elseif pSet.growth == "BOTTOM_TOP" then iY = pos.y + offset 
+                    else iX = pos.x + offset end
 
                     local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, bName)
                     
+                    ---------------------------------------------------------
+                    -- 1. ACHIEVEMENT / BALKEN LOGIK
+                    ---------------------------------------------------------
+                    local hasActiveBar = false
+                    if iconFrame and item.data.achievementID then
+                        local _, _, completed, quantity, requiredQuantity = GetAchievementCriteriaInfo(item.data.achievementID, 1)
+
+                        if not completed and requiredQuantity and requiredQuantity > 0 then
+                            if not iconFrame.progressBar then
+                                iconFrame.progressBar = CreateFrame("StatusBar", nil, iconFrame)
+                                iconFrame.progressBar:SetSize(iconFrame:GetWidth(), 6)
+                                -- Der Balken klebt 2 Pixel unter dem Icon
+                                iconFrame.progressBar:SetPoint("TOP", iconFrame, "BOTTOM", 0, -2)
+                                
+                                local bg = iconFrame.progressBar:CreateTexture(nil, "BACKGROUND")
+                                bg:SetAllPoints(true)
+                                bg:SetColorTexture(0, 0, 0, 0.6)
+                                
+                                iconFrame.progressBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+                                iconFrame.progressBar:SetStatusBarColor(0.6, 0.4, 0.2) 
+
+                                iconFrame.progressBar:EnableMouse(true)
+                                iconFrame.progressBar:SetScript("OnEnter", function(self)
+                                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                                    local _, achName = GetAchievementInfo(item.data.achievementID)
+                                    GameTooltip:AddLine(achName or "Holzfällen Fortschritt", 1, 1, 1)
+                                    GameTooltip:AddLine(string.format("Fortschritt: %d / %d", quantity, requiredQuantity), 0.8, 0.8, 0.8)
+                                    GameTooltip:AddLine("Sammeln vom Mount nach Abschluss freigeschaltet.", 0, 1, 0, true)
+                                    GameTooltip:Show()
+                                end)
+                                iconFrame.progressBar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+                            end
+                            
+                            iconFrame.progressBar:SetMinMaxValues(0, requiredQuantity)
+                            iconFrame.progressBar:SetValue(quantity)
+                            iconFrame.progressBar:Show()
+                            hasActiveBar = true
+                        else
+                            if iconFrame.progressBar then iconFrame.progressBar:Hide() end
+                        end
+                    end
+
+                    ---------------------------------------------------------
+                    -- 2. TEXT-LOGIK (COUNT)
+                    ---------------------------------------------------------
                     if iconFrame and iconFrame.Count then
                         -- Farbe setzen
                         if pSet.color then 
                             iconFrame.Count:SetTextColor(pSet.color.r, pSet.color.g, pSet.color.b) 
                         end
                         
-                        -- Text-Ausrichtung setzen
                         iconFrame.Count:ClearAllPoints()
                         local align = pSet.textAlign or "BOTTOM"
-                        if align == "TOP" then iconFrame.Count:SetPoint("BOTTOM", iconFrame, "TOP", 0, 2)
-                        elseif align == "BOTTOM" then iconFrame.Count:SetPoint("TOP", iconFrame, "BOTTOM", 0, -2)
-                        elseif align == "LEFT" then iconFrame.Count:SetPoint("RIGHT", iconFrame, "LEFT", -4, 0)
-                        elseif align == "RIGHT" then iconFrame.Count:SetPoint("LEFT", iconFrame, "RIGHT", 4, 0)
+                        
+                        -- Wenn der Balken da ist, muss der Text weiter runter
+                        -- Balken ist bei -2 und 6px hoch -> Text muss mindestens auf -10 oder -12
+                        local yOffset = hasActiveBar and -12 or -3
+
+                        if align == "TOP" then 
+                            iconFrame.Count:SetPoint("BOTTOM", iconFrame, "TOP", 0, 2)
+                        elseif align == "BOTTOM" then 
+                            iconFrame.Count:SetPoint("TOP", iconFrame, "BOTTOM", 0, yOffset)
+                        elseif align == "LEFT" then 
+                            iconFrame.Count:SetPoint("RIGHT", iconFrame, "LEFT", -4, 0)
+                        elseif align == "RIGHT" then 
+                            iconFrame.Count:SetPoint("LEFT", iconFrame, "RIGHT", 4, 0)
                         end
                     end
 
                     AddToUI(iconFrame)
-                    visibleIdx = visibleIdx + 1 -- Nächstes Icon eins weiter schieben!
+                    visibleIdx = visibleIdx + 1
                 end
             end
         end
@@ -971,8 +1013,8 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
             table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
 
             local maxCols = subSettings.maxColumns or 5
-            local spacingX = self.Config.SpacingX_Prof or 48
-            local spacingY = self.Config.RowHeight or 50
+            local spacingX = self.Config.SpacingX_Prof or 44
+            local spacingY = subSettings.customSpacingY or 44
 
             local vIdx = 0
             for _, item in ipairs(items) do

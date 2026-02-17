@@ -88,18 +88,18 @@ ProfessionsHelperData["Midnight"].Fishing = {
 
 ProfessionsHelperData["Midnight"].Wood = {
     -- expID Mapping: 0=Classic, 1=BC, 2=WotLK, 3=Cata, 4=MoP, 5=WoD, 6=Legion, 7=BfA, 8=SL, 9=DF, 10=TWW, 11=Midnight
-    Olemba_Lumber = { IDs = { 242691 }, expID = 1, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Arden_Lumber = { IDs = { 251772 }, expID = 8, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Ashwood_Lumber = { IDs = { 251764 }, expID = 3, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Coldwind_Lumber = { IDs = { 251762 }, expID = 2, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Ironwood_Lumber = { IDs = { 245586 }, expID = 0, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Dornic_Fir_Lumber = { IDs = { 248012 }, expID = 10, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Shadowmoon_Lumber = { IDs = { 251766 }, expID = 5, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Fel_Touched_Lumber = { IDs = { 251767 }, expID = 6, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Bamboo_Lumber = { IDs = { 251763 }, expID = 4, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Darkpine_Lumber = { IDs = { 251768 }, expID = 7, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Dragonpine_Lumber = { IDs = { 251773 }, expID = 9, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
-    Thalassian_Lumber = { IDs = { 256963 }, expID = 11, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2 },
+    Ironwood_Lumber      = { IDs = { 245586 }, expID = 0,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62357 },
+    Olemba_Lumber        = { IDs = { 242691 }, expID = 1,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62358 },
+    Coldwind_Lumber      = { IDs = { 251762 }, expID = 2,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62359 },
+    Ashwood_Lumber       = { IDs = { 251764 }, expID = 3,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62360 },
+    Bamboo_Lumber        = { IDs = { 251763 }, expID = 4,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62361 },
+    Shadowmoon_Lumber    = { IDs = { 251766 }, expID = 5,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62362 },
+    Fel_Touched_Lumber   = { IDs = { 251767 }, expID = 6,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62363 },
+    Darkpine_Lumber      = { IDs = { 251768 }, expID = 7,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62364 },
+    Arden_Lumber         = { IDs = { 251772 }, expID = 8,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62365 },
+    Dragonpine_Lumber    = { IDs = { 251773 }, expID = 9,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62366 },
+    Dornic_Fir_Lumber    = { IDs = { 248012 }, expID = 10, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62369 },
+    Thalassian_Lumber    = { IDs = { 256963 }, expID = 11, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62370 },
 }
 
 ProfessionsHelperData["Midnight"].VendorDrop = {
