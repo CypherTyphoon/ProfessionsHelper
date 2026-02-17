@@ -393,39 +393,103 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     return frame
 end
 
--- Material Icons
-function Visuals:CreateMaterialIcon(parent, ids, x, y, profName)
+function Visuals:CreateMaterialIcon(parent, ids, x, y, profName, achievementID)
     local frame = CreateFrame("Frame", nil, parent)
     frame.catID = 2
     local settings = ProfessionsHelper.db.profile.catSettings[2]
-    local sub = ProfessionsHelper.db.profile.profSubSettings[profName or "Other"] or {}
     
-    frame:SetSize(20, 20); frame:SetScale(settings.scale or 1)
+    frame:SetSize(20, 20)
+    frame:SetScale(settings.scale or 1)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
 
-    local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
+    local icon = frame:CreateTexture(nil, "ARTWORK")
+    icon:SetAllPoints()
     icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
 
     local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
-    local align = sub.textAlign or "BOTTOM"
-    local color = sub.color or {r=0.3, g=0.9, b=0.25}
+    frame.Count = text 
+    text:SetTextColor(0.3, 0.9, 0.25)
 
-    text:ClearAllPoints()
-    if align == "LEFT" then text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
-    elseif align == "RIGHT" then text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
-    elseif align == "TOP" then text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
-    else text:SetPoint("TOP", frame, "BOTTOM", 0, -4) end
-    text:SetTextColor(color.r, color.g, color.b)
+    -- BALKEN ERSTELLEN + TOOLTIP
+    if achievementID then
+        frame.progressBar = CreateFrame("StatusBar", nil, frame)
+        frame.progressBar:SetSize(20, 6)
+        frame.progressBar:SetPoint("TOP", frame, "BOTTOM", 0, -2)
+        frame.progressBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        frame.progressBar:SetStatusBarColor(0.6, 0.4, 0.2)
+        
+        local bg = frame.progressBar:CreateTexture(nil, "BACKGROUND")
+        bg:SetAllPoints(); bg:SetColorTexture(0, 0, 0, 0.6)
 
-    local function Update()
-        local total = 0
-        for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
-        text:SetText(total > 0 and total or "")
-        icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
+        -- HIER IST DER TOOLTIP WIEDER:
+        frame.progressBar:EnableMouse(true)
+        frame.progressBar:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            local _, achName = GetAchievementInfo(achievementID)
+            local _, _, _, quantity, req = GetAchievementCriteriaInfo(achievementID, 1)
+            
+            GameTooltip:AddLine(achName or "Holzfällen Fortschritt", 1, 1, 1)
+            GameTooltip:AddLine(string.format("Fortschritt: %d / %d", quantity or 0, req or 0), 0.8, 0.8, 0.8)
+            GameTooltip:AddLine("Sammeln vom Mount nach Abschluss freigeschaltet.", 0, 1, 0, true)
+            GameTooltip:Show()
+        end)
+        frame.progressBar:SetScript("OnLeave", function() GameTooltip:Hide() end)
     end
 
-    frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
-    MakeInteractive(frame, ids, profName); return frame
+    local function Update()
+        -- 1. Items
+        local total = 0
+        for _, id in ipairs(ids) do 
+            total = total + C_Item.GetItemCount(id, true, true, true, true) 
+        end
+        text:SetText(total > 0 and total or "")
+        icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
+
+        -- 2. Balken & Text-Verschiebung
+        local hasBar = false
+        if achievementID and frame.progressBar then
+            local _, _, completed, quantity, req = GetAchievementCriteriaInfo(achievementID, 1)
+            if not completed and req and req > 0 then
+                frame.progressBar:SetMinMaxValues(0, req)
+                frame.progressBar:SetValue(quantity)
+                frame.progressBar:Show()
+                hasBar = true
+            else
+                frame.progressBar:Hide()
+            end
+        end
+
+        -- Anker setzen
+        text:ClearAllPoints()
+        local align = frame.textAlign or "BOTTOM"
+        if align == "BOTTOM" then
+            local yOff = hasBar and -12 or -3 
+            text:SetPoint("TOP", frame, "BOTTOM", 0, yOff)
+        elseif align == "TOP" then
+            text:SetPoint("BOTTOM", frame, "TOP", 0, 2)
+        elseif align == "LEFT" then
+            text:SetPoint("RIGHT", frame, "LEFT", -4, 0)
+        elseif align == "RIGHT" then
+            text:SetPoint("LEFT", frame, "RIGHT", 4, 0)
+        end
+    end
+
+    frame.UpdateManually = Update
+    frame:RegisterEvent("BAG_UPDATE_DELAYED")
+    frame:RegisterEvent("CRITERIA_UPDATE")
+    frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+    
+    frame:SetScript("OnEvent", function(self, event, unit, _, spellID)
+        if event == "UNIT_SPELLCAST_SUCCEEDED" and spellID == 1239682 then
+            C_Timer.After(0.2, Update)
+        else
+            Update()
+        end
+    end)
+
+    Update()
+    MakeInteractive(frame, ids, profName)
+    return frame
 end
 
 -- Profession Icons
@@ -902,6 +966,7 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
             local visibleIdx = 0 
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                    -- BERECHNUNG DER POSITION (Wichtig gegen das Stapeln!)
                     local offset = visibleIdx * self.Config.SpacingX_Icon
                     local iX, iY = pos.x, pos.y
                     
@@ -911,75 +976,14 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
                     elseif pSet.growth == "BOTTOM_TOP" then iY = pos.y + offset 
                     else iX = pos.x + offset end
 
-                    local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, bName)
+                    -- Frame erstellen (mit Übergabe der achievementID für den internen Balken)
+                    local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, bName, item.data.achievementID)
                     
-                    ---------------------------------------------------------
-                    -- 1. ACHIEVEMENT / BALKEN LOGIK
-                    ---------------------------------------------------------
-                    local hasActiveBar = false
-                    if iconFrame and item.data.achievementID then
-                        local _, _, completed, quantity, requiredQuantity = GetAchievementCriteriaInfo(item.data.achievementID, 1)
-
-                        if not completed and requiredQuantity and requiredQuantity > 0 then
-                            if not iconFrame.progressBar then
-                                iconFrame.progressBar = CreateFrame("StatusBar", nil, iconFrame)
-                                iconFrame.progressBar:SetSize(iconFrame:GetWidth(), 6)
-                                -- Der Balken klebt 2 Pixel unter dem Icon
-                                iconFrame.progressBar:SetPoint("TOP", iconFrame, "BOTTOM", 0, -2)
-                                
-                                local bg = iconFrame.progressBar:CreateTexture(nil, "BACKGROUND")
-                                bg:SetAllPoints(true)
-                                bg:SetColorTexture(0, 0, 0, 0.6)
-                                
-                                iconFrame.progressBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-                                iconFrame.progressBar:SetStatusBarColor(0.6, 0.4, 0.2) 
-
-                                iconFrame.progressBar:EnableMouse(true)
-                                iconFrame.progressBar:SetScript("OnEnter", function(self)
-                                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                                    local _, achName = GetAchievementInfo(item.data.achievementID)
-                                    GameTooltip:AddLine(achName or "Holzfällen Fortschritt", 1, 1, 1)
-                                    GameTooltip:AddLine(string.format("Fortschritt: %d / %d", quantity, requiredQuantity), 0.8, 0.8, 0.8)
-                                    GameTooltip:AddLine("Sammeln vom Mount nach Abschluss freigeschaltet.", 0, 1, 0, true)
-                                    GameTooltip:Show()
-                                end)
-                                iconFrame.progressBar:SetScript("OnLeave", function() GameTooltip:Hide() end)
-                            end
-                            
-                            iconFrame.progressBar:SetMinMaxValues(0, requiredQuantity)
-                            iconFrame.progressBar:SetValue(quantity)
-                            iconFrame.progressBar:Show()
-                            hasActiveBar = true
-                        else
-                            if iconFrame.progressBar then iconFrame.progressBar:Hide() end
-                        end
-                    end
-
-                    ---------------------------------------------------------
-                    -- 2. TEXT-LOGIK (COUNT)
-                    ---------------------------------------------------------
-                    if iconFrame and iconFrame.Count then
-                        -- Farbe setzen
-                        if pSet.color then 
-                            iconFrame.Count:SetTextColor(pSet.color.r, pSet.color.g, pSet.color.b) 
-                        end
-                        
-                        iconFrame.Count:ClearAllPoints()
-                        local align = pSet.textAlign or "BOTTOM"
-                        
-                        -- Wenn der Balken da ist, muss der Text weiter runter
-                        -- Balken ist bei -2 und 6px hoch -> Text muss mindestens auf -10 oder -12
-                        local yOffset = hasActiveBar and -12 or -3
-
-                        if align == "TOP" then 
-                            iconFrame.Count:SetPoint("BOTTOM", iconFrame, "TOP", 0, 2)
-                        elseif align == "BOTTOM" then 
-                            iconFrame.Count:SetPoint("TOP", iconFrame, "BOTTOM", 0, yOffset)
-                        elseif align == "LEFT" then 
-                            iconFrame.Count:SetPoint("RIGHT", iconFrame, "LEFT", -4, 0)
-                        elseif align == "RIGHT" then 
-                            iconFrame.Count:SetPoint("LEFT", iconFrame, "RIGHT", 4, 0)
-                        end
+                    -- Dem Frame das Alignment für seine interne Update-Funktion mitteilen
+                    if iconFrame then
+                        iconFrame.textAlign = pSet.textAlign or "BOTTOM"
+                        -- Falls wir die Funktion UpdateManually genannt haben:
+                        if iconFrame.UpdateManually then iconFrame:UpdateManually() end
                     end
 
                     AddToUI(iconFrame)
