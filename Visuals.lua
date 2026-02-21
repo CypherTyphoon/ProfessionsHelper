@@ -29,6 +29,36 @@ local skillLineMapping = {
 
 local PlayerCanHandle = {}
 
+function ProfessionsHelper:GetGlobalBucketKey(itemData, catID)
+    local targetGroup = "DroporVendor"
+    local profPriority = {"Herbalism", "Mining", "Skinning", "Wood", "Fishing"}
+
+    -- 1. Sonderfall Holz
+    if itemData.bucketName == "Wood" then
+        targetGroup = "Wood"
+    else
+        -- 2. Berufs-Zuordnung (unterstützt Tabelle oder String)
+        local profs = itemData.gatheringProf
+        if type(profs) == "table" then
+            for _, p in ipairs(profPriority) do
+                for _, itemProf in ipairs(profs) do
+                    if itemProf == p then targetGroup = p; break end
+                end
+                if targetGroup ~= "DroporVendor" then break end
+            end
+        elseif type(profs) == "string" and profs ~= "" then
+            targetGroup = profs
+        end
+    end
+
+    -- 3. Mappings vereinheitlichen
+    if targetGroup == "Woodcutting" then targetGroup = "Wood" end
+    if targetGroup == "AllProf"      then targetGroup = "DroporVendor" end
+
+    -- Rückgabe: z.B. "Mining_c2" oder "Herbalism_c2"
+    return targetGroup .. "_c" .. catID
+end
+
 -- ==========================================
 -- 2. SCAN & FILTER LOGIK
 -- ==========================================
@@ -946,47 +976,49 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
     end
 end
 
--- Rendering Cat 2
+-- Rendering Cat 2 (Material-Icons)
 if ProfessionsHelper.db.profile.catSettings[2].enabled then
-    local groupedBuckets = {}
+    local globalGroups = {}
+    
+    -- Schritt 1: Items sammeln und über die neue globale Funktion gruppieren
     for _, item in ipairs(buckets[2]) do
-        local bName = item.bucketName or "Other"
-        groupedBuckets[bName] = groupedBuckets[bName] or {}
-        table.insert(groupedBuckets[bName], item)
+        -- Nutze die neue Hilfsfunktion für einen einheitlichen Key (z.B. "Mining_c2")
+        local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 2)
+        globalGroups[gKey] = globalGroups[gKey] or {}
+        table.insert(globalGroups[gKey], item)
     end
 
-    for bName, items in pairs(groupedBuckets) do
-        local pSet = ProfessionsHelper.db.profile.profSubSettings[bName] or { growth = "LEFT_RIGHT", textAlign = "BOTTOM", enabled = true }
+    -- Schritt 2: Die globalen Gruppen rendern
+    for gKey, items in pairs(globalGroups) do
+        local pSet = ProfessionsHelper.db.profile.profSubSettings[gKey] or { growth = "LEFT_RIGHT", textAlign = "BOTTOM", enabled = true }
         
         if pSet.enabled ~= false then
-            local pos = ProfessionsHelper.db.profile.positions[bName] or ProfessionsHelper.db.profile.positions[2] or {x = -450, y = 100}
+            -- Position laden: Nutzt den globalen Key (z.B. Mining_c2)
+            local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = -450, y = 100}
             
             table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
 
             local visibleIdx = 0 
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                    -- BERECHNUNG DER POSITION (Wichtig gegen das Stapeln!)
                     local offset = visibleIdx * self.Config.SpacingX_Icon
                     local iX, iY = pos.x, pos.y
                     
+                    -- Wachstumsausrichtung anwenden
                     if pSet.growth == "LEFT_RIGHT" then iX = pos.x + offset 
                     elseif pSet.growth == "RIGHT_LEFT" then iX = pos.x - offset 
                     elseif pSet.growth == "TOP_BOTTOM" then iY = pos.y - offset 
                     elseif pSet.growth == "BOTTOM_TOP" then iY = pos.y + offset 
                     else iX = pos.x + offset end
 
-                    -- Frame erstellen (mit Übergabe der achievementID für den internen Balken)
-                    local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, bName, item.data.achievementID)
+                    -- Frame erstellen mit gKey als Speicher-Identifikator
+                    local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, gKey, item.data.achievementID)
                     
-                    -- Dem Frame das Alignment für seine interne Update-Funktion mitteilen
                     if iconFrame then
                         iconFrame.textAlign = pSet.textAlign or "BOTTOM"
-                        -- Falls wir die Funktion UpdateManually genannt haben:
                         if iconFrame.UpdateManually then iconFrame:UpdateManually() end
+                        AddToUI(iconFrame)
                     end
-
-                    AddToUI(iconFrame)
                     visibleIdx = visibleIdx + 1
                 end
             end

@@ -56,7 +56,7 @@ ProfessionsHelperData["Midnight"].Leather = {
 ProfessionsHelperData["Midnight"].Cloth = {
     -- Category 2: Material-Icons (Vendor / Hilfsmittel)
     Embroidery_Floss = { IDs = { 251691 }, sources = { "Vendor" }, processingProfs = { "Tailoring" }, displayCategory = 2 },
-    Silverleaf_Thread = { IDs = { 251665 }, sources = { "Drop" }, processingProfs = { "Tailoring", "Leatherworking", "Jewelcrafting", "Enchanting" }, displayCategory = 2 },
+    Silverleaf_Thread = { IDs = { 251665 }, sources = { "Vendor" }, processingProfs = { "Tailoring", "Leatherworking", "Jewelcrafting", "Enchanting" }, displayCategory = 2 },
 
     -- Category 1: Sammel-Balken
     Sunfire_Silk = { IDs = { 237015, 237016 }, color = "#FFD700", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
@@ -400,8 +400,8 @@ ProfessionsHelperData["Midnight"].Enchanting = {
     Radiant_Shard = { IDs = { 243602, 243603 }, color = "#00BFFF", sources = { "Drop" }, gatheringProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring" }, displayCategory = 1 },
     Dawn_Crystal = { IDs = { 243605, 243606 }, color = "#FF8C00", sources = { "Drop" }, gatheringProf = "Enchanting", processingProfs = { "Enchanting", "Jewelcrafting" }, displayCategory = 1 },
 
-    -- Optional Reagents (Noch keine Midnight-Daten vorhanden)
-    -- Finishing Reagents (Noch keine Midnight-Daten vorhanden)
+    -- Optional Reagents
+    -- Finishing Reagents
 
     -- House Decor
     Dornogal_Hanging_Sconce = { IDs = { 253039 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 0 },

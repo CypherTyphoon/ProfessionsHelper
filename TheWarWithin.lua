@@ -220,7 +220,6 @@ ProfessionsHelperData["The War Within"].Engineering = {
     Concealed_Chaos_Module = { IDs = { 221938, 221939, 221940 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
 
     -- Finishing Reagents
-    AssortedChokingHazards = { IDs = { 225984, 225985, 225986 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
     BottledBrilliance = { IDs = { 225987, 225988, 225989 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "AllProf" }, displayCategory = 3 },
 }
 

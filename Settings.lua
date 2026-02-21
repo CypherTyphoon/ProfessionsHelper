@@ -97,99 +97,96 @@ function PH:SetupOptions()
     local profLabels = { ["Herbalism"] = "Kräuterkunde", ["Mining"] = "Bergbau", ["Skinning"] = "Kürschnerei", ["Wood"] = "Holzfällen", ["Other"] = "Sonstiges" }
 
     -- HELPER FUNKTION ZUR GRUPPENERSTELLUNG (Um Code-Duplikate für Kat 2 & 3 zu vermeiden)
-    local function CreateDynamicGroup(targetMenu, catID, expName, bucketName, bucketData)
-        local hasCorrectCat = false
-        local detectedProf = "Other"
-        for _, item in pairs(bucketData) do 
-            if item.displayCategory == catID then hasCorrectCat = true; detectedProf = item.gatheringProf or detectedProf; break end 
-        end
+        local function CreateDynamicGroup(targetMenu, catID, bucketName, bucketData, expName)
+            local _, firstItem = next(bucketData)
+            if not firstItem then return end
 
-        if hasCorrectCat then
-            if bucketName == "Wood" then detectedProf = "Wood" end
-            local groupLabel = profLabels[detectedProf] or bucketName
-            
-            -- Einzigartiger Key für Settings (BucketName + CatID)
-            local settingKey = bucketName .. "_c" .. catID
+            local settingKey = ProfessionsHelper:GetGlobalBucketKey(firstItem, catID)
+            local profKey = settingKey:gsub("_c%d+", "")
+            local groupLabel = profLabels[profKey] or profKey
 
-            targetMenu.args[expName].args[settingKey] = {
-                name = groupLabel,
-                type = "group",
-                args = {
-                    headerSettings = { name = groupLabel .. " - Layout", type = "header", order = 1 },
-                    enabled = {
-                        name = "Anzeigen", type = "toggle", order = 2,
-                        set = function(_, val) PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}; PH.db.profile.profSubSettings[settingKey].enabled = val; PH:GetModule("Visuals"):Init() end,
-                        get = function() return (PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].enabled ~= false) end,
-                    },
-                    maxColumns = {
-                        name = "Spalten pro Block", hidden = (catID == 1),
-                        desc = "Wieviele Icons nebeneinander angezeigt werden, bevor eine neue Zeile beginnt.",
-                        type = "range", order = 2.5,
-                        min = 1, max = 15, step = 1,
-                        set = function(_, val) 
-                            PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
-                            PH.db.profile.profSubSettings[settingKey].maxColumns = val
-                            PH:GetModule("Visuals"):Init() 
-                        end,
-                        get = function() 
-                            return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].maxColumns or 5 
-                        end,
-                    },
-                    growthDirection = {
-                        name = "Wuchsrichtung", hidden = (catID == 1), type = "select", order = 3,
-                        values = { ["LEFT_RIGHT"] = "L -> R", ["RIGHT_LEFT"] = "R -> L", ["TOP_BOTTOM"] = "O -> U", ["BOTTOM_TOP"] = "U -> O" },
-                        set = function(_, val) PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}; PH.db.profile.profSubSettings[settingKey].growth = val; PH:GetModule("Visuals"):Init() end,
-                        get = function() return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].growth or "LEFT_RIGHT" end,
-                    },
-                    headerPos = { name = "Position", type = "header", order = 10 },
-                    posX = {
-                        name = "X", type = "range", order = 11, min = -2000, max = 2000, step = 1,
-                        set = function(_, val) PH.db.profile.positions[settingKey] = PH.db.profile.positions[settingKey] or {x=0,y=0}; PH.db.profile.positions[settingKey].x = val; PH:GetModule("Visuals"):Init() end,
-                        get = function() 
-                            if PH.db.profile.positions[settingKey] then return PH.db.profile.positions[settingKey].x end
-                            return (catID == 1) and -450 or 0 -- Standardwert für Balken ist -450
-                        end,
-                    },
-                    posY = {
-                        name = "Y", type = "range", order = 12, min = -2000, max = 2000, step = 1,
-                        set = function(_, val) PH.db.profile.positions[settingKey] = PH.db.profile.positions[settingKey] or {x=0,y=0}; PH.db.profile.positions[settingKey].y = val; PH:GetModule("Visuals"):Init() end,
-                        get = function() 
-                            if PH.db.profile.positions[settingKey] then return PH.db.profile.positions[settingKey].y end
-                            return (catID == 1) and 150 or 0 -- Standardwert für Balken ist 150
-                        end,
-                    },
-                    headerItems = { name = "Einzel-Filter", type = "header", order = 20 },
-                }
-            }
-
-            for itemName, itemInfo in pairs(bucketData) do
-                if itemInfo.displayCategory == catID then
-                    targetMenu.args[expName].args[settingKey].args[itemName] = {
-                        name = itemName:gsub("_", " "), type = "toggle", order = 30,
-                        set = function(_, val) PH.db.profile.itemFilters[itemName] = val; PH:GetModule("Visuals"):Init() end,
-                        get = function() if PH.db.profile.itemFilters[itemName] == nil then return true end return PH.db.profile.itemFilters[itemName] end,
+            if not targetMenu.args[settingKey] then
+                    targetMenu.args[settingKey] = {
+                        name = groupLabel,
+                        type = "group",
+                        args = {
+                            headerSettings = { name = groupLabel .. " - Layout", type = "header", order = 1 },
+                            enabled = {
+                                name = "Anzeigen", type = "toggle", order = 2,
+                                set = function(_, val) PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}; PH.db.profile.profSubSettings[settingKey].enabled = val; PH:GetModule("Visuals"):Init() end,
+                                get = function() return (PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].enabled ~= false) end,
+                            },
+                            maxColumns = {
+                                name = "Spalten pro Block", hidden = (catID == 1),
+                                type = "range", order = 2.5, min = 1, max = 15, step = 1,
+                                set = function(_, val) PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}; PH.db.profile.profSubSettings[settingKey].maxColumns = val; PH:GetModule("Visuals"):Init() end,
+                                get = function() return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].maxColumns or 5 end,
+                            },
+                            growthDirection = {
+                                name = "Wuchsrichtung", hidden = (catID == 1), type = "select", order = 3,
+                                values = { ["LEFT_RIGHT"] = "L -> R", ["RIGHT_LEFT"] = "R -> L", ["TOP_BOTTOM"] = "O -> U", ["BOTTOM_TOP"] = "U -> O" },
+                                set = function(_, val) PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}; PH.db.profile.profSubSettings[settingKey].growth = val; PH:GetModule("Visuals"):Init() end,
+                                get = function() return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].growth or "LEFT_RIGHT" end,
+                            },
+                            headerPos = { name = "Position", type = "header", order = 10 },
+                            posX = {
+                                name = "X", type = "range", order = 11, min = -2000, max = 2000, step = 1,
+                                set = function(_, val) PH.db.profile.positions[settingKey] = PH.db.profile.positions[settingKey] or {x=0,y=0}; PH.db.profile.positions[settingKey].x = val; PH:GetModule("Visuals"):Init() end,
+                                get = function() return PH.db.profile.positions[settingKey] and PH.db.profile.positions[settingKey].x or (catID == 1 and -450 or 0) end,
+                            },
+                            posY = {
+                                name = "Y", type = "range", order = 12, min = -2000, max = 2000, step = 1,
+                                set = function(_, val) PH.db.profile.positions[settingKey] = PH.db.profile.positions[settingKey] or {x=0,y=0}; PH.db.profile.positions[settingKey].y = val; PH:GetModule("Visuals"):Init() end,
+                                get = function() return PH.db.profile.positions[settingKey] and PH.db.profile.positions[settingKey].y or (catID == 1 and 150 or 0) end,
+                            },
+                    headerItems = { name = "Einzel-Filter (nach Erweiterung)", type = "header", order = 20 },
                     }
-                end
+                }
             end
-        end
-    end
+
+                -- 2. Items hinzufügen (nach Erweiterung gruppiert)
+                for itemName, itemInfo in pairs(bucketData) do
+                        if itemInfo.displayCategory == catID then
+                            -- HIER DIE KORREKTUR:
+                            -- Wenn itemInfo.expansion nil ist, nimm den expName aus der Schleife
+                            local itemExp = itemInfo.expansion or expName or "Unbekannt"
+                            local expKey = "group_" .. itemExp:gsub("%s+", "_")
+
+                            if not targetMenu.args[settingKey].args[expKey] then
+                                targetMenu.args[settingKey].args[expKey] = {
+                                    name = "|cff00ff00" .. itemExp .. "|r",
+                                    type = "group",
+                                    inline = true,
+                                    args = {}
+                                }
+                            end
+
+                            targetMenu.args[settingKey].args[expKey].args[itemName] = {
+                                name = itemName:gsub("_", " "),
+                                type = "toggle",
+                                order = 30,
+                                set = function(_, val) 
+                                    PH.db.profile.itemFilters[itemName] = val
+                                    PH:GetModule("Visuals"):Init() 
+                                end,
+                                get = function() return PH.db.profile.itemFilters[itemName] ~= false end,
+                            }
+                        end
+                    end
+                end
+
 
 -- DYNAMISCHE ERSTELLUNG FÜR KAT 1, 2 UND 3
-    for expName, expData in pairs(ProfessionsHelperData) do
-        -- Wir bereiten die Ordner in den Menüs vor
-        options.args.barDesign.args[expName] = { name = expName, type = "group", childGroups = "tree", args = {} }
-        options.args.matFilters.args[expName] = { name = expName, type = "group", childGroups = "tree", args = {} }
-        options.args.profIcons.args[expName] = { name = expName, type = "group", childGroups = "tree", args = {} }
-
-        for bucketName, bucketData in pairs(expData) do
-            if bucketName ~= "Config" and type(bucketData) == "table" then
-                -- NEU: Erstellt jetzt auch die Liste für die Balken (Kat 1)
-                CreateDynamicGroup(options.args.barDesign, 1, expName, bucketName, bucketData)
-                CreateDynamicGroup(options.args.matFilters, 2, expName, bucketName, bucketData)
-                CreateDynamicGroup(options.args.profIcons, 3, expName, bucketName, bucketData)
-            end
+for expName, expData in pairs(ProfessionsHelperData) do
+    for bucketName, bucketData in pairs(expData) do
+        if bucketName ~= "Config" and type(bucketData) == "table" then
+            -- Hier fügen wir hinten 'expName' hinzu:
+            CreateDynamicGroup(options.args.barDesign, 1, bucketName, bucketData, expName)
+            CreateDynamicGroup(options.args.matFilters, 2, bucketName, bucketData, expName)
+            CreateDynamicGroup(options.args.profIcons, 3, bucketName, bucketData, expName)
         end
     end
+end
 
     -- SPEZIAL-FENSTER (Kat 4+)
     for id, data in pairs(PH.db.profile.catSettings) do
