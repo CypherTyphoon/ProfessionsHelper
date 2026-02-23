@@ -957,8 +957,48 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
                 finalGrowUp = subSettings.growUp
             end
 
-            table.sort(items, function(a, b) 
-                return (a.data.expID or 0) < (b.data.expID or 0) 
+            -- Dynamische Sortierung starten
+            local mode = subSettings.sortMode or "EXP_ASC"
+
+            table.sort(items, function(a, b)
+                if mode == "CUSTOM" then
+                    -- Eigene Sortierung (Zahlenwert aus Settings)
+                    local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
+                    local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
+                    if sortA ~= sortB then return sortA < sortB end
+                    return (a.name or "") < (b.name or "")
+
+                elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
+                    -- Mengenbasierte Sortierung
+                    local function GetTotal(itemObj)
+                        local total = 0
+                        if itemObj.data.IDs then
+                            for _, id in ipairs(itemObj.data.IDs) do
+                                total = total + C_Item.GetItemCount(id, true, true, true, true)
+                            end
+                        end
+                        return total
+                    end
+                    
+                    local countA, countB = GetTotal(a), GetTotal(b)
+                    if countA ~= countB then
+                        if mode == "COUNT_DESC" then return countA > countB end
+                        return countA < countB
+                    end
+                    return (a.name or "") < (b.name or "")
+
+                elseif mode == "EXP_DESC" then
+                    -- Neu -> Alt
+                    return (a.data.expID or 0) > (b.data.expID or 0)
+                
+                elseif mode == "NAME_ASC" then
+                    -- Alphabetisch
+                    return (a.name or "") < (b.name or "")
+
+                else
+                    -- Standard: EXP_ASC (Alt -> Neu)
+                    return (a.data.expID or 0) < (b.data.expID or 0)
+                end
             end)
 
             for _, item in ipairs(items) do
@@ -1070,7 +1110,48 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
         if subSettings.enabled ~= false then
             local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = 200, y = 0}
             
-            table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
+            local mode = subSettings.sortMode or "EXP_ASC"
+
+            table.sort(items, function(a, b)
+                if mode == "CUSTOM" then
+                    -- Eigene Sortierung (Zahlenwert aus Settings)
+                    local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
+                    local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
+                    if sortA ~= sortB then return sortA < sortB end
+                    return (a.name or "") < (b.name or "")
+
+                elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
+                    -- Mengenbasierte Sortierung (alle IDs summieren)
+                    local function GetTotal(itemObj)
+                        local total = 0
+                        if itemObj.data.IDs then
+                            for _, id in ipairs(itemObj.data.IDs) do
+                                total = total + C_Item.GetItemCount(id, true, true, true, true)
+                            end
+                        end
+                        return total
+                    end
+                    
+                    local countA, countB = GetTotal(a), GetTotal(b)
+                    if countA ~= countB then
+                        if mode == "COUNT_DESC" then return countA > countB end
+                        return countA < countB
+                    end
+                    return (a.name or "") < (b.name or "")
+
+                elseif mode == "EXP_DESC" then
+                    -- Neu -> Alt (Erweiterung)
+                    return (a.data.expID or 0) > (b.data.expID or 0)
+                
+                elseif mode == "NAME_ASC" then
+                    -- Alphabetisch
+                    return (a.name or "") < (b.name or "")
+
+                else
+                    -- Standard: EXP_ASC (Alt -> Neu)
+                    return (a.data.expID or 0) < (b.data.expID or 0)
+                end
+            end)
 
             local maxCols = subSettings.maxColumns or 5
             local spacingX = self.Config.SpacingX_Prof or 44
@@ -1095,15 +1176,65 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
     end
 end
 
-    -- Rendering Cat 4
+-- Rendering Cat 4
     local pos4 = ProfessionsHelper.db.profile.positions[4] or {x = -300, y = 400}
     if ProfessionsHelper.db.profile.catSettings[4].enabled then
         local fX, fY = pos4.x, pos4.y
         local fStartX = fX
+
+        -- 1. Sortier-Einstellungen holen
+        -- Hinweis: Falls du in der Settings.lua einen anderen Key für Angeln nutzt, hier anpassen
+        local settingKey = "Fishing_c4" 
+        local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
+        local mode = subSettings.sortMode or "EXP_ASC"
+
+        -- 2. Die Tabelle buckets[4] sortieren
+        table.sort(buckets[4], function(a, b)
+            if mode == "CUSTOM" then
+                local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
+                local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
+                if sortA ~= sortB then return sortA < sortB end
+                return (a.name or "") < (b.name or "")
+
+            elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
+                local function GetTotal(itemObj)
+                    local total = 0
+                    if itemObj.data.IDs then
+                        for _, id in ipairs(itemObj.data.IDs) do
+                            total = total + C_Item.GetItemCount(id, true, true, true, true)
+                        end
+                    end
+                    return total
+                end
+                local countA, countB = GetTotal(a), GetTotal(b)
+                if countA ~= countB then
+                    if mode == "COUNT_DESC" then return countA > countB end
+                    return countA < countB
+                end
+                return (a.name or "") < (b.name or "")
+
+            elseif mode == "EXP_DESC" then
+                return (a.data.expID or 0) > (b.data.expID or 0)
+
+            elseif mode == "NAME_ASC" then
+                return (a.name or "") < (b.name or "")
+
+            else
+                return (a.data.expID or 0) < (b.data.expID or 0)
+            end
+        end)
+
+        -- 3. Das eigentliche Zeichnen (wie bisher)
         for _, item in ipairs(buckets[4]) do
-            if HandleWrap(fX, fStartX, self.Config.MaxWidthFish) then fX = fStartX; fY = fY - self.Config.RowHeight end
-            AddToUI(self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY))
-            fX = fX + self.Config.SpacingX_Fish
+            -- Optional: Hier auch den itemFilter prüfen, falls Angler auch Fische ausblenden wollen
+            if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                if HandleWrap(fX, fStartX, self.Config.MaxWidthFish) then 
+                    fX = fStartX; fY = fY - self.Config.RowHeight 
+                end
+                
+                AddToUI(self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY))
+                fX = fX + self.Config.SpacingX_Fish
+            end
         end
     end
 
