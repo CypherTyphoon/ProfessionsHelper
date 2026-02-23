@@ -131,9 +131,13 @@ end
 
 function Visuals:ClearFrames()
     for _, frame in ipairs(self.ActiveFrames) do
-        frame:Hide()
-        frame:UnregisterAllEvents()
-        frame:SetParent(nil)
+        if frame then
+            frame:Hide()
+            frame:UnregisterAllEvents()
+            frame:SetScript("OnUpdate", nil)
+            frame:SetScript("OnEvent", nil)
+            frame:SetParent(nil)
+        end
     end
     self.ActiveFrames = {}
 end
@@ -171,8 +175,6 @@ local function MakeInteractive(frame, itemIDs, groupKey)
             ProfessionsHelper.db.profile.positions = ProfessionsHelper.db.profile.positions or {}
             ProfessionsHelper.db.profile.positions[storageKey] = { x = newX, y = newY }
             
-            -- WICHTIG: Visuals:Init() aufrufen, damit alle Icons des Berufs mitziehen
-            -- (In Visuals.lua meist direkt über self:Init() oder ProfessionsHelper:GetModule("Visuals"):Init())
             ProfessionsHelper:GetModule("Visuals"):Init()
         end
     end)
@@ -290,15 +292,24 @@ end
 
 -- Bars
 function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSettings, profName)
-    -- 1. Einstellungs-Priorität festlegen
-    local settings = customSettings or ProfessionsHelper.db.profile.catSettings[1]
-    local gDB = ProfessionsHelper.db.global
+    -- 1. Einstellungs-Priorität (Sicherstellen, dass nichts nil ist)
+    local settings = customSettings or {}
+    local catDefault = ProfessionsHelper.db.profile.catSettings[1] or {}
+    local gDB = ProfessionsHelper.db.global or {}
     
-    local isGrowUp = settings.growUp 
+    -- Wuchsrichtung (Sicherer Check)
+    local isGrowUp = true
+    if settings.growUp ~= nil then
+        isGrowUp = settings.growUp
+    elseif catDefault.growUp ~= nil then
+        isGrowUp = catDefault.growUp
+    end
     
-    local barW = settings.width or 30
-    local barH = settings.height or 100
-    local fSize = settings.fontSize or gDB.fontSize or 10
+    -- Maße & Skalierung
+    local barW = settings.width or catDefault.width or 30
+    local barH = settings.height or catDefault.height or 100
+    local scale = settings.scale or catDefault.scale or 1
+    local fSize = settings.fontSize or catDefault.fontSize or gDB.fontSize or 10
 
     -- 2. Frame-Erstellung
     local frame = CreateFrame("Frame", "PH_Bar_"..name, parent, "BackdropTemplate")
@@ -306,72 +317,70 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     frame.profName = profName
     
     frame:SetSize(barW, barH + barW + 5) 
-    frame:SetPoint("CENTER", UIParent, "CENTER", posX, posY)
-    frame:SetScale(settings.scale or 1)
+    frame:SetPoint("CENTER", UIParent, "CENTER", posX or 0, posY or 0)
+    frame:SetScale(scale)
     
     -- 3. Die Statusbar
     local bar = CreateFrame("StatusBar", nil, frame)
     bar:SetSize(barW, barH)
 
-    ---------------------------------------------------------
-    -- FIX: BALKEN-TEXTUR (LSM muss zwingend gesetzt werden)
-    ---------------------------------------------------------
-    local rawTexture = gDB.barTexture or settings.barTexture or "Cilo"
-    local texturePath = LSM:Fetch("statusbar", rawTexture)
+    -- TEXTUR-CHECK (Hier krachte es wahrscheinlich)
+    local rawTexture = settings.barTexture or catDefault.barTexture or gDB.barTexture or "Cilo"
+    local texturePath = LSM:Fetch("statusbar", rawTexture) or LSM:Fetch("statusbar", "Cilo")
     
     bar:SetStatusBarTexture(texturePath)
-    -- Sicherstellen, dass die Textur auch gezeichnet wird:
     bar:GetStatusBarTexture():SetHorizTile(false)
     bar:GetStatusBarTexture():SetVertTile(false)
     
+    -- FARBEN / GRADIENT
     if #barColor >= 6 then
         bar:GetStatusBarTexture():SetGradient("VERTICAL", 
             CreateColor(barColor[1], barColor[2], barColor[3], 1),
             CreateColor(barColor[4], barColor[5], barColor[6], 1)
         )
     else
-        bar:SetStatusBarColor(barColor[1], barColor[2], barColor[3])
+        bar:SetStatusBarColor(barColor[1] or 1, barColor[2] or 1, barColor[3] or 1)
     end
     
     local barBg = bar:CreateTexture(nil, "BACKGROUND")
-    barBg:SetAllPoints(); barBg:SetColorTexture(0.1, 0.1, 0.1, 0.6)
+    barBg:SetAllPoints()
+    barBg:SetColorTexture(0.1, 0.1, 0.1, 0.6)
 
-    -- 4. Das Icon
+    -- 4. Das Icon & Wuchsrichtung
     local icon = frame:CreateTexture(nil, "ARTWORK")
     icon:SetSize(barW, barW)
     
-    ---------------------------------------------------------
-    -- FIX: WUCHSRICHTUNG & ANKER
-    ---------------------------------------------------------
     bar:ClearAllPoints()
     icon:ClearAllPoints()
-    bar:SetOrientation("VERTICAL") -- Wichtig für vertikale Balken
+    bar:SetOrientation("VERTICAL")
 
     if isGrowUp then
-        -- Symbol unten, Balken wächst nach OBEN
         icon:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
         bar:SetPoint("BOTTOM", icon, "TOP", 0, 2)
-        bar:SetReverseFill(false) -- Standard: Füllt von unten nach oben
+        bar:SetReverseFill(false)
     else
-        -- Symbol oben, Balken wächst nach UNTEN
         icon:SetPoint("TOP", frame, "TOP", 0, 0)
         bar:SetPoint("TOP", icon, "BOTTOM", 0, -2)
-        bar:SetReverseFill(true) -- Umkehren: Füllt von oben nach unten
+        bar:SetReverseFill(true)
     end
     
-    -- 5. Texte (Zahlen auf dem Balken)
+    -- 5. Texte (Zahlen)
     local textOverlay = CreateFrame("Frame", nil, frame)
     textOverlay:SetAllPoints(bar)
     textOverlay:SetFrameLevel(bar:GetFrameLevel() + 10)
 
     local function CreateCenteredText(colorKey)
         local t = textOverlay:CreateFontString(nil, "OVERLAY", nil, 7)
-        local fontPath = LSM:Fetch("font", settings.fontName or gDB.fontName or "Friz Quadrata TT")
-        if not fontPath or fontPath == "" then fontPath = "Fonts\\FRIZQT__.TTF" end
+        
+        local rawFont = settings.fontName or catDefault.fontName or gDB.fontName or "Friz Quadrata TT"
+        local fontPath = LSM:Fetch("font", rawFont) or "Fonts\\FRIZQT__.TTF"
         
         t:SetFont(fontPath, fSize, "OUTLINE")
-        local c = settings[colorKey] or gDB[colorKey] or {r=1, g=1, b=1}
-        t:SetTextColor(c.r, c.g, c.b)
+        
+        -- Sicherer Farbzugriff für die Schrift
+        local c = settings[colorKey] or catDefault[colorKey] or gDB[colorKey] or {r=1, g=1, b=1}
+        t:SetTextColor(c.r or 1, c.g or 1, c.b or 1)
+        
         t:SetJustifyH("CENTER")
         t:SetWidth(barW + 10)
         return t
@@ -381,13 +390,12 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     local tS = CreateCenteredText("colorQ2")
     local tG = CreateCenteredText("colorQ3")
 
-    -- 6. Update-Logik (Die Positions-Fixes im Update)
+    -- 6. Update-Logik
     local function Update()
         local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
         local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
         local g = C_Item.GetItemCount(itemIDs[3] or 0, true, true, true, true)
         
-        -- Text-Anker basierend auf der aktuellen Balken-Mitte
         tB:ClearAllPoints()
         tS:ClearAllPoints()
         tG:ClearAllPoints()
@@ -924,34 +932,43 @@ function Visuals:Init()
 -- Rendering Cat 1 (Balken)
 if ProfessionsHelper.db.profile.catSettings[1].enabled then
     local barGroups = {}
+    
+    -- Schritt 1: Items nach Beruf (settingKey) gruppieren
     for _, item in ipairs(buckets[1]) do
-        -- Wir nutzen den bucketName (z.B. "Mining"), um den Key "Mining_c1" zu bauen
-        local p = item.bucketName or "Other"
-        barGroups[p] = barGroups[p] or {}
-        table.insert(barGroups[p], item)
+        local settingKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 1)
+        barGroups[settingKey] = barGroups[settingKey] or {}
+        table.insert(barGroups[settingKey], item)
     end
 
-    for bucketName, items in pairs(barGroups) do
-        -- WICHTIG: Dieser Key MUSS exakt so wie in der Settings.lua sein (Name_c1)
-        local settingKey = bucketName .. "_c1" 
-        
+    -- Schritt 2: Die Gruppen rendern
+    for settingKey, items in pairs(barGroups) do
         local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
-        local baseSettings = ProfessionsHelper.db.profile.catSettings[1]
         
-        -- Checkbox "Anzeigen" prüfen
+        -- Nur rendern, wenn der Beruf nicht deaktiviert ist
         if subSettings.enabled ~= false then 
-            
-            -- Position laden (Nutzt jetzt den korrekten Key "Mining_c1")
             local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = -450, y = 150}
-            local bX, bY = pos.x, pos.y
+            -- WICHTIG: Wir arbeiten mit diesen lokalen Variablen für den Versatz
+            local currentX = pos.x
+            local currentY = pos.y
             
-            table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
+            -- Wuchsrichtung
+            local finalGrowUp = true
+            if subSettings.growUp ~= nil then
+                finalGrowUp = subSettings.growUp
+            end
+
+            table.sort(items, function(a, b) 
+                return (a.data.expID or 0) < (b.data.expID or 0) 
+            end)
 
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                    
+                    -- Farben berechnen
                     local hex = (item.data.color or "#FFFFFF"):gsub("#","")
                     local r, g, b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
                     local barColors = { r, g, b }
+                    
                     if item.data.gradient_End_color then
                         local gHex = item.data.gradient_End_color:gsub("#","")
                         local gr, gg, gb = tonumber(gHex:sub(1,2),16)/255, tonumber(gHex:sub(3,4),16)/255, tonumber(gHex:sub(5,6),16)/255
@@ -960,16 +977,23 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
                         table.insert(barColors, gb)
                     end
 
-                    -- Erstellen des Balkens
-                    local barFrame = self:CreateBar(item.name, UIParent, item.data.IDs, bX, bY, barColors, baseSettings, bucketName)
+                    -- Lokale Kopie für CreateBar
+                    local renderOptions = {}
+                    for k,v in pairs(subSettings) do renderOptions[k] = v end
+                    renderOptions.growUp = finalGrowUp
+
+                    -- FIX 1: Hier bX/bY durch currentX/currentY ersetzen!
+                    -- FIX 2: bucketName war undefiniert, wir nehmen den Teil aus dem settingKey
+                    local profName = settingKey:gsub("_c1", "") 
                     
-                    -- Hier übergeben wir den settingKey für die Maus-Interaktion
+                    local barFrame = self:CreateBar(item.name, UIParent, item.data.IDs, currentX, currentY, barColors, renderOptions, profName)
+                    
                     MakeInteractive(barFrame, item.data.IDs, settingKey)
-                    
                     AddToUI(barFrame)
                     
-                    local spacing = (baseSettings.width or 30) + 8
-                    bX = bX + spacing
+                    -- FIX 3: Den Versatz auf currentX anwenden
+                    local barWidth = subSettings.width or 30
+                    currentX = currentX + barWidth + 8
                 end
             end
         end

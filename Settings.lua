@@ -46,22 +46,6 @@ function PH:SetupOptions()
                         set = function(_, val) PH.db.global.fontName = val; PH:GetModule("Visuals"):Init() end,
                         get = function() return PH.db.global.fontName or "Friz Quadrata TT" end,
                     },
-                    barGrowth = {
-                        name = "Wuchsrichtung & Anker",
-                        type = "select", order = 4,
-                        values = {
-                            ["UP"] = "Balken wächst nach OBEN (Icon unten)",
-                            ["DOWN"] = "Balken wächst nach UNTEN (Icon oben)",
-                        },
-                        set = function(_, val) 
-                            -- Dies schreibt exakt 'growUp' (großes U) in die Tabelle
-                            PH.db.profile.catSettings[1].growUp = (val == "UP") 
-                            PH:GetModule("Visuals"):Init() 
-                        end,
-                        get = function() 
-                            return PH.db.profile.catSettings[1].growUp and "UP" or "DOWN" 
-                        end,
-                    },
                 }
             },
 
@@ -138,6 +122,58 @@ function PH:SetupOptions()
                                 name = "Y", type = "range", order = 12, min = -2000, max = 2000, step = 1,
                                 set = function(_, val) PH.db.profile.positions[settingKey] = PH.db.profile.positions[settingKey] or {x=0,y=0}; PH.db.profile.positions[settingKey].y = val; PH:GetModule("Visuals"):Init() end,
                                 get = function() return PH.db.profile.positions[settingKey] and PH.db.profile.positions[settingKey].y or (catID == 1 and 150 or 0) end,
+                            },
+                            width = {
+                                name = "Breite",
+                                hidden = (catID ~= 1), -- Nur für Balken anzeigen
+                                type = "range", order = 4, min = 5, max = 100, step = 1,
+                                set = function(_, val) 
+                                    PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                                    PH.db.profile.profSubSettings[settingKey].width = val
+                                    PH:GetModule("Visuals"):Init() 
+                                end,
+                                get = function() return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].width or 30 end,
+                            },
+                            height = {
+                                name = "Höhe",
+                                hidden = (catID ~= 1),
+                                type = "range", order = 5, min = 10, max = 300, step = 1,
+                                set = function(_, val) 
+                                    PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                                    PH.db.profile.profSubSettings[settingKey].height = val
+                                    PH:GetModule("Visuals"):Init() 
+                                end,
+                                get = function() return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].height or 100 end,
+                            },
+                            scale = {
+                                name = "Skalierung",
+                                hidden = (catID ~= 1),
+                                type = "range", order = 6, min = 0.5, max = 2.0, step = 0.05,
+                                set = function(_, val) 
+                                    PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                                    PH.db.profile.profSubSettings[settingKey].scale = val
+                                    PH:GetModule("Visuals"):Init() 
+                                end,
+                                get = function() return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].scale or 1.0 end,
+                            },
+                            barGrowth = {
+                                name = "Wuchsrichtung",
+                                hidden = (catID ~= 1), -- Nur für Kategorie 1 (Balken) einblenden
+                                type = "select", order = 7,
+                                values = {
+                                    ["UP"] = "Balken wächst nach OBEN (Icon unten)",
+                                    ["DOWN"] = "Balken wächst nach UNTEN (Icon oben)",
+                                },
+                                set = function(_, val) 
+                                    PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                                    PH.db.profile.profSubSettings[settingKey].growUp = (val == "UP") 
+                                    PH:GetModule("Visuals"):Init() 
+                                end,
+                                get = function() 
+                                    local val = PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].growUp
+                                    if val == nil then return "UP" end -- Standardwert
+                                    return val and "UP" or "DOWN"
+                                end,
                             },
                     headerItems = { name = "Einzel-Filter (nach Erweiterung)", type = "header", order = 20 },
                     }
