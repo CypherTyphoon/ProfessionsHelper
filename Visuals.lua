@@ -689,13 +689,15 @@ function Visuals:CreateSpecialActionIcon(parent, recipeID, x, y)
 end
 
 -- Fishing Matrix
-function Visuals:CreateFishingIcon(parent, ids, x, y)
+function Visuals:CreateFishingIcon(parent, ids, x, y, settingKey) -- settingKey hinzugefügt
     local frame = CreateFrame("Frame", nil, parent)
     frame.catID = 4; local settings = ProfessionsHelper.db.profile.catSettings[4]
     frame:SetSize(30, 30); frame:SetScale(settings.scale or 1)
     frame:SetPoint("CENTER", UIParent, "CENTER", x, y)
+    
     local icon = frame:CreateTexture(nil, "ARTWORK"); icon:SetAllPoints()
     icon:SetTexture(C_Item.GetItemIconByID(ids[1]))
+    
     local text = frame:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
     local align = settings.textAlign or "BOTTOM"
     text:ClearAllPoints()
@@ -704,19 +706,24 @@ function Visuals:CreateFishingIcon(parent, ids, x, y)
     elseif align == "TOP" then text:SetPoint("BOTTOM", frame, "TOP", 0, 4)
     else text:SetPoint("TOP", frame, "BOTTOM", 0, -4) end
     text:SetTextColor(1, 1, 1)
+
     local function Update()
         local total = 0
         for _, id in ipairs(ids) do total = total + C_Item.GetItemCount(id, true, true, true, true) end
         text:SetText(total > 0 and total or "")
         icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
     end
+
     frame:RegisterEvent("BAG_UPDATE_DELAYED"); frame:SetScript("OnEvent", Update); Update()
-    MakeInteractive(frame, ids); return frame
+    
+    -- WICHTIG: Hier den settingKey an MakeInteractive übergeben
+    MakeInteractive(frame, ids, settingKey) 
+    return frame
 end
 
 -- Skill Icons
-function Visuals:CreateSkillIcon(parent, spellID, x, y)
-    local frame = CreateFrame("Frame", nil, UIParent) 
+function Visuals:CreateSkillIcon(parent, spellID, x, y, settingKey) 
+    local frame = CreateFrame("Frame", nil, UIParent)
     frame:SetFrameStrata("MEDIUM")
     frame.catID = 5
     frame:SetSize(40, 40)
@@ -840,7 +847,9 @@ function Visuals:CreateSkillIcon(parent, spellID, x, y)
 
     RefreshData(true)
     UpdateUI()
-    if type(MakeInteractive) == "function" then MakeInteractive(frame, {spellID}) end
+if type(MakeInteractive) == "function" then 
+        MakeInteractive(frame, {spellID}, settingKey) 
+    end
     return frame
 end
 
@@ -1176,82 +1185,127 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
     end
 end
 
--- Rendering Cat 4
-    local pos4 = ProfessionsHelper.db.profile.positions[4] or {x = -300, y = 400}
-    if ProfessionsHelper.db.profile.catSettings[4].enabled then
-        local fX, fY = pos4.x, pos4.y
-        local fStartX = fX
+-- Rendering Cat 4 (Fishing)
+if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
+    local fishingGroups = {}
+    
+    -- 1. Gruppieren (wie in Cat 2/5)
+    for _, item in ipairs(buckets[4]) do
+        local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 4)
+        fishingGroups[gKey] = fishingGroups[gKey] or {}
+        table.insert(fishingGroups[gKey], item)
+    end
 
-        -- 1. Sortier-Einstellungen holen
-        -- Hinweis: Falls du in der Settings.lua einen anderen Key für Angeln nutzt, hier anpassen
-        local settingKey = "Fishing_c4" 
-        local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
-        local mode = subSettings.sortMode or "EXP_ASC"
+    -- 2. Rendern der Gruppen
+    for gKey, items in pairs(fishingGroups) do
+        local pSet = ProfessionsHelper.db.profile.profSubSettings[gKey] or { enabled = true }
+        
+        if pSet.enabled ~= false then
+            -- Position laden über gKey (z.B. Fishing_c4)
+            local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = -300, y = 400}
+            local mode = pSet.sortMode or "EXP_ASC"
 
-        -- 2. Die Tabelle buckets[4] sortieren
-        table.sort(buckets[4], function(a, b)
-            if mode == "CUSTOM" then
-                local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
-                local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
-                if sortA ~= sortB then return sortA < sortB end
-                return (a.name or "") < (b.name or "")
-
-            elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
-                local function GetTotal(itemObj)
-                    local total = 0
-                    if itemObj.data.IDs then
-                        for _, id in ipairs(itemObj.data.IDs) do
-                            total = total + C_Item.GetItemCount(id, true, true, true, true)
+            -- 3. Sortierung
+            table.sort(items, function(a, b)
+                if mode == "CUSTOM" then
+                    local sortA = ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
+                    local sortB = ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
+                    if sortA ~= sortB then return sortA < sortB end
+                elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
+                    local function GetTotal(itemObj)
+                        local total = 0
+                        for _, id in ipairs(itemObj.data.IDs or {}) do 
+                            total = total + C_Item.GetItemCount(id, true, true, true, true) 
                         end
+                        return total
                     end
-                    return total
+                    local cA, cB = GetTotal(a), GetTotal(b)
+                    if cA ~= cB then return mode == "COUNT_DESC" and cA > cB or cA < cB end
+                elseif mode == "EXP_DESC" then
+                    return (a.data.expID or 0) > (b.data.expID or 0)
+                elseif mode == "NAME_ASC" then
+                    return (a.name or "") < (b.name or "")
                 end
-                local countA, countB = GetTotal(a), GetTotal(b)
-                if countA ~= countB then
-                    if mode == "COUNT_DESC" then return countA > countB end
-                    return countA < countB
-                end
-                return (a.name or "") < (b.name or "")
-
-            elseif mode == "EXP_DESC" then
-                return (a.data.expID or 0) > (b.data.expID or 0)
-
-            elseif mode == "NAME_ASC" then
-                return (a.name or "") < (b.name or "")
-
-            else
                 return (a.data.expID or 0) < (b.data.expID or 0)
-            end
-        end)
+            end)
 
-        -- 3. Das eigentliche Zeichnen (wie bisher)
-        for _, item in ipairs(buckets[4]) do
-            -- Optional: Hier auch den itemFilter prüfen, falls Angler auch Fische ausblenden wollen
-            if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                if HandleWrap(fX, fStartX, self.Config.MaxWidthFish) then 
-                    fX = fStartX; fY = fY - self.Config.RowHeight 
+            -- 4. Zeichnen mit Umbruch-Logik (HandleWrap)
+            local fStartX = pos.x
+            local fX, fY = pos.x, pos.y
+            local visibleIdx = 0
+
+            for _, item in ipairs(items) do
+                if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                    -- Umbruch prüfen
+                    if HandleWrap(fX, fStartX, self.Config.MaxWidthFish) then 
+                        fX = fStartX
+                        fY = fY - (self.Config.RowHeight or 40)
+                    end
+                    
+                    -- Frame erstellen mit gKey
+                    local iconFrame = self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY, gKey)
+                    if iconFrame then AddToUI(iconFrame) end
+                    
+                    fX = fX + (self.Config.SpacingX_Fish or 35)
+                    visibleIdx = visibleIdx + 1
                 end
-                
-                AddToUI(self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY))
-                fX = fX + self.Config.SpacingX_Fish
             end
         end
     end
+end
 
 -- Rendering Cat 5 (Skills)
-    local pos5 = (ProfessionsHelper.db.profile.positions and ProfessionsHelper.db.profile.positions[5]) or {x = 0, y = -100}
-    
-    local sX, sY = pos5.x, pos5.y
-    -- NEU: Ein lokaler Cache, um doppelte SpellIDs pro Init-Durchgang zu verhindern
-    local processedSpells = {} 
+    if ProfessionsHelper.db.profile.catSettings[5].enabled then
+        local skillGroups = {}
+        
+        -- Schritt 1: Items sammeln und gruppieren (wie in Cat 2)
+        if buckets[5] then
+            for _, item in ipairs(buckets[5]) do
+                local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 5)
+                skillGroups[gKey] = skillGroups[gKey] or {}
+                table.insert(skillGroups[gKey], item)
+            end
+        end
 
-    for _, item in ipairs(buckets[5]) do
-        local spellID = item.data.spellID
-        -- Nur erstellen, wenn diese SpellID in diesem Durchgang noch nicht gezeichnet wurde
-        if spellID and not processedSpells[spellID] then
-            AddToUI(self:CreateSkillIcon(UIParent, spellID, sX, sY))
-            sX = sX + self.Config.SpacingX_Skill
-            processedSpells[spellID] = true
+        -- Schritt 2: Die Gruppen rendern
+        for gKey, items in pairs(skillGroups) do
+            local pSet = ProfessionsHelper.db.profile.profSubSettings[gKey] or { enabled = true }
+            
+            if pSet.enabled ~= false then
+                -- Position laden: Nutzt den globalen Key (z.B. Herbalism_c5)
+                local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = 0, y = -100}
+                
+                -- Sortierung nach Prio (Zahlenwert aus Settings)
+                table.sort(items, function(a, b)
+                    local prioA = ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
+                    local prioB = ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
+                    if prioA ~= prioB then return prioA < prioB end
+                    return a.name < b.name
+                end)
+
+                local visibleIdx = 0 
+                for _, item in ipairs(items) do
+                    -- Einzel-Filter Check
+                    if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                        local spellID = item.data.spellID
+                        
+                        if spellID then
+                            -- Berechnung des Offsets (Horizontal wie in Cat 2)
+                            local offset = visibleIdx * (self.Config.SpacingX_Skill or 45)
+                            local iX = pos.x + offset
+                            local iY = pos.y
+                            
+                            -- Frame erstellen (gKey mitgeben für Drag & Drop!)
+                            local iconFrame = self:CreateSkillIcon(UIParent, spellID, iX, iY, gKey)
+                            
+                            if iconFrame then
+                                AddToUI(iconFrame)
+                            end
+                            visibleIdx = visibleIdx + 1
+                        end
+                    end
+                end
+            end
         end
     end
 end
