@@ -37,6 +37,52 @@ function PH:SetupOptions()
                         set = function(_, val) PH.db.profile.catSettings[1].font = val; PH:GetModule("Visuals"):Init() end,
                         get = function() return PH.db.profile.catSettings[1].font or "Friz Quadrata TT" end,
                     },
+                    textColor = {
+                        name = "Textfarbe (Name)",
+                        type = "color", order = 10, hasAlpha = false,
+                        set = function(_, r, g, b) PH.db.profile.catSettings[1].textColor = {r=r, g=g, b=b}; PH:GetModule("Visuals"):Init() end,
+                        get = function() 
+                            local c = PH.db.profile.catSettings[1].textColor or {r=1, g=1, b=1}
+                            return c.r, c.g, c.b
+                        end,
+                    },
+                    valueColor = {
+                        name = "Textfarbe (Gesamtwert)",
+                        type = "color", order = 11, hasAlpha = false,
+                        set = function(_, r, g, b) PH.db.profile.catSettings[1].valueColor = {r=r, g=g, b=b}; PH:GetModule("Visuals"):Init() end,
+                        get = function() 
+                            local c = PH.db.profile.catSettings[1].valueColor or {r=1, g=1, b=1}
+                            return c.r, c.g, c.b
+                        end,
+                    },
+                    -- Ab hier kommen die spezifischen Qualitätsfarben für die Balken-Zahlen
+                    colorQ1 = {
+                        name = "Farbe Qualität 1 (Bronze)",
+                        type = "color", order = 12,
+                        set = function(_, r, g, b) PH.db.profile.catSettings[1].colorQ1 = {r=r, g=g, b=b}; PH:GetModule("Visuals"):Init() end,
+                        get = function() 
+                            local c = PH.db.profile.catSettings[1].colorQ1 or {r=1, g=0.5, b=0}
+                            return c.r, c.g, c.b
+                        end,
+                    },
+                    colorQ2 = {
+                        name = "Farbe Qualität 2 (Silber)",
+                        type = "color", order = 13,
+                        set = function(_, r, g, b) PH.db.profile.catSettings[1].colorQ2 = {r=r, g=g, b=b}; PH:GetModule("Visuals"):Init() end,
+                        get = function() 
+                            local c = PH.db.profile.catSettings[1].colorQ2 or {r=0.8, g=0.8, b=0.8}
+                            return c.r, c.g, c.b
+                        end,
+                    },
+                    colorQ3 = {
+                        name = "Farbe Qualität 3 (Gold)",
+                        type = "color", order = 14,
+                        set = function(_, r, g, b) PH.db.profile.catSettings[1].colorQ3 = {r=1, g=0.85, b=0}; PH:GetModule("Visuals"):Init() end,
+                        get = function() 
+                            local c = PH.db.profile.catSettings[1].colorQ3 or {r=1, g=0.85, b=0}
+                            return c.r, c.g, c.b
+                        end,
+                    },
                 }
             },
             -- 3. MATERIAL-ICONS (Kat 2)

@@ -370,28 +370,32 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     
     -- 5. Texte (Zahlen)
     local textOverlay = CreateFrame("Frame", nil, frame)
-    textOverlay:SetAllPoints(bar)
-    textOverlay:SetFrameLevel(bar:GetFrameLevel() + 10)
+        textOverlay:SetAllPoints(bar)
+        textOverlay:SetFrameLevel(bar:GetFrameLevel() + 10)
 
-local function CreateCenteredText(colorKey)
-        local t = textOverlay:CreateFontString(nil, "OVERLAY") -- nil statt Template, da wir Font manuell setzen
-        
-        -- NUTZE DIE NEUE ZENTRALE FUNKTION
-        -- Wir übergeben 'fSize' und die '1' für Kategorie "Balken"
-        self:ApplyFontStyle(t, fSize, 1)
-        
-        -- Sicherer Farbzugriff für die Schrift
-        local c = settings[colorKey] or catDefault[colorKey] or gDB[colorKey] or {r=1, g=1, b=1}
-        t:SetTextColor(c.r or 1, c.g or 1, c.b or 1)
-        
-        t:SetJustifyH("CENTER")
-        t:SetWidth(barW + 10)
-        return t
-    end
+        local function CreateCenteredText(colorKey, defaultColor)
+            local t = textOverlay:CreateFontString(nil, "OVERLAY")
+            
+            -- Nutzt die zentrale ApplyFontStyle Funktion
+            self:ApplyFontStyle(t, fSize, 1)
+            
+            -- ERWEITERTE FARB-LOGIK:
+            -- 1. Schaut in spezifischen Settings (falls übergeben)
+            -- 2. Schaut in catSettings[1] (da liegen jetzt colorQ1, colorQ2 etc.)
+            -- 3. Schaut in global (Fallback)
+            -- 4. Nutzt ein hartcodiertes Default
+            local c = settings[colorKey] or catDefault[colorKey] or gDB[colorKey] or defaultColor
+            
+            t:SetTextColor(c.r or 1, c.g or 1, c.b or 1)
+            t:SetJustifyH("CENTER")
+            t:SetWidth(barW + 10)
+            return t
+        end
 
-    local tB = CreateCenteredText("colorQ1")
-    local tS = CreateCenteredText("colorQ2")
-    local tG = CreateCenteredText("colorQ3")
+        -- Wir übergeben Standard-Farben für den Fall, dass die DB leer ist
+        local tB = CreateCenteredText("colorQ1", {r=1, g=0.5, b=0})   -- Orange (Qualität 1)
+        local tS = CreateCenteredText("colorQ2", {r=0.8, g=0.8, b=0.8}) -- Silber (Qualität 2)
+        local tG = CreateCenteredText("colorQ3", {r=1, g=0.85, b=0})  -- Gold (Qualität 3)
 
     -- 6. Update-Logik
     local function Update()
