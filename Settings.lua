@@ -83,6 +83,19 @@ function PH:SetupOptions()
                             return c.r, c.g, c.b
                         end,
                     },
+                    defaultBarColor = {
+                        name = "Standard Balkenfarbe",
+                        desc = "Wird genutzt, wenn das Item keine eigene Farbe definiert hat.",
+                        type = "color", order = 4, hasAlpha = false,
+                        set = function(_, r, g, b) 
+                            PH.db.profile.catSettings[1].defaultBarColor = {r=r, g=g, b=b}
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() 
+                            local c = PH.db.profile.catSettings[1].defaultBarColor or {r=0.5, g=0.5, b=0.5}
+                            return c.r, c.g, c.b
+                        end,
+                    },
                 }
             },
             -- 3. MATERIAL-ICONS (Kat 2)
@@ -167,7 +180,58 @@ function PH:SetupOptions()
                         get = function() return (PH.db.profile.profSubSettings[settingKey] == nil or PH.db.profile.profSubSettings[settingKey].enabled ~= false) end 
                     },
 
-                    -- Individuelle Wuchsrichtung nur für Kat 1
+                    modeHeader = {
+                        name = "Auto-Hide (Instanz)",
+                        type = "header",
+                        order = 1.1,
+                    },
+                    hideInDungeon = {
+                        name = "Dungeons",
+                        desc = "In Instanzen ausblenden",
+                        type = "toggle",
+                        width = 0.6,
+                        order = 1.2,
+                        set = function(_, val) 
+                            -- SICHERHEITS-CHECK: Tabelle initialisieren falls nil
+                            PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                            PH.db.profile.profSubSettings[settingKey].hideInDungeon = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() 
+                            return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].hideInDungeon 
+                        end,
+                    },
+                    hideInRaid = {
+                        name = "Raids",
+                        desc = "In Schlachtzügen ausblenden",
+                        type = "toggle",
+                        width = 0.6,
+                        order = 1.3,
+                        set = function(_, val) 
+                            PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                            PH.db.profile.profSubSettings[settingKey].hideInRaid = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() 
+                            return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].hideInRaid 
+                        end,
+                    },
+                    hideInDelve = {
+                        name = "Delves",
+                        desc = "In Tiefen (Delves) ausblenden",
+                        type = "toggle",
+                        width = 0.6,
+                        order = 1.4,
+                        set = function(_, val) 
+                            PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                            PH.db.profile.profSubSettings[settingKey].hideInDelve = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() 
+                            return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].hideInDelve 
+                        end,
+                    },
+
                     barGrowth = (catID == 1) and {
                         name = "Wuchsrichtung",
                         type = "select", order = 2,
@@ -182,6 +246,7 @@ function PH:SetupOptions()
                         set = function(_, val) PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}; PH.db.profile.profSubSettings[settingKey].sortMode = val; PH:GetModule("Visuals"):Init() end,
                         get = function() return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].sortMode or "EXP_ASC" end,
                     },
+                    
                     headerPos = { name = "Position", type = "header", order = 10 },
                     posX = { name = "X", type = "range", order = 11, min = -2000, max = 2000, step = 1, 
                         set = function(_, val) PH.db.profile.positions[settingKey] = PH.db.profile.positions[settingKey] or {x=0,y=0}; PH.db.profile.positions[settingKey].x = val; PH:GetModule("Visuals"):Init() end, 
@@ -191,36 +256,9 @@ function PH:SetupOptions()
                         set = function(_, val) PH.db.profile.positions[settingKey] = PH.db.profile.positions[settingKey] or {x=0,y=0}; PH.db.profile.positions[settingKey].y = val; PH:GetModule("Visuals"):Init() end, 
                         get = function() return PH.db.profile.positions[settingKey] and PH.db.profile.positions[settingKey].y or 0 end 
                     },
-                    maxColumns = (catID >= 2) and {
-                        name = "Symbole pro Reihe",
-                        desc = "Wie viele Icons nebeneinander angezeigt werden, bevor eine neue Zeile beginnt.",
-                        type = "range", order = 13, min = 1, max = 20, step = 1,
-                        set = function(_, val) 
-                            PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
-                            PH.db.profile.profSubSettings[settingKey].maxColumns = val
-                            PH:GetModule("Visuals"):Init() 
-                        end,
-                        get = function() 
-                            return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].maxColumns or 5 
-                        end,
-                    } or nil,
 
-                    -- NEU: Zeilenabstand (Optional, falls du das auch direkt steuern willst)
-                    customSpacingY = (catID >= 2) and {
-                        name = "Zeilenabstand",
-                        type = "range", order = 14, min = 10, max = 100, step = 1,
-                        set = function(_, val) 
-                            PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
-                            PH.db.profile.profSubSettings[settingKey].customSpacingY = val
-                            PH:GetModule("Visuals"):Init() 
-                        end,
-                        get = function() 
-                            return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].customSpacingY or 44 
-                        end,
-                    } or nil,
-
-                    headerFilter = { name = "Einzel-Filter & Priorität", type = "header", order = 20 },
-                    items = { name = "Einzel-Filter & Priorität", type = "group", inline = true, order = 20, args = {} }
+                    headerFilter = { name = "Einzel-Filter & Customizing", type = "header", order = 20 },
+                    items = { name = "Items verwalten", type = "group", inline = true, order = 21, args = {} }
                 }
             }
         end
@@ -241,17 +279,39 @@ function PH:SetupOptions()
                 local itemGroupKey = "group_" .. itemName
                 targetMenu.args[settingKey].args.items.args[expKey].args[itemGroupKey] = {
                     name = "", 
-                    type = "group", inline = true, width = "full",
+                    type = "group", inline = true,
                     args = {
                         check = {
                             name = itemName:gsub("_", " "),
-                            type = "toggle", order = 1, width = 1.4,
+                            type = "toggle", order = 1, width = 1.0,
                             set = function(_, val) PH.db.profile.itemFilters[itemName] = val; PH:GetModule("Visuals"):Init() end,
                             get = function() return PH.db.profile.itemFilters[itemName] ~= false end,
                         },
+                        -- NEU: Farbwähler direkt beim Item (nur für Kategorie 1)
+                        itemColor = (catID == 1) and {
+                            name = "",
+                            type = "color", order = 2, width = 0.2,
+                            hasAlpha = false,
+                            set = function(_, r, g, b) 
+                                PH.db.profile.customItemColors = PH.db.profile.customItemColors or {}
+                                PH.db.profile.customItemColors[itemName] = {r=r, g=g, b=b}
+                                PH:GetModule("Visuals"):Init() 
+                            end,
+                            get = function() 
+                                local c = PH.db.profile.customItemColors and PH.db.profile.customItemColors[itemName] 
+                                        or itemInfo.color -- Fallback auf Data.lua
+                                        or {r=0.5, g=0.5, b=0.5}
+                                -- Falls itemInfo.color ein Hex-String ist, müsste hier ggf. konvertiert werden
+                                if type(c) == "string" then 
+                                    local hex = c:gsub("#","")
+                                    return tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
+                                end
+                                return c.r, c.g, c.b
+                            end,
+                        } or nil,
                         prio = {
                             name = "Prio",
-                            type = "input", order = 2, width = 0.4,
+                            type = "input", order = 3, width = 0.3,
                             set = function(_, val) PH.db.profile.itemSortOrder[itemName] = tonumber(val) or 99; PH:GetModule("Visuals"):Init() end,
                             get = function() return tostring(PH.db.profile.itemSortOrder[itemName] or 99) end,
                         }

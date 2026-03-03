@@ -295,6 +295,26 @@ local function FormatTime(s)
     end
     return math.ceil(s / 86400) .. "d"
 end
+
+function Visuals:GetCurrentZoneMode()
+    local _, instanceType = GetInstanceInfo()
+    -- 1. Check auf Delves (Szenario-Typ in TWW)
+    if C_PartyInfo and C_PartyInfo.IsDelveInProgress and C_PartyInfo.IsDelveInProgress() then
+        return "isDelve"
+    end
+    -- 2. Check auf Raid
+    -- GetRaidDifficultyID() > 0 und instanceType "raid"
+    if instanceType == "raid" then
+        return "isRaid"
+    end
+    -- 3. Check auf Dungeon
+    -- instanceType "party" ist der sicherste Indikator für 5-Mann Content
+    if instanceType == "party" then
+        return "isDungeon"
+    end
+    return "none"
+end
+
 -- ==========================================
 -- 4. RENDERING FUNKTIONEN
 -- ==========================================
@@ -337,13 +357,21 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     bar:GetStatusBarTexture():SetVertTile(false)
     
     -- FARBEN / GRADIENT
+    local tex = bar:GetStatusBarTexture()
     if #barColor >= 6 then
-        bar:GetStatusBarTexture():SetGradient("VERTICAL", 
+        -- Korrekte Nutzung von CreateColor Objekten für Gradients
+        tex:SetGradient("VERTICAL", 
             CreateColor(barColor[1], barColor[2], barColor[3], 1),
             CreateColor(barColor[4], barColor[5], barColor[6], 1)
         )
     else
-        bar:SetStatusBarColor(barColor[1] or 1, barColor[2] or 1, barColor[3] or 1)
+        -- FIX: Auch hier MÜSSEN CreateColor Objekte übergeben werden,
+        -- um den Gradient-Effekt zu "resetten" oder eine flache Farbe zu erzwingen.
+        local r, g, b = barColor[1] or 1, barColor[2] or 1, barColor[3] or 1
+        local col = CreateColor(r, g, b, 1)
+        
+        tex:SetGradient("VERTICAL", col, col)
+        bar:SetStatusBarColor(r, g, b)
     end
     
     local barBg = bar:CreateTexture(nil, "BACKGROUND")
@@ -401,26 +429,37 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
     local function Update()
         local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
         local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
-        local g = C_Item.GetItemCount(itemIDs[3] or 0, true, true, true, true)
+        local g = itemIDs[3] and C_Item.GetItemCount(itemIDs[3], true, true, true, true) or 0
         
         tB:ClearAllPoints()
         tS:ClearAllPoints()
         tG:ClearAllPoints()
 
         if not itemIDs[3] then 
-            tB:SetPoint("CENTER", bar, "CENTER", 0, 8)
-            tS:SetPoint("CENTER", bar, "CENTER", 0, -8)
-            tG:Hide()
-        else 
-            tB:SetPoint("CENTER", bar, "CENTER", 0, 15)
-            tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
-            tG:SetPoint("CENTER", bar, "CENTER", 0, -15)
+            -- FALL: Nur 2 Qualitätsstufen vorhanden
+            tB:Hide() -- Wir verstecken den "Bronze" Text
+            
+            tS:Show()
+            tS:SetPoint("CENTER", bar, "CENTER", 0, 10)
+            tS:SetText(b > 0 and b or "") -- Menge von ID 1 wird als Silber angezeigt
+            
             tG:Show()
+            tG:SetPoint("CENTER", bar, "CENTER", 0, -10)
+            tG:SetText(s > 0 and s or "") -- Menge von ID 2 wird als Gold angezeigt
+        else 
+            -- FALL: Standard (3 Qualitäten)
+            tB:Show()
+            tB:SetPoint("CENTER", bar, "CENTER", 0, 15)
+            tB:SetText(b > 0 and b or "")
+            
+            tS:Show()
+            tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
+            tS:SetText(s > 0 and s or "")
+            
+            tG:Show()
+            tG:SetPoint("CENTER", bar, "CENTER", 0, -15)
+            tG:SetText(g > 0 and g or "")
         end
-
-        tB:SetText(b > 0 and b or "")
-        tS:SetText(s > 0 and s or "")
-        tG:SetText(g > 0 and g or "")
 
         local total = b + s + g
         bar:SetMinMaxValues(0, 1000)
@@ -983,7 +1022,7 @@ function Visuals:Init()
 if ProfessionsHelper.db.profile.catSettings[1].enabled then
     local barGroups = {}
     
-    -- Schritt 1: Items nach Beruf (settingKey) gruppieren
+        -- Schritt 1: Items nach Beruf (settingKey) gruppieren
     for _, item in ipairs(buckets[1]) do
         local settingKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 1)
         barGroups[settingKey] = barGroups[settingKey] or {}
@@ -1037,35 +1076,63 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
                 end
             end)
 
+            local currentMode = self:GetCurrentZoneMode() -- Einmal pro Rendering abfragen
+
+            for settingKey, items in pairs(barGroups) do
+                local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
+                
+                -- PRÜFUNG: Soll diese spezifische Untergruppe (z.B. Bergbau) versteckt werden?
+                local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or (currentMode == "isRaid" and subSettings.hideInRaid) or (currentMode == "isDelve" and subSettings.hideInDelve)
+                -- Nur wenn enabled UND nicht durch den Modus versteckt
+                if subSettings.enabled ~= false and not isHiddenByMode then 
+                    -- ... Hier folgt dein Loop: for _, item in ipairs(items) do ...
+                    -- Und hier drin wird dann self:CreateBar aufgerufen
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
                     
-                    -- Farben berechnen
-                    local hex = (item.data.color or "#FFFFFF"):gsub("#","")
-                    local r, g, b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
-                    local barColors = { r, g, b }
-                    
-                    if item.data.gradient_End_color then
-                        local gHex = item.data.gradient_End_color:gsub("#","")
-                        local gr, gg, gb = tonumber(gHex:sub(1,2),16)/255, tonumber(gHex:sub(3,4),16)/255, tonumber(gHex:sub(5,6),16)/255
-                        table.insert(barColors, gr); table.insert(barColors, gg); table.insert(barColors, gb)
+                    -- 1. Farben initialisieren (WICHTIG: Nur einmal deklarieren!)
+                    local barColors = {}
+                    local customCol = ProfessionsHelper.db.profile.customItemColors and ProfessionsHelper.db.profile.customItemColors[item.name]
+
+                    -- 2. Farbhierarchie abarbeiten
+                    if customCol then
+                        -- Priorität 1: User-Einstellung aus dem Menü
+                        barColors = { customCol.r, customCol.g, customCol.b }
+                    elseif item.data.color then
+                        -- Priorität 2: Standardfarbe aus Data.lua
+                        local hex = item.data.color:gsub("#","")
+                        local r, g, b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
+                        barColors = { r, g, b }
+                        
+                        -- Gradient-Check (nur für Data.lua Farben)
+                        if item.data.gradient_End_color then
+                            local gHex = item.data.gradient_End_color:gsub("#","")
+                            table.insert(barColors, tonumber(gHex:sub(1,2),16)/255)
+                            table.insert(barColors, tonumber(gHex:sub(3,4),16)/255)
+                            table.insert(barColors, tonumber(gHex:sub(5,6),16)/255)
+                        end
+                    else
+                        -- Priorität 3: Globaler Default aus den Optionen
+                        local d = ProfessionsHelper.db.profile.catSettings[1].defaultBarColor or {r=0.5, g=0.5, b=0.5}
+                        barColors = { d.r, d.g, d.b }
                     end
 
-                    -- Lokale Kopie für CreateBar erstellen
+                    -- Sicherheits-Check: Falls barColors aus irgendeinem Grund leer blieb
+                    if #barColors < 3 then barColors = {0.5, 0.5, 0.5} end
+
+                    -- 3. Restliches Rendering
                     local renderOptions = {}
                     for k,v in pairs(subSettings) do renderOptions[k] = v end
-                    
-                    -- WICHTIG: Hier den aktuellen Wert für die Wuchsrichtung fixieren
                     renderOptions.barGrowth = growthSetting 
 
                     local profName = settingKey:gsub("_c1", "") 
                     
+                    -- Aufruf mit den korrekt gefüllten barColors
                     local barFrame = self:CreateBar(item.name, UIParent, item.data.IDs, currentX, currentY, barColors, renderOptions, profName)
                     
                     MakeInteractive(barFrame, item.data.IDs, settingKey)
                     AddToUI(barFrame)
                     
-                    -- Versatz berechnen
                     local barWidth = subSettings.width or 30
                     currentX = currentX + barWidth + 8
                 end
@@ -1073,34 +1140,48 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
         end
     end
 end
+end
+end
 
 -- Rendering Cat 2 (Material-Icons)
 if ProfessionsHelper.db.profile.catSettings[2].enabled then
     local globalGroups = {}
     
+    -- 1. Zonen-Modus abfragen
+    local currentMode = self:GetCurrentZoneMode()
+
+    -- 2. Gruppieren nach Global Key
     for _, item in ipairs(buckets[2]) do
         local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 2)
         globalGroups[gKey] = globalGroups[gKey] or {}
         table.insert(globalGroups[gKey], item)
     end
 
+    -- 3. Rendern der Gruppen
     for gKey, items in pairs(globalGroups) do
         local pSet = ProfessionsHelper.db.profile.profSubSettings[gKey] or {}
         
-        if pSet.enabled ~= false then
+        -- PRÜFUNG: Auto-Hide Logik
+        local isHiddenByMode = (currentMode == "isDungeon" and pSet.hideInDungeon) or (currentMode == "isRaid" and pSet.hideInRaid) or (currentMode == "isDelve" and pSet.hideInDelve)
+
+        -- Nur wenn enabled UND nicht durch den Modus versteckt
+        if pSet.enabled ~= false and not isHiddenByMode then 
             local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = -450, y = 100}
+            
+            -- WICHTIG: visibleIdx muss VOR der Item-Schleife auf 0 gesetzt werden!
+            local visibleIdx = 0
             
             -- Sortierung nach ExpID
             table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
 
-            local visibleIdx = 0 
+            -- 4. Items der Gruppe zeichnen
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                    -- Spacing nutzen
+                    -- Berechnung des Offsets (hier passierte der Fehler)
                     local offset = visibleIdx * (self.Config.SpacingX_Icon or 28)
                     local iX, iY = pos.x, pos.y
                     
-                    -- Wuchsrichtung (growth kommt aus Settings)
+                    -- Wuchsrichtung
                     local growth = pSet.growth or "LEFT_RIGHT"
                     if growth == "LEFT_RIGHT" then iX = pos.x + offset 
                     elseif growth == "RIGHT_LEFT" then iX = pos.x - offset 
@@ -1111,16 +1192,14 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
                     local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, gKey, item.data.achievementID)
                     
                     if iconFrame then
-                        -- WICHTIG: Die Ausrichtung aus den Settings zuweisen
                         iconFrame.textAlign = pSet.textAlign or "BOTTOM"
-                        
-                        -- Jetzt manuell updaten, damit die Text-Position sofort stimmt
                         if iconFrame.UpdateManually then 
                             iconFrame:UpdateManually() 
                         end
-                        
                         AddToUI(iconFrame)
                     end
+                    
+                    -- Index hochzählen für das nächste Icon
                     visibleIdx = visibleIdx + 1
                 end
             end
@@ -1139,6 +1218,19 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
         profGroups[groupKey] = profGroups[groupKey] or {}
         table.insert(profGroups[groupKey], item)
     end
+
+    local currentMode = self:GetCurrentZoneMode() -- Einmal pro Rendering abfragen
+
+for settingKey, items in pairs(profGroups) do
+    local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
+    
+    -- PRÜFUNG: Soll diese spezifische Untergruppe (z.B. Bergbau) versteckt werden?
+    local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or (currentMode == "isRaid" and subSettings.hideInRaid) or (currentMode == "isDelve" and subSettings.hideInDelve)
+
+    -- Nur wenn enabled UND nicht durch den Modus versteckt
+    if subSettings.enabled ~= false and not isHiddenByMode then 
+        -- ... Hier folgt dein Loop: for _, item in ipairs(items) do ...
+        -- Und hier drin wird dann self:CreateBar aufgerufen
 
     for groupName, items in pairs(profGroups) do
         -- Wir müssen den gleichen Key wie in der Settings.lua bauen
@@ -1214,36 +1306,43 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
         end
     end
 end
+end
+end
 
 -- Rendering Cat 4 (Fishing)
 if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
     local fishingGroups = {}
     
-    -- 1. Gruppieren
+    -- 1. Zonen-Modus abfragen
+    local currentMode = self:GetCurrentZoneMode()
+
+    -- 2. Gruppieren (Bucket-Items in fishingGroups sortieren)
     for _, item in ipairs(buckets[4]) do
         local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 4)
         fishingGroups[gKey] = fishingGroups[gKey] or {}
         table.insert(fishingGroups[gKey], item)
     end
 
-    -- 2. Rendern der Gruppen
+    -- 3. Rendern der Gruppen
     for gKey, items in pairs(fishingGroups) do
         local pSet = ProfessionsHelper.db.profile.profSubSettings[gKey] or { enabled = true }
         
-        if pSet.enabled ~= false then
-            local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = -300, y = 400}
-            local mode = pSet.sortMode or "EXP_ASC"
+        -- PRÜFUNG: Auto-Hide Logik (Dungeon/Raid/Delve)
+        local isHiddenByMode = (currentMode == "isDungeon" and pSet.hideInDungeon) or (currentMode == "isRaid" and pSet.hideInRaid) or (currentMode == "isDelve" and pSet.hideInDelve)
 
-            -- 3. Sortierung (bestehende Logik beibehalten)
+        -- Nur rendern, wenn aktiviert UND nicht durch Zone versteckt
+        if pSet.enabled ~= false and not isHiddenByMode then
+            local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = -300, y = 400}
+            
+            -- Sortierung
             table.sort(items, function(a, b)
-                -- ... [Deine bestehende Sortier-Logik] ...
                 return (a.data.expID or 0) < (b.data.expID or 0)
             end)
 
             -- 4. Zeichnen mit Umbruch-Logik
             local fStartX = pos.x
             local fX, fY = pos.x, pos.y
-            local visibleIdx = 0
+            local visibleIdx = 0 -- Initialisierung für den Zähler
 
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
@@ -1256,7 +1355,6 @@ if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
                     -- Frame erstellen
                     local iconFrame = self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY, gKey)
                     if iconFrame then 
-                        -- Falls UpdateManually existiert, rufen wir es auf, falls Settings sich geändert haben
                         if iconFrame.UpdateManually then iconFrame:UpdateManually() end
                         AddToUI(iconFrame) 
                     end
@@ -1273,6 +1371,10 @@ end
 if ProfessionsHelper.db.profile.catSettings[5].enabled then
     local skillGroups = {}
     
+    -- 1. Zonen-Modus abfragen
+    local currentMode = self:GetCurrentZoneMode()
+
+    -- 2. Gruppieren
     if buckets[5] then
         for _, item in ipairs(buckets[5]) do
             local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 5)
@@ -1281,26 +1383,32 @@ if ProfessionsHelper.db.profile.catSettings[5].enabled then
         end
     end
 
+    -- 3. Rendern der Gruppen
     for gKey, items in pairs(skillGroups) do
         local pSet = ProfessionsHelper.db.profile.profSubSettings[gKey] or { enabled = true }
         
-        if pSet.enabled ~= false then
+        -- PRÜFUNG: Auto-Hide Logik (Dungeon/Raid/Delve)
+        local isHiddenByMode = (currentMode == "isDungeon" and pSet.hideInDungeon) or (currentMode == "isRaid" and pSet.hideInRaid) or (currentMode == "isDelve" and pSet.hideInDelve)
+
+        -- Nur rendern, wenn aktiviert UND nicht durch Zone versteckt
+        if pSet.enabled ~= false and not isHiddenByMode then
             local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = 0, y = -100}
+            local visibleIdx = 0 -- HIER: Wichtig, damit die Rechnung (visibleIdx * spacing) funktioniert!
             
             -- Sortierung (Prio)
             table.sort(items, function(a, b)
-                local prioA = ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
-                local prioB = ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
+                local prioA = (ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name]) or 99
+                local prioB = (ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name]) or 99
                 if prioA ~= prioB then return prioA < prioB end
                 return a.name < b.name
             end)
 
-            local visibleIdx = 0 
+            -- 4. Icons der Gruppe zeichnen
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
                     local spellID = item.data.spellID
                     if spellID then
-                        -- SpacingX_Skill nutzen
+                        -- Spacing nutzen
                         local offset = visibleIdx * (self.Config.SpacingX_Skill or 45)
                         local iX = pos.x + offset
                         local iY = pos.y
@@ -1308,6 +1416,7 @@ if ProfessionsHelper.db.profile.catSettings[5].enabled then
                         -- Frame erstellen
                         local iconFrame = self:CreateSkillIcon(UIParent, spellID, iX, iY, gKey)
                         if iconFrame then
+                            if iconFrame.UpdateManually then iconFrame:UpdateManually() end
                             AddToUI(iconFrame)
                         end
                         visibleIdx = visibleIdx + 1
