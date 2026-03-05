@@ -1207,51 +1207,39 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
     end
 end
 
--- Rendering Cat 3
+-- Rendering Cat 3 (Berufs-Icons)
 if ProfessionsHelper.db.profile.catSettings[3].enabled then
     local profGroups = {}
-    
-    -- 1. Gruppierung nach gatheringProf (z.B. Skinning) oder prof
+    local currentMode = self:GetCurrentZoneMode()
+
+    -- 1. Gruppierung
     for _, item in ipairs(buckets[3]) do
-        -- FIX: Nutze gatheringProf für die Trennung (z.B. Leder von Kürschnerei)
         local groupKey = item.data.gatheringProf or item.prof or "Other"
         profGroups[groupKey] = profGroups[groupKey] or {}
         table.insert(profGroups[groupKey], item)
     end
 
-    local currentMode = self:GetCurrentZoneMode() -- Einmal pro Rendering abfragen
-
-for settingKey, items in pairs(profGroups) do
-    local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
-    
-    -- PRÜFUNG: Soll diese spezifische Untergruppe (z.B. Bergbau) versteckt werden?
-    local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or (currentMode == "isRaid" and subSettings.hideInRaid) or (currentMode == "isDelve" and subSettings.hideInDelve)
-
-    -- Nur wenn enabled UND nicht durch den Modus versteckt
-    if subSettings.enabled ~= false and not isHiddenByMode then 
-        -- ... Hier folgt dein Loop: for _, item in ipairs(items) do ...
-        -- Und hier drin wird dann self:CreateBar aufgerufen
-
+    -- 2. Rendern der Gruppen
     for groupName, items in pairs(profGroups) do
-        -- Wir müssen den gleichen Key wie in der Settings.lua bauen
         local settingKey = groupName .. "_c3"
         local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
         
-        if subSettings.enabled ~= false then
-            local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = 200, y = 0}
-            
-            local mode = subSettings.sortMode or "EXP_ASC"
+        -- PRÜFUNG: Auto-Hide Logik
+        local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or 
+                               (currentMode == "isRaid" and subSettings.hideInRaid) or 
+                               (currentMode == "isDelve" and subSettings.hideInDelve)
 
+        if subSettings.enabled ~= false and not isHiddenByMode then
+            local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = 200, y = 0}
+            local mode = subSettings.sortMode or "EXP_ASC"
+            
+            -- Sortierung
             table.sort(items, function(a, b)
                 if mode == "CUSTOM" then
-                    -- Eigene Sortierung (Zahlenwert aus Settings)
                     local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
                     local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
                     if sortA ~= sortB then return sortA < sortB end
-                    return (a.name or "") < (b.name or "")
-
                 elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
-                    -- Mengenbasierte Sortierung (alle IDs summieren)
                     local function GetTotal(itemObj)
                         local total = 0
                         if itemObj.data.IDs then
@@ -1261,52 +1249,38 @@ for settingKey, items in pairs(profGroups) do
                         end
                         return total
                     end
-                    
-                    local countA, countB = GetTotal(a), GetTotal(b)
-                    if countA ~= countB then
-                        if mode == "COUNT_DESC" then return countA > countB end
-                        return countA < countB
-                    end
-                    return (a.name or "") < (b.name or "")
-
+                    local cA, cB = GetTotal(a), GetTotal(b)
+                    if cA ~= cB then return mode == "COUNT_DESC" and cA > cB or cA < cB end
                 elseif mode == "EXP_DESC" then
-                    -- Neu -> Alt (Erweiterung)
                     return (a.data.expID or 0) > (b.data.expID or 0)
-                
-                elseif mode == "NAME_ASC" then
-                    -- Alphabetisch
-                    return (a.name or "") < (b.name or "")
-
-                else
-                    -- Standard: EXP_ASC (Alt -> Neu)
-                    return (a.data.expID or 0) < (b.data.expID or 0)
                 end
+                return (a.data.expID or 0) < (b.data.expID or 0)
             end)
 
+            -- 3. Grid-Parameter
             local maxCols = subSettings.maxColumns or 5
             local spacingX = self.Config.SpacingX_Prof or 44
             local spacingY = subSettings.customSpacingY or 44
+            local vIdx = 0 -- Index für die Grid-Berechnung
 
-            local vIdx = 0
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                    -- GRID-BERECHNUNG für den Block
+                    -- GRID-BERECHNUNG
                     local col = vIdx % maxCols
                     local row = math.floor(vIdx / maxCols)
                     
                     local pX = pos.x + (col * spacingX)
                     local pY = pos.y - (row * spacingY)
                     
-                    -- WICHTIG: Wir übergeben settingKey am Ende, damit der ganze Block verschiebbar ist
                     local iconFrame = self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY, settingKey)
-                    AddToUI(iconFrame)
-                    vIdx = vIdx + 1
+                    if iconFrame then
+                        AddToUI(iconFrame)
+                        vIdx = vIdx + 1
+                    end
                 end
             end
         end
     end
-end
-end
 end
 
 -- Rendering Cat 4 (Fishing)

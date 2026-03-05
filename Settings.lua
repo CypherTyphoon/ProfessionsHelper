@@ -257,6 +257,21 @@ function PH:SetupOptions()
                         get = function() return PH.db.profile.positions[settingKey] and PH.db.profile.positions[settingKey].y or 0 end 
                     },
 
+                    maxColumns = (catID == 3) and {
+                        name = "Symbole pro Zeile",
+                        desc = "Wie viele Icons nebeneinander angezeigt werden, bevor eine neue Zeile beginnt.",
+                        type = "range",
+                        order = 13,
+                        min = 1, max = 20, step = 1,
+                        set = function(_, val) 
+                            PH.db.profile.profSubSettings[settingKey] = PH.db.profile.profSubSettings[settingKey] or {}
+                            PH.db.profile.profSubSettings[settingKey].maxColumns = val
+                            PH:GetModule("Visuals"):Init() 
+                        end,
+                        get = function() 
+                            return PH.db.profile.profSubSettings[settingKey] and PH.db.profile.profSubSettings[settingKey].maxColumns or 5 
+                        end,
+                    } or nil,
                     headerFilter = { name = "Einzel-Filter & Customizing", type = "header", order = 20 },
                     items = { name = "Items verwalten", type = "group", inline = true, order = 21, args = {} }
                 }
