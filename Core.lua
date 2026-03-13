@@ -58,12 +58,10 @@ local defaults = {
 -- Initialisierung
 ------------------------------------------------------------
 function ProfessionsHelper:OnInitialize()
-    -- WICHTIG: Wir nutzen hier den Namen aus der .toc (SavedVariablesPerCharacter)
-    -- Da diese Variable pro Charakter existiert, sind die Daten physisch getrennt.
     self.db = LibStub("AceDB-3.0"):New("ProfessionsHelperDB_Char", defaults, "Default")
 
-    -- Slash-Befehle
-    self:RegisterChatCommand("ph", "OpenMenu")
+    -- Slash-Befehle (nur einmal pro Kommando!)
+    self:RegisterChatCommand("ph", "ChatCommand")
     self:RegisterChatCommand("phmenu", "OpenMenu")
 
     -- Menü initialisieren
@@ -71,7 +69,6 @@ function ProfessionsHelper:OnInitialize()
         self:SetupOptions()
     end
 
-    -- Anzeige zur Kontrolle
     self:Print("|cff33ff99geladen!|r (Charakter-Speichermodus aktiv)")
 
     -- Module starten
@@ -89,6 +86,34 @@ function ProfessionsHelper:OpenMenu()
         else
             InterfaceOptionsFrame_OpenToCategory(self.optionsFrame)
         end
+    end
+end
+
+function ProfessionsHelper:ChatCommand(input)
+    input = input:trim():lower()
+
+    if input == "lock" or input == "unlock" then
+        -- Gezieltes Setzen statt bloßem Toggle erhöht die Nutzerfreundlichkeit
+        local newState = (input == "lock")
+        self.db.profile.locked = newState
+        
+        local status = newState and "|cff00ff00fixiert (locked)|r" or "|cffff0000gelöst (unlocked)|r"
+        self:Print("Alle Frames sind nun " .. status)
+        
+        -- 1. Visuals updaten (damit die grünen Flächen verschwinden/erscheinen)
+        self:GetModule("Visuals"):Init()
+        
+        -- 2. Ace-Optionen zwingen, die Checkbox zu aktualisieren
+        LibStub("AceConfigRegistry-3.0"):NotifyChange(ADDON_NAME)
+
+    elseif input == "config" or input == "" then
+        -- Wenn nur /ph oder /ph config eingegeben wird, öffne das Menü
+        self:OpenMenu()
+    else
+        self:Print("|cffffff00Befehle:|r")
+        self:Print("|cff66bbff/ph lock|r - Fixiert die Frames.")
+        self:Print("|cff66bbff/ph unlock|r - Macht Frames beweglich.")
+        self:Print("|cff66bbff/ph config|r - Öffnet die Einstellungen.")
     end
 end
 
