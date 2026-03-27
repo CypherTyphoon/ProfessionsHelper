@@ -358,7 +358,6 @@ ProfessionsHelperData["Midnight"].Alchemy = {
     Mote_of_Wild_Magic = { IDs = { 236951 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Engineering", "Tailoring", "Leatherworking", "Inscription", "Alchemy", "Enchanting", "Cooking", "Skinning" }, displayCategory = 3 },
     Mote_of_Pure_Void = { IDs = { 236952 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Tailoring", "Engineering", "Leatherworking", "Enchanting", "Alchemy", "Jewelcrafting", "Inscription", "Skinning" }, canExperiment = true, displayCategory = 3 },
     
-    Midnight_Catalyst = { IDs = { 241279 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, displayCategory = 3 },
     Stabilized_Derivate = { IDs = { 242651 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, canExperiment = true, displayCategory = 3 },
 
     -- Finishing Reagents / Intermediate
