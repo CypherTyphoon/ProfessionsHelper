@@ -1022,89 +1022,76 @@ function Visuals:Init()
 if ProfessionsHelper.db.profile.catSettings[1].enabled then
     local barGroups = {}
     
-        -- Schritt 1: Items nach Beruf (settingKey) gruppieren
+    -- Schritt 1: Items nach Beruf (settingKey) gruppieren
     for _, item in ipairs(buckets[1]) do
         local settingKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 1)
-        barGroups[settingKey] = barGroups[settingKey] or {}
-        table.insert(barGroups[settingKey], item)
+        if settingKey then
+            barGroups[settingKey] = barGroups[settingKey] or {}
+            table.insert(barGroups[settingKey], item)
+        end
     end
 
     -- Schritt 2: Die Gruppen rendern
     for settingKey, items in pairs(barGroups) do
         local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
+        local currentMode = self:GetCurrentZoneMode()
         
-        -- Nur rendern, wenn der Beruf nicht deaktiviert ist
-        if subSettings.enabled ~= false then 
+        -- Prüfung: Auto-Hide (Dungeon/Raid/Delve)
+        local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or 
+                               (currentMode == "isRaid" and subSettings.hideInRaid) or 
+                               (currentMode == "isDelve" and subSettings.hideInDelve)
+
+        if subSettings.enabled ~= false and not isHiddenByMode then 
             local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = -450, y = 150}
             local currentX = pos.x
             local currentY = pos.y
-            
-            -- WUCHSRICHTUNG (Anpassung an neue Settings.lua)
-            -- Wir holen den String "BOTTOM_TOP" oder "TOP_BOTTOM"
             local growthSetting = subSettings.barGrowth or "BOTTOM_TOP"
 
-            -- Dynamische Sortierung
+            -- Sortierung
             local mode = subSettings.sortMode or "EXP_ASC"
             table.sort(items, function(a, b)
                 if mode == "CUSTOM" then
                     local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
                     local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
                     if sortA ~= sortB then return sortA < sortB end
-                    return (a.name or "") < (b.name or "")
                 elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
                     local function GetTotal(itemObj)
                         local total = 0
-                        if itemObj.data.IDs then
-                            for _, id in ipairs(itemObj.data.IDs) do
-                                total = total + C_Item.GetItemCount(id, true, true, true, true)
-                            end
+                        for _, id in ipairs(itemObj.data.IDs or {}) do
+                            total = total + C_Item.GetItemCount(id, true, true, true, true)
                         end
                         return total
                     end
                     local countA, countB = GetTotal(a), GetTotal(b)
                     if countA ~= countB then
-                        if mode == "COUNT_DESC" then return countA > countB end
-                        return countA < countB
+                        return (mode == "COUNT_DESC") and (countA > countB) or (countA < countB)
                     end
-                    return (a.name or "") < (b.name or "")
                 elseif mode == "EXP_DESC" then
                     return (a.data.expID or 0) > (b.data.expID or 0)
                 elseif mode == "NAME_ASC" then
                     return (a.name or "") < (b.name or "")
-                else
-                    return (a.data.expID or 0) < (b.data.expID or 0)
                 end
+                return (a.data.expID or 0) < (b.data.expID or 0) -- Default: EXP_ASC
             end)
 
-            local currentMode = self:GetCurrentZoneMode() -- Einmal pro Rendering abfragen
-
-            for settingKey, items in pairs(barGroups) do
-                local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
-                
-                -- PRÜFUNG: Soll diese spezifische Untergruppe (z.B. Bergbau) versteckt werden?
-                local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or (currentMode == "isRaid" and subSettings.hideInRaid) or (currentMode == "isDelve" and subSettings.hideInDelve)
-                -- Nur wenn enabled UND nicht durch den Modus versteckt
-                if subSettings.enabled ~= false and not isHiddenByMode then 
-                    -- ... Hier folgt dein Loop: for _, item in ipairs(items) do ...
-                    -- Und hier drin wird dann self:CreateBar aufgerufen
+            -- Schritt 3: Items der Gruppe zeichnen
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
                     
-                    -- 1. Farben initialisieren (WICHTIG: Nur einmal deklarieren!)
+                    -- === FARB-LOGIK (Wiederhergestellt) ===
                     local barColors = {}
                     local customCol = ProfessionsHelper.db.profile.customItemColors and ProfessionsHelper.db.profile.customItemColors[item.name]
 
-                    -- 2. Farbhierarchie abarbeiten
                     if customCol then
-                        -- Priorität 1: User-Einstellung aus dem Menü
+                        -- 1. Prio: User-Einstellung (RGB)
                         barColors = { customCol.r, customCol.g, customCol.b }
                     elseif item.data.color then
-                        -- Priorität 2: Standardfarbe aus Data.lua
+                        -- 2. Prio: Farbe aus Data.lua (Hex)
                         local hex = item.data.color:gsub("#","")
                         local r, g, b = tonumber(hex:sub(1,2),16)/255, tonumber(hex:sub(3,4),16)/255, tonumber(hex:sub(5,6),16)/255
                         barColors = { r, g, b }
                         
-                        -- Gradient-Check (nur für Data.lua Farben)
+                        -- Gradient aus Data.lua hinzufügen
                         if item.data.gradient_End_color then
                             local gHex = item.data.gradient_End_color:gsub("#","")
                             table.insert(barColors, tonumber(gHex:sub(1,2),16)/255)
@@ -1112,22 +1099,20 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
                             table.insert(barColors, tonumber(gHex:sub(5,6),16)/255)
                         end
                     else
-                        -- Priorität 3: Globaler Default aus den Optionen
+                        -- 3. Prio: Globaler Default
                         local d = ProfessionsHelper.db.profile.catSettings[1].defaultBarColor or {r=0.5, g=0.5, b=0.5}
                         barColors = { d.r, d.g, d.b }
                     end
 
-                    -- Sicherheits-Check: Falls barColors aus irgendeinem Grund leer blieb
                     if #barColors < 3 then barColors = {0.5, 0.5, 0.5} end
+                    -- =======================================
 
-                    -- 3. Restliches Rendering
                     local renderOptions = {}
                     for k,v in pairs(subSettings) do renderOptions[k] = v end
                     renderOptions.barGrowth = growthSetting 
 
                     local profName = settingKey:gsub("_c1", "") 
                     
-                    -- Aufruf mit den korrekt gefüllten barColors
                     local barFrame = self:CreateBar(item.name, UIParent, item.data.IDs, currentX, currentY, barColors, renderOptions, profName)
                     
                     MakeInteractive(barFrame, item.data.IDs, settingKey)
@@ -1139,8 +1124,6 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
             end
         end
     end
-end
-end
 end
 
 -- Rendering Cat 2 (Material-Icons)
