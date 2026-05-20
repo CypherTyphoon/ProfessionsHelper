@@ -600,9 +600,10 @@ ProfessionsHelperData["Midnight"].Skills = {
     Find_High_Value_Beasts = {spellID = 1250491, IDs = {1250491}, gatheringProf = "Skinning", displayCategory = 0, sources = { "Spell"}, time = "CD"},
 
     --Herbalism
-    Green_Thumb = {spellID = 439871, IDs = { 439871 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},
-    Overload_Herb = {spellID = 423395, IDs = { 423395 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
-    ArcaneDuplication = {spellID = 439190, IDs = { 439190 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},
+    Overload_Herb = {spellID = 1223014, IDs = { 1223014 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
+
+    --Mining
+    Overlord_Ore = {spellID = 1225392, IDs = { 1225392 }, gatheringProf = "Mining", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
 }
 
 
