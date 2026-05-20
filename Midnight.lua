@@ -105,7 +105,7 @@ ProfessionsHelperData["Midnight"].Wood = {
 ProfessionsHelperData["Midnight"].VendorDrop = {
     -- Vendor Materials
     Luminant_Flux = { IDs = { 243060 }, sources = { "Vendor" }, processingProfs = { "Enchanting", "Blacksmithing" }, displayCategory = 2 },
-    Fused_Vitality = { IDs = { 246345 }, sources = { "Vendor" }, processingProfs = { "Jewelcrafting", "Engineering", "Inscription", "Blacksmithing", "Leatherworking", "Tailoring" }, displayCategory = 2 },
+    Fused_Vitality = { IDs = { 245345 }, sources = { "Vendor" }, processingProfs = { "Jewelcrafting", "Engineering", "Inscription", "Blacksmithing", "Leatherworking", "Tailoring" }, displayCategory = 2 },
     Lexicologists_Vellum = { IDs = { 245881 }, sources = { "Vendor" }, processingProfs = { "Inscription", "Enchanting" }, displayCategory = 2 },
     Thalassian_Songwater = { IDs = { 245882 }, sources = { "Vendor" }, processingProfs = { "Inscription", "Enchanting" }, displayCategory = 2 },
     Oil_of_Heartwood = { IDs = { 247811 }, sources = { "Vendor" }, processingProfs = { "Alchemy" }, displayCategory = 2 },
