@@ -257,7 +257,7 @@ function PH:SetupOptions()
                         get = function() return PH.db.profile.positions[settingKey] and PH.db.profile.positions[settingKey].y or 0 end 
                     },
 
-                    maxColumns = (catID == 3) and {
+                    maxColumns = (catID == 3 or catID == 2) and {
                         name = "Symbole pro Zeile",
                         desc = "Wie viele Icons nebeneinander angezeigt werden, bevor eine neue Zeile beginnt.",
                         type = "range",
