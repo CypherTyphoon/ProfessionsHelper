@@ -1296,28 +1296,28 @@ if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
                 return (a.data.expID or 0) < (b.data.expID or 0)
             end)
 
-            -- 4. Zeichnen mit Umbruch-Logik
-            local fStartX = pos.x
-            local fX, fY = pos.x, pos.y
-            local visibleIdx = 0 -- Initialisierung für den Zähler
+            -- 4. Grid-Parameter (analog zu Kategorie 3)
+            local maxCols = pSet.maxColumns or 5
+            local spacingX = self.Config.SpacingX_Fish or 35
+            local spacingY = pSet.customSpacingY or self.Config.RowHeight or 40
+            local vIdx = 0
 
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                    -- Umbruch prüfen
-                    if HandleWrap(fX, fStartX, self.Config.MaxWidthFish) then 
-                        fX = fStartX
-                        fY = fY - (pSet.customSpacingY or self.Config.RowHeight or 40)
-                    end
+                    -- GRID-BERECHNUNG
+                    local col = vIdx % maxCols
+                    local row = math.floor(vIdx / maxCols)
+                    
+                    local fX = pos.x + (col * spacingX)
+                    local fY = pos.y - (row * spacingY)
                     
                     -- Frame erstellen
                     local iconFrame = self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY, gKey)
                     if iconFrame then 
                         if iconFrame.UpdateManually then iconFrame:UpdateManually() end
                         AddToUI(iconFrame) 
+                        vIdx = vIdx + 1
                     end
-                    
-                    fX = fX + (self.Config.SpacingX_Fish or 35)
-                    visibleIdx = visibleIdx + 1
                 end
             end
         end
