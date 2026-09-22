@@ -35,6 +35,7 @@ Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 Libs\LibDeflate\LibDeflate.lua
 Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua
 Libs\LibSharedMedia-3.0\lib.xml
+Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 
 # -------------------------------------------------------
 # Core Addon Files
