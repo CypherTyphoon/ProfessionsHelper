@@ -25,7 +25,7 @@ local skillLineMapping = {
     [333] = "Enchanting", [202] = "Engineering", [356] = "Fishing", 
     [182] = "Herbalism", [773] = "Inscription", [755] = "Jewelcrafting", 
     [165] = "Leatherworking", [186] = "Mining", [393] = "Skinning", 
-    [197] = "Tailoring" 
+    [197] = "Tailoring", [129] = "FirstAid" 
 }
 
 local PlayerCanHandle = {}

@@ -21,7 +21,7 @@ local defaults = {
         fontName = "Friz Quadrata TT",
         backgroundColor = {r=0, g=0, b=0, a=0.5},
         
-        enabledExpansions = { ["TWW"] = true, ["Midnight"] = true },
+        enabledExpansions = { ["TWW"] = true, ["Midnight"] = true, ["Classic"] = true, ["Forever"] = true },
         enabledResources = { ["Ore"] = true, ["Herbs"] = true },
         itemFilters = {}, 
         

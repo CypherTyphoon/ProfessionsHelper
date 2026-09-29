@@ -1,7 +1,7 @@
 ## X-Flavor: retail
 ## X-Expansion: TWW
-## Interface: 110100, 110205, 110207, 120000, 120005, 120007, 120100
-## Version: 0.8.6.7
+## Interface: 16001, 110100, 110205, 110207, 120000, 120005, 120007, 120100, 120105
+## Version: 0.8.8
 
 ## Title: Professions Helper
 ## Notes: Shows your mats and the items you can craft.
@@ -41,7 +41,20 @@ Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 # Core Addon Files
 # -------------------------------------------------------
 Core.lua
+
+# -------------------------------------------------------
+# Expansion / Data Files
+# -------------------------------------------------------
+Classic.lua
 TheWarWithin.lua
 Midnight.lua
+Forever.lua
+
+# -------------------------------------------------------
+# Addon Systems
+# -------------------------------------------------------
 Settings.lua
 Visuals.lua
+InputMode.lua
+Localization.lua
+PHTooltipIDs.lua

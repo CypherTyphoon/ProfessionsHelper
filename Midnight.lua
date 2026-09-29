@@ -1,4 +1,4 @@
--- TheWarWithin.lua 
+-- Midnight.lua 
 -- ProfessionsHelper Item Data
 
 local ADDON_NAME, _ = ...
