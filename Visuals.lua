@@ -86,7 +86,23 @@ local function PerformCharacterScan()
     end
 end
 
-local function CanPlayerSeeItem(category, itemData)
+local function GetItemCategoryOverride(itemData)
+    local profile = ProfessionsHelper.db and ProfessionsHelper.db.profile
+    local overrides = profile and profile.itemCategoryOverrides
+    if not overrides or type(itemData) ~= "table" or type(itemData.IDs) ~= "table" then
+        return nil
+    end
+
+    -- Matrix speichert denselben Override für alle IDs eines logischen Eintrags.
+    -- Der erste vorhandene Eintrag gilt für den gesamten Datensatz.
+    for _, itemID in ipairs(itemData.IDs) do
+        local saved = overrides[tostring(itemID)]
+        if saved ~= nil then return saved end
+    end
+    return nil
+end
+
+local function CanPlayerSeeItem(category, itemData, categoryOverride)
     if not itemData or (not itemData.IDs and not itemData.spellID) then return false end
 
     -- Wir legen uns eine lokale Referenz an, damit der Code lesbar bleibt
@@ -110,7 +126,7 @@ local function CanPlayerSeeItem(category, itemData)
         return HasMatch(itemData.gatheringProf)
     end
 
-    local cat = tonumber(itemData.displayCategory) or 0
+    local cat = tonumber(categoryOverride) or tonumber(itemData.displayCategory) or 0
 
     if cat == 1 or cat == 5 then
         return HasMatch(itemData.gatheringProf)
@@ -964,49 +980,62 @@ function Visuals:Init()
         for catName, subCatData in pairs(expData) do
             if catName ~= "Config" then
                 for itemName, itemData in pairs(subCatData) do
-                    if CanPlayerSeeItem(catName, itemData) then
-                        local cat = tonumber(itemData.displayCategory) or 0
-                        local showItem = false
-                        
-                        if catName == "Wood" then showItem = true 
-                        elseif (cat == 1 or cat == 5) and isCurrentExp then showItem = true 
-                        elseif (cat == 4) and isCurrentExp then showItem = true 
-                        elseif (cat == 2 or cat == 3) and isInCity then showItem = true end
+                    local override = GetItemCategoryOverride(itemData)
+                    local originalCat = tonumber(itemData.displayCategory) or 0
+                    local categoriesToProcess = {}
 
-                        if showItem and buckets[cat] then
-                            local settings = ProfessionsHelper.db.profile.catSettings[cat]
-                            if settings and settings.enabled then
-                                -- Intelligenz-Logik für die Bucket-Zuordnung (Priorisierung)
-                                local bucketToUse = catName -- Standard aus der Datei (z.B. "VendorDrop")
-                                local displayProf = "Other"
-                                
-                                -- 1. Überprüfe Berufe (Gathering & Processing)
-                                local pData = itemData.gatheringProf or itemData.processingProfs
-                                
-                                if type(pData) == "table" then
-                                    for _, p in ipairs(pData) do 
-                                        if learned[p] then 
-                                            displayProf = p
-                                            -- Wenn es Kategorie 2 (Icons) ist, soll das Item 
-                                            -- in den Bucket des Berufs rutschen statt VendorDrop/Other
-                                            if cat == 2 then bucketToUse = p end
-                                            break 
-                                        end 
+                    if override ~= nil then
+                        -- Ein vorhandener Matrix-Override ersetzt die Standardkategorie
+                        -- ausschließlich für die drei Matrix-Kategorien.
+                        for _, matrixCat in ipairs({ 1, 2, 3 }) do
+                            if override[matrixCat] == true then
+                                table.insert(categoriesToProcess, matrixCat)
+                            end
+                        end
+                        -- Andere bestehende Kategorien (z. B. 4/5) bleiben erhalten.
+                        if originalCat == 4 or originalCat == 5 then
+                            table.insert(categoriesToProcess, originalCat)
+                        end
+                    else
+                        table.insert(categoriesToProcess, originalCat)
+                    end
+
+                    for _, cat in ipairs(categoriesToProcess) do
+                        if CanPlayerSeeItem(catName, itemData, cat) then
+                            local showItem = false
+
+                            if catName == "Wood" then showItem = true
+                            elseif (cat == 1 or cat == 5 or cat == 4) and isCurrentExp then showItem = true
+                            elseif (cat == 2 or cat == 3) and isInCity then showItem = true end
+
+                            if showItem and buckets[cat] then
+                                local settings = ProfessionsHelper.db.profile.catSettings[cat]
+                                if settings and settings.enabled then
+                                    -- Bestehende Berufs-/Bucket-Zuordnung beibehalten.
+                                    local bucketToUse = catName
+                                    local displayProf = "Other"
+                                    local pData = itemData.gatheringProf or itemData.processingProfs
+
+                                    if type(pData) == "table" then
+                                        for _, p in ipairs(pData) do
+                                            if learned[p] then
+                                                displayProf = p
+                                                if cat == 2 then bucketToUse = p end
+                                                break
+                                            end
+                                        end
+                                    elseif type(pData) == "string" then
+                                        displayProf = pData
+                                        if cat == 2 and learned[pData] then bucketToUse = pData end
                                     end
-                                elseif type(pData) == "string" then
-                                    displayProf = pData
-                                    if cat == 2 and learned[pData] then
-                                        bucketToUse = pData
-                                    end
+
+                                    table.insert(buckets[cat], {
+                                        name = itemName,
+                                        data = itemData,
+                                        prof = displayProf,
+                                        bucketName = bucketToUse
+                                    })
                                 end
-
-                                -- 2. In die Liste einfügen (mit dem neuen bucketToUse)
-                                table.insert(buckets[cat], { 
-                                    name = itemName, 
-                                    data = itemData, 
-                                    prof = displayProf, 
-                                    bucketName = bucketToUse 
-                                })
                             end
                         end
                     end

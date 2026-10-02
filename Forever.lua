@@ -157,7 +157,7 @@ ProfessionsHelperData["Forever"].Leather = {
     LightLeather = { IDs = { 2318 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
     MediumLeather = { IDs = { 2319 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
     ThickLeather = { IDs = { 4304 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring", "FirstAid" }, displayCategory = 1 },
-    RuggedLeather = { IDs = { 8710 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
+    RuggedLeather = { IDs = { 8170 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
     ChimeraLeather = { IDs = { 15423 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
     CoreLeather = { IDs = { 17012 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing" }, displayCategory = 1 },
     DevilsaurLeather = { IDs = { 15417 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Blacksmithing" }, displayCategory = 1 },
@@ -370,41 +370,6 @@ ProfessionsHelperData["Forever"].Enchanting = {
 
     -- Finishing Reagents
     MirrorPowder = { IDs = { 224176, 224177, 224178 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
-}
-
-ProfessionsHelperData["Forever"].Inscription = {
-    -- Vendor
-    Distilled_Algari_Freshwater = { IDs = { 226205 }, sources = { "Vendor" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 2 },
-
-    -- Pigments
-    Orbinid_Pigment = { IDs = { 224800, 224801, 224802 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
-
-    -- Inks
-    Apricate_Ink = { IDs = { 222615, 222616, 222617 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Tailoring" }, displayCategory = 3 },
-
-    -- Optional Reagents
-    Darkmoon_Sigil_Vivacity = { IDs = { 226031, 226032, 226033 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 3 },
-}
-
-ProfessionsHelperData["Forever"].Jewelcrafting = {
-    -- Drop
-    BlackBloodInfusedBar = { IDs = { 239107 }, sources = { "Drop" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
-
-    -- Base Reagents
-    MarbledStone = { IDs = { 213756, 213757, 213758 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
-
-    -- Optional Reagents
-    Elemental_Focusing_Lens = { IDs = { 213768, 213769, 213770 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 3 },
-
-    -- Advanced Reagents
-    InvertedPrism = { IDs = { 213759, 213760, 213761 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Alchemy" }, displayCategory = 3 },
-
-    -- Finishing Reagents
-
-    OminousEnergyCrystal = { IDs = { 213765, 213766, 213767 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Engineering" }, displayCategory = 3 },
-
-    -- Endproduct
-    Gilded_Vial = { IDs = { 211806, 211807, 211808 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Jewelcrafting",processingProfs = { "Alchemy", "Engineering" }, displayCategory = 3 },
 }
 
 ProfessionsHelperData["Forever"].FirstAid = {
