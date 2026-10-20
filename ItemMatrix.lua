@@ -100,6 +100,19 @@ local function CopyCategories(categories)
 end
 
 
+-- Quellen bleiben als Metadaten erhalten; die Matrix-Zeile wird über Item-ID gebildet.
+local function GetPrimarySource(itemData)
+    local sources = itemData and itemData.sources
+    if type(sources) == "table" then sources = sources[1] end
+    return type(sources) == "string" and sources:match("^%s*(.-)%s*$"):lower() or ""
+end
+
+local function IsCategoryTable(value)
+    return type(value) == "table"
+        and (value[1] ~= nil or value[2] ~= nil or value[3] ~= nil)
+end
+
+
 ------------------------------------------------------------
 -- AKTIVE DATENBANK ÜBER SPIELERPOSITION ERMITTELN
 ------------------------------------------------------------
@@ -178,40 +191,42 @@ end
 
 function ItemMatrix:GetCategories(item, itemData)
     local profile = GetProfile()
-    if not profile then return self:GetDefaultCategories(itemData) end
-    local overrides = profile.itemCategoryOverrides
+    local defaults = item and item.availableCategories or self:GetDefaultCategories(itemData)
+    if not profile then return CopyCategories(defaults) end
     local ids = type(item) == "table" and item.ids or { item }
     for _, itemID in ipairs(ids or {}) do
-        local saved = overrides[tostring(itemID)]
-        if saved ~= nil then return CopyCategories(saved) end
+        local saved = profile.itemCategoryOverrides[tostring(itemID)]
+        if IsCategoryTable(saved) then return CopyCategories(saved) end
+        -- Vorheriges eintragsbezogenes Format: Kategorien über Einträge zusammenführen.
+        if type(saved) == "table" then
+            local merged = {}
+            for _, value in pairs(saved) do
+                if IsCategoryTable(value) then
+                    for _, cat in ipairs(CATEGORY_ORDER) do
+                        if value[cat] == true then merged[cat] = true end
+                    end
+                end
+            end
+            if next(merged) then return merged end
+        end
     end
-    return self:GetDefaultCategories(itemData)
+    return CopyCategories(defaults)
 end
-
-
-------------------------------------------------------------
--- OVERRIDE SPEICHERN
-------------------------------------------------------------
 
 function ItemMatrix:SetCategories(item, categories)
     local profile = GetProfile()
     if not profile or not item then return end
-    local ids = type(item) == "table" and item.ids or { item }
-    for _, itemID in ipairs(ids or {}) do
+    for _, itemID in ipairs(item.ids or { item.id or item }) do
         profile.itemCategoryOverrides[tostring(itemID)] = CopyCategories(categories)
     end
 end
 
-
-------------------------------------------------------------
--- OVERRIDE ZURÜCKSETZEN
-------------------------------------------------------------
-
 function ItemMatrix:ResetCategories(item)
     local profile = GetProfile()
     if not profile or not item then return end
-    local ids = type(item) == "table" and item.ids or { item }
-    for _, itemID in ipairs(ids or {}) do profile.itemCategoryOverrides[tostring(itemID)] = nil end
+    for _, itemID in ipairs(item.ids or { item.id or item }) do
+        profile.itemCategoryOverrides[tostring(itemID)] = nil
+    end
 end
 
 
@@ -317,30 +332,33 @@ function ItemMatrix:CollectItems()
         return
     end
 
-    local seenEntries = {}
+    local byID = {}
     for categoryName, categoryData in pairs(activeData) do
-        -- Holzarten aus der Matrix auslassen; die Datenbank bleibt unverändert.
         if categoryName ~= "Config" and categoryName ~= "Woodcutting" and categoryName ~= "Wood"
             and type(categoryData) == "table" then
             for itemName, itemData in pairs(categoryData) do
                 if type(itemData) == "table" and type(itemData.IDs) == "table"
-                    and not seenEntries[itemData] then
-                    local defaultCategory = tonumber(itemData.displayCategory)
-                    if (defaultCategory == 1 or defaultCategory == 2 or defaultCategory == 3)
-                        and CanPlayerSeeItem(categoryName, itemData) then
-                        local ids, seenIDs = {}, {}
+                    and CanPlayerSeeItem(categoryName, itemData) then
+                    local dc = tonumber(itemData.displayCategory)
+                    if dc and dc >= 1 and dc <= 3 then
                         for _, itemID in ipairs(itemData.IDs) do
-                            if itemID and not seenIDs[tostring(itemID)] then
-                                seenIDs[tostring(itemID)] = true
-                                table.insert(ids, itemID)
+                            if itemID then
+                                local key = tostring(itemID)
+                                local entry = byID[key]
+                                if not entry then
+                                    entry = { id = itemID, ids = { itemID }, name = itemName,
+                                        data = itemData, expansion = activeExpansion,
+                                        sourceCategory = categoryName, availableCategories = {},
+                                        databaseEntries = {} }
+                                    byID[key] = entry
+                                    table.insert(self.items, entry)
+                                    self.itemByID[key] = entry
+                                end
+                                entry.availableCategories[dc] = true
+                                entry.databaseEntries[#entry.databaseEntries + 1] = {
+                                    name = itemName, data = itemData, sourceCategory = categoryName,
+                                    source = GetPrimarySource(itemData), displayCategory = dc }
                             end
-                        end
-                        if #ids > 0 then
-                            local entry = { id = ids[1], ids = ids, name = itemName, data = itemData,
-                                expansion = activeExpansion, sourceCategory = categoryName }
-                            table.insert(self.items, entry)
-                            for _, itemID in ipairs(ids) do self.itemByID[tostring(itemID)] = entry end
-                            seenEntries[itemData] = true
                         end
                     end
                 end
@@ -354,6 +372,7 @@ function ItemMatrix:CollectItems()
     end)
     print("|cff00ff00ProfessionsHelper:|r Item Matrix: " .. #self.items .. " Einträge aus " .. tostring(activeExpansion) .. " geladen.")
 end
+
 
 ------------------------------------------------------------
 -- ZEILEN ENTFERNEN

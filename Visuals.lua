@@ -962,6 +962,11 @@ function Visuals:Init()
     if not mapID or not ProfessionsHelperData then return end
 
     local buckets = { [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {} }
+    -- Dieselbe Item-ID kann in mehreren Quelldatensätzen vorkommen.
+    -- Innerhalb einer Kategorie darf sie aber nur einmal visualisiert werden.
+    -- Die Deduplizierung ist bewusst pro Kategorie getrennt, damit ein Item
+    -- weiterhin gleichzeitig z. B. als Balken und Material-Icon erscheinen kann.
+    local bucketSeen = { [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {} }
 
     for expName, expData in pairs(ProfessionsHelperData) do
         local isCurrentExp, isInCity = false, false
@@ -1029,12 +1034,58 @@ function Visuals:Init()
                                         if cat == 2 and learned[pData] then bucketToUse = pData end
                                     end
 
-                                    table.insert(buckets[cat], {
+                                    local itemKey = nil
+                                    if type(itemData.IDs) == "table" then
+                                        for _, itemID in ipairs(itemData.IDs) do
+                                            if itemID ~= nil then
+                                                itemKey = tostring(itemID)
+                                                break
+                                            end
+                                        end
+                                    end
+                                    -- Datensätze ohne ID behalten ihr bisheriges Verhalten.
+                                    itemKey = itemKey or (tostring(itemName) .. "|" .. tostring(itemData))
+                                    -- Für doppelte Quelldatensätze einen stabilen Gruppenschlüssel
+                                    -- bestimmen. Nicht der zufällige pairs()-Durchlauf entscheidet,
+                                    -- welcher Datensatz die spätere Anzeige-Gruppe festlegt.
+                                    local candidateGroupKey = ProfessionsHelper:GetGlobalBucketKey(itemData, cat)
+
+                                    -- Kernkategorien 1, 2 und 3 erhalten dynamische Untergruppen
+                                    -- anhand des Top-Level-Tabellennamens (z. B. Hide oder Scales).
+                                    -- Der Schlüssel muss mit Settings.lua übereinstimmen.
+                                    if cat == 1 or cat == 2 or cat == 3 then
+                                        candidateGroupKey = candidateGroupKey .. "_" .. tostring(catName)
+                                    end
+                                    candidateGroupKey = tostring(candidateGroupKey or "Other")
+
+                                    -- Ein Datensatz, dessen native displayCategory der gerade
+                                    -- dargestellten Kategorie entspricht, ist die bevorzugte
+                                    -- Quelle. Damit gewinnt bei z. B. Leichtem Leder die
+                                    -- ursprüngliche Gruppenzuordnung statt eines alphabetisch
+                                    -- zufällig bevorzugten Duplikats.
+                                    local candidateNative = (originalCat == cat) and 1 or 0
+                                    local candidate = {
                                         name = itemName,
                                         data = itemData,
                                         prof = displayProf,
-                                        bucketName = bucketToUse
-                                    })
+                                        bucketName = bucketToUse,
+                                        groupKey = candidateGroupKey,
+                                        nativeCategory = candidateNative
+                                    }
+                                    local existingIndex = bucketSeen[cat][itemKey]
+                                    if not existingIndex then
+                                        table.insert(buckets[cat], candidate)
+                                        bucketSeen[cat][itemKey] = #buckets[cat]
+                                    else
+                                        local existing = buckets[cat][existingIndex]
+                                        -- Erst native Kategorie bevorzugen. Bei Gleichstand
+                                        -- bleibt die Auswahl deterministisch über den Schlüssel.
+                                        if candidate.nativeCategory > (existing.nativeCategory or 0)
+                                            or (candidate.nativeCategory == (existing.nativeCategory or 0)
+                                                and candidateGroupKey < existing.groupKey) then
+                                            buckets[cat][existingIndex] = candidate
+                                        end
+                                    end
                                 end
                             end
                         end
@@ -1053,7 +1104,7 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
     
     -- Schritt 1: Items nach Beruf (settingKey) gruppieren
     for _, item in ipairs(buckets[1]) do
-        local settingKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 1)
+        local settingKey = item.groupKey or ProfessionsHelper:GetGlobalBucketKey(item.data, 1)
         if settingKey then
             barGroups[settingKey] = barGroups[settingKey] or {}
             table.insert(barGroups[settingKey], item)
@@ -1077,7 +1128,7 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
             local growthSetting = subSettings.barGrowth or "BOTTOM_TOP"
 
             -- Sortierung
-            local mode = subSettings.sortMode or "EXP_ASC"
+            local mode = subSettings.sortMode or "ID_ASC"
             table.sort(items, function(a, b)
                 if mode == "CUSTOM" then
                     local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
@@ -1095,12 +1146,20 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
                     if countA ~= countB then
                         return (mode == "COUNT_DESC") and (countA > countB) or (countA < countB)
                     end
-                elseif mode == "EXP_DESC" then
-                    return (a.data.expID or 0) > (b.data.expID or 0)
+                elseif mode == "ID_DESC" then
+                    local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                    local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                    if idA ~= idB then return idA > idB end
+                elseif mode == "ID_ASC" then
+                    local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                    local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                    if idA ~= idB then return idA < idB end
                 elseif mode == "NAME_ASC" then
                     return (a.name or "") < (b.name or "")
                 end
-                return (a.data.expID or 0) < (b.data.expID or 0) -- Default: EXP_ASC
+                local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                return idA < idB -- Default: ID_ASC
             end)
 
             -- Schritt 3: Items der Gruppe zeichnen
@@ -1164,7 +1223,7 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
 
     -- 2. Gruppieren nach Global Key
     for _, item in ipairs(buckets[2]) do
-        local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 2)
+        local gKey = item.groupKey or ProfessionsHelper:GetGlobalBucketKey(item.data, 2)
         globalGroups[gKey] = globalGroups[gKey] or {}
         table.insert(globalGroups[gKey], item)
     end
@@ -1180,39 +1239,50 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
         if pSet.enabled ~= false and not isHiddenByMode then 
             local pos = ProfessionsHelper.db.profile.positions[gKey] or {x = -450, y = 100}
             
-            -- WICHTIG: visibleIdx muss VOR der Item-Schleife auf 0 gesetzt werden!
+            -- Grid-Parameter: maxColumns begrenzt die Anzahl der Icons pro Zeile.
+            local maxCols = math.max(1, tonumber(pSet.maxColumns) or 5)
+            local spacingX = self.Config.SpacingX_Icon or 28
+            local spacingY = self.Config.RowHeight or 40
             local visibleIdx = 0
             
             -- Sortierung nach ExpID
             table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
 
-            -- 4. Items der Gruppe zeichnen
+            -- 4. Items der Gruppe im Grid zeichnen
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                    -- Berechnung des Offsets (hier passierte der Fehler)
-                    local offset = visibleIdx * (self.Config.SpacingX_Icon or 28)
+                    local col = visibleIdx % maxCols
+                    local row = math.floor(visibleIdx / maxCols)
                     local iX, iY = pos.x, pos.y
                     
-                    -- Wuchsrichtung
+                    -- Standardmäßig links nach rechts, danach nächste Zeile nach unten.
+                    -- Die bisherigen Richtungsoptionen bleiben erhalten.
                     local growth = pSet.growth or "LEFT_RIGHT"
-                    if growth == "LEFT_RIGHT" then iX = pos.x + offset 
-                    elseif growth == "RIGHT_LEFT" then iX = pos.x - offset 
-                    elseif growth == "TOP_BOTTOM" then iY = pos.y - offset 
-                    elseif growth == "BOTTOM_TOP" then iY = pos.y + offset end
+                    if growth == "LEFT_RIGHT" then
+                        iX = pos.x + (col * spacingX)
+                        iY = pos.y - (row * spacingY)
+                    elseif growth == "RIGHT_LEFT" then
+                        iX = pos.x - (col * spacingX)
+                        iY = pos.y - (row * spacingY)
+                    elseif growth == "TOP_BOTTOM" then
+                        iX = pos.x + (row * spacingX)
+                        iY = pos.y - (col * spacingY)
+                    elseif growth == "BOTTOM_TOP" then
+                        iX = pos.x + (row * spacingX)
+                        iY = pos.y + (col * spacingY)
+                    end
 
                     -- Frame erstellen
                     local iconFrame = self:CreateMaterialIcon(UIParent, item.data.IDs, iX, iY, gKey, item.data.achievementID)
                     
                     if iconFrame then
                         iconFrame.textAlign = pSet.textAlign or "BOTTOM"
-                        if iconFrame.UpdateManually then 
-                            iconFrame:UpdateManually() 
+                        if iconFrame.UpdateManually then
+                            iconFrame:UpdateManually()
                         end
                         AddToUI(iconFrame)
+                        visibleIdx = visibleIdx + 1
                     end
-                    
-                    -- Index hochzählen für das nächste Icon
-                    visibleIdx = visibleIdx + 1
                 end
             end
         end
@@ -1226,14 +1296,16 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
 
     -- 1. Gruppierung
     for _, item in ipairs(buckets[3]) do
-        local groupKey = item.data.gatheringProf or item.prof or "Other"
+        local groupKey = item.groupKey or item.data.gatheringProf or item.prof or "Other"
         profGroups[groupKey] = profGroups[groupKey] or {}
         table.insert(profGroups[groupKey], item)
     end
 
     -- 2. Rendern der Gruppen
     for groupName, items in pairs(profGroups) do
-        local settingKey = groupName .. "_c3"
+        -- groupName ist bereits der vollständige Schlüssel inklusive _c3 und Top-Level-Tabelle.
+        -- Kein weiteres "_c3" anhängen, damit Slider, Position und Auto-Hide dieselben Settings nutzen.
+        local settingKey = groupName
         local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
         
         -- PRÜFUNG: Auto-Hide Logik
@@ -1243,7 +1315,7 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
 
         if subSettings.enabled ~= false and not isHiddenByMode then
             local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = 200, y = 0}
-            local mode = subSettings.sortMode or "EXP_ASC"
+            local mode = subSettings.sortMode or "ID_ASC"
             
             -- Sortierung
             table.sort(items, function(a, b)
@@ -1263,10 +1335,18 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
                     end
                     local cA, cB = GetTotal(a), GetTotal(b)
                     if cA ~= cB then return mode == "COUNT_DESC" and cA > cB or cA < cB end
-                elseif mode == "EXP_DESC" then
-                    return (a.data.expID or 0) > (b.data.expID or 0)
+                elseif mode == "ID_DESC" then
+                    local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                    local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                    if idA ~= idB then return idA > idB end
+                elseif mode == "ID_ASC" then
+                    local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                    local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                    if idA ~= idB then return idA < idB end
                 end
-                return (a.data.expID or 0) < (b.data.expID or 0)
+                local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                return idA < idB
             end)
 
             -- 3. Grid-Parameter
@@ -1304,7 +1384,7 @@ if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
 
     -- 2. Gruppieren (Bucket-Items in fishingGroups sortieren)
     for _, item in ipairs(buckets[4]) do
-        local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 4)
+        local gKey = item.groupKey or ProfessionsHelper:GetGlobalBucketKey(item.data, 4)
         fishingGroups[gKey] = fishingGroups[gKey] or {}
         table.insert(fishingGroups[gKey], item)
     end
@@ -1322,7 +1402,9 @@ if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
             
             -- Sortierung
             table.sort(items, function(a, b)
-                return (a.data.expID or 0) < (b.data.expID or 0)
+                local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                return idA < idB
             end)
 
             -- 4. Grid-Parameter (analog zu Kategorie 3)
@@ -1363,7 +1445,7 @@ if ProfessionsHelper.db.profile.catSettings[5].enabled then
     -- 2. Gruppieren
     if buckets[5] then
         for _, item in ipairs(buckets[5]) do
-            local gKey = ProfessionsHelper:GetGlobalBucketKey(item.data, 5)
+            local gKey = item.groupKey or ProfessionsHelper:GetGlobalBucketKey(item.data, 5)
             skillGroups[gKey] = skillGroups[gKey] or {}
             table.insert(skillGroups[gKey], item)
         end

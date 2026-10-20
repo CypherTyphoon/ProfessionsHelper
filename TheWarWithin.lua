@@ -42,7 +42,7 @@ ProfessionsHelperData["The War Within"].Ores = {
     Null_Stone = { IDs = { 210939 }, color = "#9F2264", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Enchanting", "Tailoring", "Engineering", "Jewelcrafting", "Blacksmithing" }, displayCategory = 1 },
     Desolate_Talus = { IDs = { 238201, 238212, 238213 }, color = "#80336F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
     Kareshi_Resonating_Stone = { IDs = { 240216 }, color = "#2E349F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
-    Imperfect_Null_Stone = { IDs = { 217707 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+    Imperfect_Null_Stone = { IDs = { 217707 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
 }
 
 ProfessionsHelperData["The War Within"].Leather = {

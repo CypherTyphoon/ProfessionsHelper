@@ -453,21 +453,53 @@ function PH:SetupOptions()
 
 
     --------------------------------------------------------
-    -- PRÜFEN, OB EINE KATEGORIE ITEMS ENTHÄLT
+    -- PHMATRIX-KATEGORIE UND KATEGORIEPRÜFUNG
     --------------------------------------------------------
 
-    local function BucketHasCatItems(bucketData, catID)
-
-        for _, itemInfo in pairs(bucketData) do
-
-            if type(itemInfo) == "table"
-                and itemInfo.displayCategory == catID then
-
-                return true
-            end
-
+    -- Gleiche Override-Auflösung wie in Visuals.lua: Der erste vorhandene
+    -- Override einer Item-ID gilt für den gesamten Datensatz.
+    local function GetItemCategoryOverride(itemInfo)
+        local profile = PH.db and PH.db.profile
+        local overrides = profile and profile.itemCategoryOverrides
+        if not overrides or type(itemInfo) ~= "table" or type(itemInfo.IDs) ~= "table" then
+            return nil
         end
 
+        for _, itemID in ipairs(itemInfo.IDs) do
+            local saved = overrides[tostring(itemID)]
+            if saved ~= nil then
+                return saved
+            end
+        end
+        return nil
+    end
+
+    -- Entspricht der Kategorieauflösung in Visuals.lua. Matrix-Overrides
+    -- steuern die Kategorien 1-3; Kategorien 4/5 behalten ihre Originalzuordnung.
+    local function ItemBelongsToCategory(itemInfo, catID)
+        if type(itemInfo) ~= "table" then
+            return false
+        end
+
+        local originalCat = tonumber(itemInfo.displayCategory) or 0
+        local override = GetItemCategoryOverride(itemInfo)
+
+        if override ~= nil then
+            if catID >= 1 and catID <= 3 then
+                return override[catID] == true
+            end
+            return (catID == 4 or catID == 5) and originalCat == catID
+        end
+
+        return originalCat == catID
+    end
+
+    local function BucketHasCatItems(bucketData, catID)
+        for _, itemInfo in pairs(bucketData) do
+            if ItemBelongsToCategory(itemInfo, catID) then
+                return true
+            end
+        end
         return false
     end
 
@@ -489,15 +521,27 @@ function PH:SetupOptions()
         end
 
 
-        local _, firstItem = next(bucketData)
+        -- Für den Gruppenschlüssel muss ein Item verwendet werden, das in
+        -- dieser effektiven Kategorie liegt (auch wenn die PHMatrix es verschoben hat).
+        local firstItem = nil
+        for _, itemInfo in pairs(bucketData) do
+            if ItemBelongsToCategory(itemInfo, catID) then
+                firstItem = itemInfo
+                break
+            end
+        end
 
         if not firstItem then
             return
         end
 
+        local settingKey = PH:GetGlobalBucketKey(firstItem, catID)
 
-        local settingKey =
-            PH:GetGlobalBucketKey(firstItem, catID)
+        -- Kernkategorien 1, 2 und 3: Top-Level-Datentabellen wie Hide und Scales
+        -- erhalten jeweils einen eigenen Settings- und Darstellungsbereich.
+        if catID == 1 or catID == 2 or catID == 3 then
+            settingKey = settingKey .. "_" .. tostring(bucketName)
+        end
 
         local groupLabel =
             profLabels[bucketName] or bucketName
@@ -688,8 +732,8 @@ function PH:SetupOptions()
                         order = 3,
 
                         values = {
-                            ["EXP_DESC"] = "Neu -> Alt",
-                            ["EXP_ASC"] = "Alt -> Neu",
+                            ["ID_ASC"] = "ID aufsteigend",
+                            ["ID_DESC"] = "ID absteigend",
                             ["COUNT_DESC"] = "Menge (Viel)",
                             ["COUNT_ASC"] = "Menge (Wenig)",
                             ["NAME_ASC"] = "Alphabetisch",
@@ -709,9 +753,14 @@ function PH:SetupOptions()
 
                         get = function()
 
-                            return PH.db.profile.profSubSettings[settingKey]
+                            local savedMode = PH.db.profile.profSubSettings[settingKey]
                                 and PH.db.profile.profSubSettings[settingKey].sortMode
-                                or "EXP_ASC"
+
+                            -- Alte gespeicherte Werte auf die neue ID-Sortierung abbilden.
+                            if savedMode == "EXP_ASC" then return "ID_ASC" end
+                            if savedMode == "EXP_DESC" then return "ID_DESC" end
+
+                            return savedMode or "ID_ASC"
 
                         end,
                     },
@@ -794,7 +843,7 @@ function PH:SetupOptions()
                     -- MAX COLUMNS
                     ------------------------------------------------
 
-                    maxColumns = (catID == 3 or catID == 4) and {
+                    maxColumns = (catID == 2 or catID == 3 or catID == 4) and {
 
                         name = "Symbole pro Zeile",
 
@@ -863,7 +912,7 @@ function PH:SetupOptions()
 
         for itemName, itemInfo in pairs(bucketData) do
 
-            if itemInfo.displayCategory == catID then
+            if ItemBelongsToCategory(itemInfo, catID) then
 
                 local itemExp =
                     itemInfo.expansion

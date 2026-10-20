@@ -106,7 +106,6 @@ ProfessionsHelperData["Forever"].Herbalism = {
 }
 
 ProfessionsHelperData["Forever"].Ores = {
-    -- Ore
     CopperOre = { IDs = { 2770 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining" }, displayCategory = 1 },
     TinOre = { IDs = { 2771 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining" }, displayCategory = 1 },
     IronOre = { IDs = { 2772 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining", "Enchanting" }, displayCategory = 1 },
@@ -118,16 +117,16 @@ ProfessionsHelperData["Forever"].Ores = {
     TruesilverOre = { IDs = { 7911 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining" }, displayCategory = 1 },
     SmallObsidianShard = { IDs = { 22202 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering" }, displayCategory = 1 },
     LargeObsidianShard = { IDs = { 22203 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining", "Blacksmithing" }, displayCategory = 1 },
-
-    -- Stone
+}
+ProfessionsHelperData["Forever"].Stone = {
     RoughStone = { IDs = { 2835 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining", "Engineering", "Blacksmithing" }, displayCategory = 2 },
     CoarseStone = { IDs = { 2836 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Engineering", "Blacksmithing" }, displayCategory = 2 },
     HeavyStone = { IDs = { 2838 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining", "Engineering", "Blacksmithing" }, displayCategory = 2 },
     SolidStone = { IDs = { 7912 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining", "Engineering", "Blacksmithing" }, displayCategory = 2 },
     DenseStone = { IDs = { 12365 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining", "Engineering", "Blacksmithing" }, displayCategory = 2 },
     Pyrite = { IDs = { 249391 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Enchanting", "Engineering", "Tailoring", "Alchemy" }, displayCategory = 2 },
-
-    -- Jewels
+}
+ProfessionsHelperData["Forever"].Jewels = {
     Malachite = { IDs = { 774 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Engineering", "Blacksmithing" }, displayCategory = 2 },
     Tigerseye = { IDs = { 818 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Engineering", "Blacksmithing" }, displayCategory = 2 },
     MossAgate = { IDs = { 1206 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Leatherworking", "Blacksmithing", "Engineering" }, displayCategory = 2 },
@@ -154,51 +153,53 @@ ProfessionsHelperData["Forever"].Ores = {
 
 ProfessionsHelperData["Forever"].Leather = {
     -- Leather
-    LightLeather = { IDs = { 2318 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
-    MediumLeather = { IDs = { 2319 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
-    ThickLeather = { IDs = { 4304 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring", "FirstAid" }, displayCategory = 1 },
-    RuggedLeather = { IDs = { 8170 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
-    ChimeraLeather = { IDs = { 15423 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    CoreLeather = { IDs = { 17012 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing" }, displayCategory = 1 },
-    DevilsaurLeather = { IDs = { 15417 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Blacksmithing" }, displayCategory = 1 },
-    FrostsaberLeather = { IDs = { 15422 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    HeavyLeather = { IDs = { 4234 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Engineering", "Tailoring", "Blacksmithing", "Skinning" }, displayCategory = 1 },
-    PrimalBatLeather = { IDs = { 19767 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    PrimalTigerLeather = { IDs = { 19768 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    RuinedLeatherScraps = { IDs = { 2934 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    WarbearLeather = { IDs = { 15419 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    PristineLeather = { IDs = { 249427 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 1 },
-
+    LightLeather = { IDs = { 2318 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
+    MediumLeather = { IDs = { 2319 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
+    ThickLeather = { IDs = { 4304 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring", "FirstAid" }, displayCategory = 1 },
+    RuggedLeather = { IDs = { 8170 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 1 },
+    ChimeraLeather = { IDs = { 15423 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    CoreLeather = { IDs = { 17012 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing" }, displayCategory = 1 },
+    DevilsaurLeather = { IDs = { 15417 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Blacksmithing" }, displayCategory = 1 },
+    FrostsaberLeather = { IDs = { 15422 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    HeavyLeather = { IDs = { 4234 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Engineering", "Tailoring", "Blacksmithing", "Skinning" }, displayCategory = 1 },
+    PrimalBatLeather = { IDs = { 19767 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    PrimalTigerLeather = { IDs = { 19768 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    RuinedLeatherScraps = { IDs = { 2934 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    WarbearLeather = { IDs = { 15419 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    PristineLeather = { IDs = { 249427 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 1 },
+}
+ProfessionsHelperData["Forever"].Hide = {
     -- Hide
-    LightHide = { IDs = { 783 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 2 },
-    MediumHide = { IDs = { 4232 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    HeavyHide = { IDs = { 4235 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 2 },
-    RuggedHide = { IDs = { 8171 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    ShadowcatHide = { IDs = { 7428 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    ThickHide = { IDs = { 8169 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 2 },
-    ThickWolfhide = { IDs = { 8368 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    PristineHide = { IDs = { 249428 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Engineering", "Tailoring", "Leatherworking" }, displayCategory = 2 },
-
+    LightHide = { IDs = { 783 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 2 },
+    MediumHide = { IDs = { 4232 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    HeavyHide = { IDs = { 4235 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 2 },
+    RuggedHide = { IDs = { 8171 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    ShadowcatHide = { IDs = { 7428 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    ThickHide = { IDs = { 8169 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 2 },
+    ThickWolfhide = { IDs = { 8368 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    PristineHide = { IDs = { 249428 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Engineering", "Tailoring", "Leatherworking" }, displayCategory = 2 },
+}
+ProfessionsHelperData["Forever"].Scales = {
     -- Scales
-    DeviateScale = { IDs = { 6470 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    BlackDragonscale = { IDs = { 15416 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    BlackWhelpScale = { IDs = { 7286 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    BlueDragonscale = { IDs = { 15415 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    BrilliantChromaticScale = { IDs = { 12607 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    Dreamscale = { IDs = { 20381 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing" }, displayCategory = 2 },
-    GreenDragonscale = { IDs = { 15412 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    GreenWhelpScale = { IDs = { 7392 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Enchanting" }, displayCategory = 2 },
-    HeavyScorpidScale = { IDs = { 15408 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    HeavySilithidCarapace = { IDs = { 20501 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    LightSilithidCarapace = { IDs = { 20500 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    PerfectDeviateScale = { IDs = { 6471 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    RedDragonscale = { IDs = { 15414 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    RedWhelpScale = { IDs = { 7287 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    ScaleofOnyxia = { IDs = { 15410 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Alchemy" }, displayCategory = 2 },
-    ScorpidScale = { IDs = { 8154 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    SilithidChitin = { IDs = { 20498 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    TurtleScale = { IDs = { 8167 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
-    WornDragonscale = { IDs = { 8165 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    DeviateScale = { IDs = { 6470 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    BlackDragonscale = { IDs = { 15416 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    BlackWhelpScale = { IDs = { 7286 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    BlueDragonscale = { IDs = { 15415 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    BrilliantChromaticScale = { IDs = { 12607 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    Dreamscale = { IDs = { 20381 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing" }, displayCategory = 2 },
+    GreenDragonscale = { IDs = { 15412 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    GreenWhelpScale = { IDs = { 7392 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Enchanting" }, displayCategory = 2 },
+    HeavyScorpidScale = { IDs = { 15408 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    HeavySilithidCarapace = { IDs = { 20501 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    LightSilithidCarapace = { IDs = { 20500 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    PerfectDeviateScale = { IDs = { 6471 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    RedDragonscale = { IDs = { 15414 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    RedWhelpScale = { IDs = { 7287 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    ScaleofOnyxia = { IDs = { 15410 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Alchemy" }, displayCategory = 2 },
+    ScorpidScale = { IDs = { 8154 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    SilithidChitin = { IDs = { 20498 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    TurtleScale = { IDs = { 8167 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
+    WornDragonscale = { IDs = { 8165 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
 }
 
 ProfessionsHelperData["Forever"].Cloth = {
@@ -239,20 +240,19 @@ ProfessionsHelperData["Forever"].Fishing = {
     Whimsyfin = { IDs = { 251524 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Cooking" }, displayCategory = 4 },
 }
 
-ProfessionsHelperData["Forever"].Enchanting = {
-    -- Essences
-    LesserMagicEssence = { IDs = { 10938 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Blacksmithing", "Enchanting" }, displayCategory = 1 },
-    GreaterMagicEssence = { IDs = { 10939 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
-    LesserAstralEssence = { IDs = { 10998 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
-    GreaterAstralEssence = { IDs = { 11082 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring" }, displayCategory = 1 },
-    LesserMysticEssence = { IDs = { 11134 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Tailoring", "Enchanting" }, displayCategory = 1 },
-    GreaterMysticEssence = { IDs = { 11135 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
-    LesserNetherEssence = { IDs = { 11174 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
-    GreaterNetherEssence = { IDs = { 11175 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring" }, displayCategory = 1 },
-    LesserEternalEssence = { IDs = { 16202 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
-    GreaterEternalEssence = { IDs = { 16203 }, sources = { "Drop", "Crafted" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring", "Alchemy" }, displayCategory = 1 },
-
-    -- Crystals
+ProfessionsHelperData["Forever"].EnchantingEssences = {
+    LesserMagicEssence = { IDs = { 10938 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Blacksmithing", "Enchanting" }, displayCategory = 1 },
+    GreaterMagicEssence = { IDs = { 10939 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
+    LesserAstralEssence = { IDs = { 10998 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
+    GreaterAstralEssence = { IDs = { 11082 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring" }, displayCategory = 1 },
+    LesserMysticEssence = { IDs = { 11134 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Tailoring", "Enchanting" }, displayCategory = 1 },
+    GreaterMysticEssence = { IDs = { 11135 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
+    LesserNetherEssence = { IDs = { 11174 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
+    GreaterNetherEssence = { IDs = { 11175 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring" }, displayCategory = 1 },
+    LesserEternalEssence = { IDs = { 16202 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
+    GreaterEternalEssence = { IDs = { 16203 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring", "Alchemy" }, displayCategory = 1 },
+}
+ProfessionsHelperData["Forever"].EnchahtingCrystals = {
     SmallGlimmeringShard = { IDs = { 10978 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
     LargeGlimmeringShard = { IDs = { 11084 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
     SmallGlowingShard = { IDs = { 11138 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting" }, displayCategory = 1 },
@@ -262,8 +262,8 @@ ProfessionsHelperData["Forever"].Enchanting = {
     SmallBrilliantShard = { IDs = { 14343 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring" }, displayCategory = 1 },
     LargeBrilliantShard = { IDs = { 14344 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring"  }, displayCategory = 1 },
     NexusCrystal = { IDs = { 20725 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Blacksmithing" }, displayCategory = 1 },
-
-    -- Dusts
+}
+ProfessionsHelperData["Forever"].EnchantingDusts = {
     StrangeDust = { IDs = { 10940 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Blacksmithing", "Enchanting", "Leatherworking" }, displayCategory = 1 },
     SoulDust = { IDs = { 11083 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Alchemy", "Enchanting", "Leatherworking" }, displayCategory = 1 },
     VisionDust = { IDs = { 11137 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting", "Tailoring", "Leatherworking" }, displayCategory = 1 },
@@ -272,7 +272,7 @@ ProfessionsHelperData["Forever"].Enchanting = {
 }
 
 ProfessionsHelperData["Forever"].VendorDrop = {
-    Writhing_Sample = { IDs = { 213611 }, sources = { "Drop" }, gatheringProf = { "Skinning", "Herbalism", "Mining"}, processingProfs = { "Inscription", "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Skinning" }, displayCategory = 2 },
+
 }
 
 
@@ -282,98 +282,88 @@ ProfessionsHelperData["Forever"].VendorDrop = {
 -- Crafted - Items (sources = Crafted; gatheringProf = <Category> (Herbalism, Skinning, Cooking, Leatherworking, Blacksmithing, Engineering, Enchanting, Inscription, Tailoring, Jewelcrafting))
 
 ProfessionsHelperData["Forever"].Herbalism = {
-    -- Mulch
-    EmpoweredMulch = { IDs = { 219196 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
+
 }
 
 ProfessionsHelperData["Forever"].Skinning = {
-	-- Baits
-    BeastLureScent = { IDs = { 219019 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
 
-	-- Infused Baits
-    SporefusedCreatureLure = { IDs = { 219011 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
-
-
-	-- Fishbait
-    RoaringAnglerseekerLure = { IDs = { 219006 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
 }
 
 ProfessionsHelperData["Forever"].Cooking = {
-    -- Drop or Vendor
-    Twined_Herbs = { IDs = { 222695 }, sources = { "Vendor" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
 
-    -- Crafted
-    Hearty_Feast = { IDs = { 228721 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0, note = "Warband" },
 }
 
 ProfessionsHelperData["Forever"].Leatherworking = {
-    -- Crafting Materials
-    StormTouchedWeaponWrap = { IDs = { 219901, 219902, 219903 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
+LightLeather = { IDs = { 2318 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 3 },
+CuredLightHide = { IDs = { 4231 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
+MediumLeather = { IDs = { 2319 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 3 },
+CuredMediumHide = { IDs = { 4233 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
+HeavyLeather = { IDs = { 4234 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Engineering", "Tailoring", "Blacksmithing", "Skinning" }, displayCategory = 3 },
+CuredHeavyHide = { IDs = { 4236 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 3 },
+ThickLeather = { IDs = { 4304 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring", "FirstAid" }, displayCategory = 3 },
+CuredThickHide = { IDs = { 8172 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Skinning" }, displayCategory = 3 },
+RuggedLeather = { IDs = { 8170 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Blacksmithing", "Leatherworking", "Engineering", "Skinning", "Tailoring" }, displayCategory = 3 },
+CuredRuggedHide = { IDs = { 15407 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Enchanting", "Tailoring", "Engineering" }, displayCategory = 3 },
 
-    -- Optional Reagents
-    Writhing_Armor_Banding = { IDs = { 219504, 219505, 219506 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing"  }, displayCategory = 3 },
+
+
 }
 
 ProfessionsHelperData["Forever"].Blacksmithing = {
-    -- Alloys
-    Ironclaw_Alloy = { IDs = { 222426, 222427, 222428 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing" }, displayCategory = 3 },
 
-    -- Frameworks
-    TemperedFramework = { IDs = { 222514, 222515, 222516 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering", "Leatherworking" }, displayCategory = 3 },
 }
 
 ProfessionsHelperData["Forever"].Engineering = {
-    -- Drop
-    Pile_of_Rusted_Scrap = { IDs = { 219150 }, sources = { "Drop" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
 
-    -- Crafting Materials
-    Whimsical_Wiring = { IDs = { 221856, 221857, 221858 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Leatherworking", "Blacksmithing" }, displayCategory = 3 },
-
-    -- Optional Reagents
-    Concealed_Chaos_Module = { IDs = { 221938, 221939, 221940 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
-
-    -- Finishing Reagents
-    BottledBrilliance = { IDs = { 225987, 225988, 225989 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "AllProf" }, displayCategory = 3 },
 }
 
 ProfessionsHelperData["Forever"].Tailoring = {
-    -- Spools
-    SpoolOfWeaverthread = { IDs = { 222795, 222796, 222797 }, color = "#FFB841", gradient_End_color = "#C64DA1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
 
-    -- Bolts
-    ExquisiteWeaverclothBolt = { IDs = { 224832, 224833, 224834 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
-
-    -- Optional Reagents
-    Duskthread_Lining = { IDs = { 222871, 222872, 222873 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 3 },
-
-    -- Finishing Reagents
-    PreservingEmbroideryThread = { IDs = { 222885, 222886, 222887 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
 }
 
 ProfessionsHelperData["Forever"].Alchemy = {
-    -- Crafting Materials
-    Coreway_Catalyst = { IDs = { 210815 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 2 },
 
-    -- Finishing Reagents
-    PetalPowder = { IDs = { 228404, 228405, 228406 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, displayCategory = 3 },
-
-    -- Endproduct or Others
-    harmonious_horticulture = { IDs = { 212563, 212564, 212565 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy", "Leatherworking" }, displayCategory = 3 },
-
-    -- Mutagens
-    Gleaming_Transmutagen = { IDs = { 211805 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 2 },
 }
 
 ProfessionsHelperData["Forever"].Enchanting = {
-    -- Optional Reagents
-    Enchanted_Weathered_Harbinger_Crest = { IDs = { 224069 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
 
-    -- Finishing Reagents
-    MirrorPowder = { IDs = { 224176, 224177, 224178 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
 }
 
-ProfessionsHelperData["Forever"].FirstAid = {
-    Heiltrank = { IDs = { 118 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+ProfessionsHelperData["Forever"].FirstAidBandages = {
+    LinenBandage = { IDs = { 1251 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    HeavyLinenBandage = { IDs = { 2581 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    WoolBandage = { IDs = { 3530 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    HeavyWoolBandage = { IDs = { 3531 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    SilkBandage = { IDs = { 6450 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    HeavySilkBandage = { IDs = { 6451 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    MageWeaveBandage = { IDs = { 8544 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    HeavyMageWeaveBandage = { IDs = { 8545 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    RuneClothBandage = { IDs = { 14529 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    HeavyRuneClothBandage = { IDs = { 14530 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    DenseRuneClothBandage = { IDs = { 470349 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+}
+
+ProfessionsHelperData["Forever"].FirstAidPotions = {
+    MinorHealingPotion = { IDs = { 118 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    LesserHealingPotion = { IDs = { 858 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    HealingPotion = { IDs = { 929 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    GreaterHealingPotion = { IDs = { 1710 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    SuperiorHealingPotion = { IDs = { 3928 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    MajorHealingPotion = { IDs = { 13446 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+}
+
+ProfessionsHelperData["Forever"].FirstAidOthers = {
+    SimplePoultice = { IDs = { 255716 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    CleverPoultice = { IDs = { 255717 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    SuperiorPoultice = { IDs = { 255718 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    PowerfulPoultice = { IDs = { 255719 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    WoolenTourniquet = { IDs = { 255720 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    LeatherTourniquet = { IDs = { 255721 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    SurgicalTourniquet = { IDs = { 255722 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    AntiVenom = { IDs = { 6452 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    StrongAntiVenom = { IDs = { 6453 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    PotentAntiVenom = { IDs = { 255715 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3 },
+    PowerfulAntiVenom = { IDs = { 19440 }, sources = { "Crafted" }, gatheringProf = "FirstAid", displayCategory = 3},
 }
 
 ProfessionsHelperData["Forever"].AllProf = {}
@@ -384,12 +374,6 @@ ProfessionsHelperData["Forever"].AllProf = {}
 -- ==========================================
 
 ProfessionsHelperData["Forever"].Skills = {
-    
-    --Skinning
-    Carve_Meat = {spellID = 442615, IDs = { 442615 }, gatheringProf = "Skinning", displayCategory = 5, sources = { "Spell" }, time = "Reload"},
-
-    --Herbalism
-    ArcaneDuplication = {spellID = 439190, IDs = { 439190 }, gatheringProf = "Herbalism", displayCategory = 5, sources = { "Spell" }, time = "CD"},
 }
 
 
@@ -397,94 +381,240 @@ ProfessionsHelperData["Forever"].Skills = {
 -- Recipes of professions
 -- ==========================================
 
-    -- Skinning
-    -- Baits
-    local recipe_elusiveCreatureLure = {
-    yield = 1,
-    { ids = {223512}, amount = 10 }, -- Basic_Meat
-}
-
-    -- Fishbaits
-    local recipe_arathorHammerfishLure = {
-    yield = 1,
-    { ids = {220137}, amount = 2 }, -- Fish
-}
-
-
 -- Leatherworking
--- Materials
-local recipe_chitinArmorBanding = {
+
+
+local recipe_LightLeather = {
     yield = 1,
-    { ids = { 218336 }, amount = 1 },
-    { ids = { 212674, 212675, 212676 }, amount = 1 },
-    { ids = { 212667, 212668, 212669 }, amount = 30 },
+    { ids = { 2934 }, amount = 3 },
 }
 
--- OptionalsReagents
-local recipe_blessedWeaponGrip = {
+local recipe_CuredLightHide = {
     yield = 1,
-    { ids = { 219901, 219902, 219903 }, amount = 1 },
-    { ids = { 221758 }, amount = 1 },
+    { ids = { 783 }, amount = 1 },
+    { ids = { 4289 }, amount = 1 },
+}
+
+local recipe_CampTent = {
+    yield = 1,
+    { ids = { 2318 }, amount = 5 },
+}
+
+local recipe_LightArmorKit = {
+    yield = 1,
+    { ids = { 2318 }, amount = 1 },
+}
+
+-- First Aid Bandages
+local recipe_LinenBandage = {
+    yield = 1,
+    { ids = { 2589 }, amount = 1 },
+}
+
+local recipe_HeavyLinenBandage = {
+    yield = 1,
+    { ids = { 2589 }, amount = 2 },
+}
+
+local recipe_WoolBandage = {
+    yield = 1,
+    { ids = { 2592 }, amount = 1 },
+}
+
+local recipe_HeavyWoolBandage = {
+    yield = 1,
+    { ids = { 2592 }, amount = 2 },
+}
+
+local recipe_SilkBandage = {
+    yield = 1,
+    { ids = { 4306 }, amount = 1 },
+}
+
+local recipe_HeavySilkBandage = {
+    yield = 1,
+    { ids = { 4306 }, amount = 2 },
+}
+
+local recipe_MageWeaveBandage = {
+    yield = 1,
+    { ids = { 4338 }, amount = 1 },
+}
+
+local recipe_HeavyMageWeaveBandage = {
+    yield = 1,
+    { ids = { 4338 }, amount = 2 },
+}
+
+local recipe_RuneClothBandage = {
+    yield = 1,
+    { ids = { 14047 }, amount = 1 },
+}
+
+local recipe_HeavyRuneClothBandage = {
+    yield = 1,
+    { ids = { 14047 }, amount = 2 },
+}
+
+local recipe_DenseRuneClothBandage = {
+    yield = 1,
+    { ids = { 18630 }, amount = 1 },
+}
+-- First Aid Potions
+
+local recipe_MinorHealingPotion = {
+    yield = 2,
+    { ids = { 3371 }, amount = 1 },
+    { ids = { 2678 }, amount = 1 },
+    { ids = { 2447 }, amount = 1 },
+}
+
+local recipe_LesserHealingPotion = {
+    yield = 2,
+    { ids = { 3371 }, amount = 1 },
+    { ids = { 2678 }, amount = 2 },
+    { ids = { 2450 }, amount = 1 },
+}
+
+local recipe_HealingPotion = {
+    yield = 2,
+    { ids = { 3372 }, amount = 1 },
+    { ids = { 2692 }, amount = 2 },
+    { ids = { 2453 }, amount = 1 },
+}
+
+local recipe_GreaterHealingPotion = {
+    yield = 2,
+    { ids = { 3372 }, amount = 1 },
+    { ids = { 2692 }, amount = 3 },
+    { ids = { 3357 }, amount = 1 },
+}
+
+local recipe_SuperiorHealingPotion = {
+    yield = 2,
+    { ids = { 8925 }, amount = 1 },
+    { ids = { 3713 }, amount = 1 },
+    { ids = { 8838 }, amount = 1 },
+}
+
+local recipe_MajorHealingPotion = {
+    yield = 2,
+    { ids = { 8925 }, amount = 1 },
+    { ids = { 3713 }, amount = 3 },
+    { ids = { 13464 }, amount = 1 },
+}
+
+-- FirstAidOthers
+local recipe_SimplePoultice = {
+    yield = 4,
+    { ids = { 3174 }, amount = 1 },
+    { ids = { 2678 }, amount = 1 },
+    { ids = { 2723 }, amount = 1 },
+}
+
+local recipe_CleverPoultice = {
+    yield = 4,
+    { ids = { 1468 }, amount = 1 },
+    { ids = { 3713 }, amount = 1 },
+    { ids = { 2686 }, amount = 1 },
+}
+
+local recipe_SuperiorPoultice = {
+    yield = 4,
+    { ids = { 7070 }, amount = 1 },
+    { ids = { 2692 }, amount = 1 },
+    { ids = { 2596 }, amount = 1 },
+}
+
+local recipe_PowerfulPoultice = {
+    yield = 4,
+    { ids = { 7080 }, amount = 1 },
+    { ids = { 2692 }, amount = 1 },
+    { ids = { 2594 }, amount = 1 },
 }
 
 
-    -- Herbalism
-    local recipe_magicalMulch = {
-    yield = 1,
-    { ids = {210796, 210797, 210798}, amount = 5 },
-    }
+local recipe_WoolenTourniquet = {
+    yield = 2,
+    { ids = { 2592 }, amount = 2 },
+    { ids = { 2321 }, amount = 2 },
+}
 
-
-    --Alchemy
-    local recipe_algarManaPotion = {
-    yield = 5,
-    { ids = {211806, 211807, 211808}, amount = 1 },
-    { ids = {210796, 210797, 210798}, amount = 6 },
-    { ids = {210805, 210806, 210807}, amount = 3 },
+local recipe_LeatherTourniquet = {
+    yield = 2,
+    { ids = { 4304 }, amount = 2 },
+    { ids = { 4291 }, amount = 2 },
 }
 
 
--- 2. Das Rezept allen drei Qualitätsstufen des Endprodukts zuweisen
+local recipe_SurgicalTourniquet = {
+    yield = 2,
+    { ids = { 8170 }, amount = 2 },
+    { ids = { 14047 }, amount = 2 },
+    { ids = { 7343 }, amount = 2 },
+}
+
+local recipe_AntiVenom = {
+    yield = 4,
+    { ids = { 1475 }, amount = 1 },
+}
+
+
+local recipe_StrongAntiVenom = {
+    yield = 4,
+    { ids = { 1288 }, amount = 1 },
+}
+
+local recipe_PotentAntiVenom = {
+    yield = 4,
+    { ids = { 255645 }, amount = 1 },
+}
+
+local recipe_PowerfulAntiVenom = {
+    yield = 4,
+    { ids = { 19441 }, amount = 1 },
+}
+
+
 ProfessionsHelperData["Forever"].RecipeDB = {
-    -- Skinning
-    -- Baits
-    [219007] = recipe_elusiveCreatureLure, -- BasicLure
+-- Leatherworking
+[2318] = recipe_LightLeather,
+[4231] = recipe_CuredLightHide,
 
+[279978] = recipe_CampTent,
+[2304] = recipe_LightArmorKit,
 
-    -- Fishbait
+-- First Aid Bandages
+[1251] = recipe_LinenBandage,
+[2581] = recipe_HeavyLinenBandage,
+[3530] = recipe_WoolBandage,
+[3531] = recipe_HeavyWoolBandage,
+[6450] = recipe_SilkBandage,
+[6451] = recipe_HeavySilkBandage,
+[8544] = recipe_MageWeaveBandage,
+[8545] = recipe_HeavyMageWeaveBandage,
+[14529] = recipe_RuneClothBandage,
+[14530] = recipe_HeavyRuneClothBandage,
+[470349] = recipe_DenseRuneClothBandage,
 
+-- FirstAid Potions
+[118] = recipe_MinorHealingPotion,
+[858] = recipe_LesserHealingPotion,
+[929] = recipe_HealingPotion,
+[1710] = recipe_GreaterHealingPotion,
+[3928] = recipe_SuperiorHealingPotion,
+[13446] = recipe_MajorHealingPotion,
 
-
-    -- Leatherworking
-    -- Materials
-    [219898] = recipe_chitinArmorBanding,
-
-
-    -- OptionalsReagents
-    [219495] = recipe_blessedWeaponGrip,
-
-
-    -- Herbalism
-    [219194] = recipe_magicalMulch,
-
-
-    -- Blasphemite
-
-
-    [430345] = { isSpell = true, spellID = 430345,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 10 },
-        { ids = {210815}, amount = 6 },
-        { ids = {210814}, amount = 5 },
-        },
-    },
-    
-    [427174] = { isSpell = true, spellID = 427174,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 20 },
-        { ids = {210815}, amount = 2 },
-        },
-    },
-
-    
+-- First Aid Others
+[255716] = recipe_SimplePoultice,
+[255717] = recipe_CleverPoultice,
+[255718] = recipe_SuperiorPoultice,
+[255719] = recipe_PowerfulPoultice,
+[255720] = recipe_WoolenTourniquet,
+[255721] = recipe_LeatherTourniquet,
+[255722] = recipe_SurgicalTourniquet,
+[6452] = recipe_AntiVenom,
+[6453] = recipe_StrongAntiVenom,
+[255715] = recipe_PotentAntiVenom,
+[19440] = recipe_PowerfulAntiVenom,
 }

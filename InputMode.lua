@@ -41,16 +41,24 @@ local SOURCES = {
     "Vendor",
     "Currency",
     "Quest",
-    "Gathering",
-    "Crafting",
+    "Crafted",
 }
 
 local GATHERING_PROFS = {
+    "Alchemy",
+    "Blacksmithing",
+    "Cooking",
+    "Enchanting",
+    "Engineering",
     "Herbalism",
+    "Inscription",
+    "Jewelcrafting",
+    "Leatherworking",
     "Mining",
     "Skinning",
-    "Fishing",
     "Tailoring",
+    "FirstAid",
+    "Fishing",
 }
 
 local PROCESSING_PROFS = {
@@ -73,7 +81,6 @@ local DISPLAY_CATEGORIES = {
     [1] = "Balken",
     [2] = "Material-Icons",
     [3] = "Berufs-Icons",
-    [4] = "Angeln",
     [5] = "Berufs-Skills",
 }
 
@@ -723,7 +730,7 @@ function InputMode:CreateFrame()
 
     self.frame = frame
 
-    frame:SetSize(720, 700)
+    frame:SetSize(720, 770)
     frame:SetPoint("CENTER")
     frame:SetMovable(true)
     frame:EnableMouse(true)
@@ -924,7 +931,7 @@ function InputMode:CreateFrame()
 
     self.contentFrame = contentFrame
 
-    contentFrame:SetSize(720, 700)
+    contentFrame:SetSize(720, 770)
     contentFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
 
     --------------------------------------------------------
@@ -1155,7 +1162,7 @@ function InputMode:CreateFrame()
         "GameFontNormal"
     )
 
-    displayCategoryLabel:SetPoint("TOPLEFT", 20, -500)
+    displayCategoryLabel:SetPoint("TOPLEFT", 20, -540)
     displayCategoryLabel:SetText("Display Category:")
 
     local displayCategoryDrop = CreateFrame(
@@ -1165,7 +1172,7 @@ function InputMode:CreateFrame()
         "UIDropDownMenuTemplate"
     )
 
-    displayCategoryDrop:SetPoint("TOPLEFT", 150, -493)
+    displayCategoryDrop:SetPoint("TOPLEFT", 150, -533)
     UIDropDownMenu_SetWidth(displayCategoryDrop, 220)
 
     UIDropDownMenu_Initialize(displayCategoryDrop, function()
@@ -1198,7 +1205,7 @@ function InputMode:CreateFrame()
         "GameFontNormal"
     )
 
-    outputLabel:SetPoint("TOPLEFT", 20, -545)
+    outputLabel:SetPoint("TOPLEFT", 20, -585)
     outputLabel:SetText("Lua-Ausgabe:")
 
     local outputScroll = CreateFrame(
@@ -1208,7 +1215,7 @@ function InputMode:CreateFrame()
         "UIPanelScrollFrameTemplate"
     )
 
-    outputScroll:SetPoint("TOPLEFT", 100, -540)
+    outputScroll:SetPoint("TOPLEFT", 100, -580)
     outputScroll:SetSize(570, 100)
 
     local outputBox = CreateFrame(
