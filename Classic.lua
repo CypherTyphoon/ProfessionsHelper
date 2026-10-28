@@ -115,48 +115,48 @@ ProfessionsHelperData["Classic"].Herbs = {
 
 ProfessionsHelperData["Classic"].Ores = {
 	-- Ores
-	Kupfererz = { IDs = { 2770 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Zinnerz = { IDs = { 2771 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Eisenerz = { IDs = { 2772 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Silbererz = { IDs = { 2775 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Golderz = { IDs = { 2776 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Mithrilerz = { IDs = { 3858 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Echtsilbererz = { IDs = { 7911 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Thoriumerz = { IDs = { 10620 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Dunkeleisenerz = { IDs = { 11370 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
-	Elementiumblock = { IDs = { 18562 }, color = "#ACFCF8", sources = { "Drop"}, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Kupfererz = { IDs = { 2770 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Zinnerz = { IDs = { 2771 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Eisenerz = { IDs = { 2772 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Silbererz = { IDs = { 2775 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Golderz = { IDs = { 2776 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Mithrilerz = { IDs = { 3858 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Echtsilbererz = { IDs = { 7911 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Thoriumerz = { IDs = { 10620 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Dunkeleisenerz = { IDs = { 11370 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
+	Elementiumblock = { IDs = { 18562 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
 
 	-- Stones
-	Rauer_Stein = { IDs = { 2835 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Grober_Stein = { IDs = { 2836 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Schwerer_Stein = { IDs = { 2838 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Robuster_Stein = { IDs = { 7912 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Verdichteter_Stein = { IDs = { 12365 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
+	Rauer_Stein = { IDs = { 2835 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Grober_Stein = { IDs = { 2836 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Schwerer_Stein = { IDs = { 2838 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Robuster_Stein = { IDs = { 7912 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Verdichteter_Stein = { IDs = { 12365 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 
 	-- Jewels
-	Malachit = { IDs = { 774 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Tigerauge = { IDs = { 818 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Moosachat = { IDs = { 1206 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Schattenedelstein = { IDs = { 1210 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Jade = { IDs = { 1529 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Geringer_Mondstein = { IDs = { 1705 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Citrin = { IDs = { 3864 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Blaue_Perle = { IDs = { 4611 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Kleine_irisierende_Perle = { IDs = { 5498 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Schillernde_Perle = { IDs = { 5500 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Aquamarin = { IDs = { 7909 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Sternrubin = { IDs = { 7910 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Schwarze_Perle = { IDs = { 7971 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Schwarzes_Vitriol = { IDs = { 9262 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Schwarzer_Diamant = { IDs = { 11754 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Blauer_Saphir = { IDs = { 12361 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Arkankristall = { IDs = { 12363 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Gewaltiger_Smaragd = { IDs = { 12364 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Grosser_Opal = { IDs = { 12799 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Azerothischer_Diamant = { IDs = { 12800 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Rechtschaffene_Kugel = { IDs = { 12811 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Goldene_Perle = { IDs = { 13926 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
-	Makelloser_schwarzer_Diamant = { IDs = { 18335 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
+	Malachit = { IDs = { 774 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Tigerauge = { IDs = { 818 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Moosachat = { IDs = { 1206 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Schattenedelstein = { IDs = { 1210 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Jade = { IDs = { 1529 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Geringer_Mondstein = { IDs = { 1705 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Citrin = { IDs = { 3864 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Blaue_Perle = { IDs = { 4611 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Kleine_irisierende_Perle = { IDs = { 5498 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Schillernde_Perle = { IDs = { 5500 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Aquamarin = { IDs = { 7909 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Sternrubin = { IDs = { 7910 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Schwarze_Perle = { IDs = { 7971 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Schwarzes_Vitriol = { IDs = { 9262 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Schwarzer_Diamant = { IDs = { 11754 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Blauer_Saphir = { IDs = { 12361 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Arkankristall = { IDs = { 12363 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Gewaltiger_Smaragd = { IDs = { 12364 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Grosser_Opal = { IDs = { 12799 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Azerothischer_Diamant = { IDs = { 12800 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Rechtschaffene_Kugel = { IDs = { 12811 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Goldene_Perle = { IDs = { 13926 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
+	Makelloser_schwarzer_Diamant = { IDs = { 18335 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 }
 
 ProfessionsHelperData["Classic"].Leather = {
@@ -575,94 +575,107 @@ ProfessionsHelperData["Classic"].Skills = {
 -- Recipes of professions
 -- ==========================================
 
+ProfessionsHelperData['Classic'].RecipeDB = {}
+
+do
+    -- ========================================
     -- Skinning
-    -- Baits
+    -- ========================================
     local recipe_elusiveCreatureLure = {
-    yield = 1,
-    { ids = {223512}, amount = 10 }, -- Basic_Meat
-}
-
-    -- Fishbaits
-    local recipe_arathorHammerfishLure = {
-    yield = 1,
-    { ids = {220137}, amount = 2 }, -- Fish
-}
-
-
--- Leatherworking
--- Materials
-local recipe_chitinArmorBanding = {
-    yield = 1,
-    { ids = { 218336 }, amount = 1 },
-    { ids = { 212674, 212675, 212676 }, amount = 1 },
-    { ids = { 212667, 212668, 212669 }, amount = 30 },
-}
-
--- OptionalsReagents
-local recipe_blessedWeaponGrip = {
-    yield = 1,
-    { ids = { 219901, 219902, 219903 }, amount = 1 },
-    { ids = { 221758 }, amount = 1 },
-}
-
-
-    -- Herbalism
-    local recipe_magicalMulch = {
-    yield = 1,
-    { ids = {210796, 210797, 210798}, amount = 5 },
+        yield = 1,
+        { ids = {223512}, amount = 10 }, -- Basic_Meat
     }
 
+    local recipe_arathorHammerfishLure = {
+        yield = 1,
+        { ids = {220137}, amount = 2 }, -- Fish
+    }
 
-    --Alchemy
-    local recipe_algarManaPotion = {
-    yield = 5,
-    { ids = {211806, 211807, 211808}, amount = 1 },
-    { ids = {210796, 210797, 210798}, amount = 6 },
-    { ids = {210805, 210806, 210807}, amount = 3 },
-}
-
-
--- 2. Das Rezept allen drei Qualitätsstufen des Endprodukts zuweisen
-ProfessionsHelperData["Classic"].RecipeDB = {
-    -- Skinning
-    -- Baits
-    [219007] = recipe_elusiveCreatureLure, -- BasicLure
+    ProfessionsHelperData['Classic'].RecipeDB = ProfessionsHelperData['Classic'].RecipeDB or {}
+    ProfessionsHelperData['Classic'].RecipeDB['Skinning'] = {
+        -- Skinning
+                -- Baits
+                [219007] = recipe_elusiveCreatureLure, -- BasicLure
 
 
-    -- Fishbait
+                -- Fishbait
+    }
+end
 
-
-
+do
+    -- ========================================
     -- Leatherworking
-    -- Materials
-    [219898] = recipe_chitinArmorBanding,
+    -- ========================================
+    local recipe_chitinArmorBanding = {
+        yield = 1,
+        { ids = { 218336 }, amount = 1 },
+        { ids = { 212674, 212675, 212676 }, amount = 1 },
+        { ids = { 212667, 212668, 212669 }, amount = 30 },
+    }
+
+    local recipe_blessedWeaponGrip = {
+        yield = 1,
+        { ids = { 219901, 219902, 219903 }, amount = 1 },
+        { ids = { 221758 }, amount = 1 },
+    }
+
+    ProfessionsHelperData['Classic'].RecipeDB = ProfessionsHelperData['Classic'].RecipeDB or {}
+    ProfessionsHelperData['Classic'].RecipeDB['Leatherworking'] = {
+        -- Leatherworking
+                -- Materials
+                [219898] = recipe_chitinArmorBanding,
 
 
-    -- OptionalsReagents
-    [219495] = recipe_blessedWeaponGrip,
+                -- OptionalsReagents
+                [219495] = recipe_blessedWeaponGrip,
+    }
+end
 
-
+do
+    -- ========================================
     -- Herbalism
-    [219194] = recipe_magicalMulch,
+    -- ========================================
+    local recipe_magicalMulch = {
+        yield = 1,
+        { ids = {210796, 210797, 210798}, amount = 5 },
+        }
+
+    ProfessionsHelperData['Classic'].RecipeDB = ProfessionsHelperData['Classic'].RecipeDB or {}
+    ProfessionsHelperData['Classic'].RecipeDB['Herbalism'] = {
+        -- Herbalism
+                [219194] = recipe_magicalMulch,
+    }
+end
+
+do
+    -- ========================================
+    -- Alchemy
+    -- ========================================
+    local recipe_algarManaPotion = {
+        yield = 5,
+        { ids = {211806, 211807, 211808}, amount = 1 },
+        { ids = {210796, 210797, 210798}, amount = 6 },
+        { ids = {210805, 210806, 210807}, amount = 3 },
+    }
+
+    ProfessionsHelperData['Classic'].RecipeDB = ProfessionsHelperData['Classic'].RecipeDB or {}
+    ProfessionsHelperData['Classic'].RecipeDB['Alchemy'] = {
+        -- Blasphemite
 
 
-    -- Blasphemite
-
-
-    [430345] = { isSpell = true, spellID = 430345,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 10 },
-        { ids = {210815}, amount = 6 },
-        { ids = {210814}, amount = 5 },
-        },
-    },
-    
-    [427174] = { isSpell = true, spellID = 427174,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 20 },
-        { ids = {210815}, amount = 2 },
-        },
-    },
-
-    
-}
+                [430345] = { isSpell = true, spellID = 430345,
+                slots = {
+                    { type = "group", key = "ExperimentHerbs", amount = 10 },
+                    { ids = {210815}, amount = 6 },
+                    { ids = {210814}, amount = 5 },
+                    },
+                },
+                
+                [427174] = { isSpell = true, spellID = 427174,
+                slots = {
+                    { type = "group", key = "ExperimentHerbs", amount = 20 },
+                    { ids = {210815}, amount = 2 },
+                    },
+                },
+    }
+end

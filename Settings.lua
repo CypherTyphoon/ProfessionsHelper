@@ -98,12 +98,91 @@ function PH:SetupOptions()
                         end,
                     },
 
+                    -- Bestandszählung: globale Optionen für die Item-Zählung
+                    itemCount = {
+                        name = "Bestandszählung",
+                        type = "group",
+                        order = 2,
+                        args = {
+                            description = {
+                                name = "Lege fest, welche zusätzlichen Lagerorte und Gegenstandsarten bei der Bestandszählung berücksichtigt werden. Die Taschen des Charakters werden immer mitgezählt.",
+                                type = "description",
+                                order = 1,
+                                width = "full",
+                            },
+
+                            includeBank = {
+                                name = "Character Bank",
+                                desc = "Bestände in der persönlichen Bank berücksichtigen.",
+                                type = "toggle",
+                                order = 2,
+                                get = function()
+                                    local settings = PH.db.profile.itemCountSettings or {}
+                                    return settings.includeBank ~= false
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}
+                                    PH.db.profile.itemCountSettings.includeBank = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+
+                            includeUses = {
+                                name = "Uses",
+                                desc = "Gegenstände mit begrenzter Anzahl von Anwendungen berücksichtigen.",
+                                type = "toggle",
+                                order = 3,
+                                get = function()
+                                    local settings = PH.db.profile.itemCountSettings or {}
+                                    return settings.includeUses ~= false
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}
+                                    PH.db.profile.itemCountSettings.includeUses = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+
+                            includeReagentBank = {
+                                name = "Reagent Bank",
+                                desc = "Bestände in der Reagenzienbank berücksichtigen.",
+                                type = "toggle",
+                                order = 4,
+                                get = function()
+                                    local settings = PH.db.profile.itemCountSettings or {}
+                                    return settings.includeReagentBank ~= false
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}
+                                    PH.db.profile.itemCountSettings.includeReagentBank = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+
+                            includeAccountBank = {
+                                name = "Warband Bank",
+                                desc = "Bestände in der Kriegsmeutenbank berücksichtigen.",
+                                type = "toggle",
+                                order = 5,
+                                get = function()
+                                    local settings = PH.db.profile.itemCountSettings or {}
+                                    return settings.includeAccountBank ~= false
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}
+                                    PH.db.profile.itemCountSettings.includeAccountBank = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+                        },
+                    },
+
                 },
             },
 
 
             ------------------------------------------------
-            -- 2. DESIGN: SAMMEL-BALKEN
+            -- 3. DESIGN: SAMMEL-BALKEN
             ------------------------------------------------
 
             barDesign = {

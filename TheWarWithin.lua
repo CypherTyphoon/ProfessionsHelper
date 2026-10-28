@@ -42,7 +42,7 @@ ProfessionsHelperData["The War Within"].Ores = {
     Null_Stone = { IDs = { 210939 }, color = "#9F2264", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Enchanting", "Tailoring", "Engineering", "Jewelcrafting", "Blacksmithing" }, displayCategory = 1 },
     Desolate_Talus = { IDs = { 238201, 238212, 238213 }, color = "#80336F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
     Kareshi_Resonating_Stone = { IDs = { 240216 }, color = "#2E349F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
-    Imperfect_Null_Stone = { IDs = { 217707 }, sources = { "Drop"}, gatheringProf = "Mining", displayCategory = 2 },
+    Imperfect_Null_Stone = { IDs = { 217707 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 }
 
 ProfessionsHelperData["The War Within"].Leather = {
@@ -370,277 +370,322 @@ ProfessionsHelperData["The War Within"].Skills = {
 -- Recipes of professions
 -- ==========================================
 
+ProfessionsHelperData['The War Within'].RecipeDB = {}
+
+do
+    -- ========================================
     -- Skinning
-    -- Baits
+    -- ========================================
     local recipe_elusiveCreatureLure = {
-    yield = 1,
-    { ids = {223512}, amount = 10 }, -- Basic_Meat
-}
-    local recipe_writhingCreatureLure = {
-    yield = 1,
-    { ids = {219007}, amount = 1 }, -- Basic_Lure
-    { ids = {213611}, amount = 1 }, -- Element
-}
-    local recipe_sporefusedCreatureLure = {
-    yield = 1,
-    { ids = {219007}, amount = 1 }, -- Basic_Lure
-    { ids = {213612}, amount = 3 }, -- Element
-}
-    local recipe_crystallineCreatureLure = {
-    yield = 1,
-    { ids = {219007}, amount = 1 }, -- Basic_Lure
-    { ids = {213610}, amount = 3 }, -- Element
-}
-    local recipe_supremeBeastLure = {
-    yield = 1,
-    { ids = {222739}, amount = 1 }, -- Cooked_Meat
-}
-    local recipe_beastLureScent = {
-    yield = 1,
-    { ids = {219007}, amount = 3 }, -- Basic_Lure
-    { ids = {222700}, amount = 5 }, -- Spice
-}
-    -- Fishbaits
-    local recipe_arathorHammerfishLure = {
-    yield = 1,
-    { ids = {220137}, amount = 2 }, -- Fish
-}
-    local recipe_dornishPikeLure = {
-    yield = 1,
-    { ids = {220136}, amount = 2 }, -- Fish
-}
-    local recipe_specularRainbowfishLure = {
-    yield = 1,
-    { ids = {220134}, amount = 2 }, -- Fish
-}
-    local recipe_quietRiverBassLure = {
-    yield = 1,
-    { ids = {220135}, amount = 2 }, -- Fish
-}
-    local recipe_roaringAnglerseekerLure = {
-    yield = 1,
-    { ids = {220134}, amount = 1 }, -- 1.Fish
-    { ids = {220135}, amount = 1 }, -- 2.Fish
-    { ids = {220136}, amount = 1 }, -- 3.Fish
-    { ids = {220137}, amount = 1 }, -- 4.Fish
-}
-
--- Leatherworking
--- Materials
-local recipe_chitinArmorBanding = {
-    yield = 1,
-    { ids = { 218336 }, amount = 1 },
-    { ids = { 212674, 212675, 212676 }, amount = 1 },
-    { ids = { 212667, 212668, 212669 }, amount = 30 },
-}
-local recipe_carapaceBackedHide = {
-    yield = 1,
-    { ids = { 218337 }, amount = 5 },
-    { ids = { 224764 }, amount = 5 },
-    { ids = { 212670, 212672, 212673 }, amount = 1 },
-    { ids = { 212674, 212675, 212676 }, amount = 1 },
-}
-local recipe_crystalfusedHide = {
-    yield = 1,
-    { ids = { 219880, 219881, 219882 }, amount = 1 },
-    { ids = { 213610 }, amount = 5 },
-}
-local recipe_leyfusedHide = {
-    yield = 1,
-    { ids = { 219880, 219881, 219882 }, amount = 1 },
-    { ids = { 213613 }, amount = 5 },
-}
-local recipe_sporecoatedHide = {
-    yield = 1,
-    { ids = { 219880, 219881, 219882 }, amount = 1 },
-    { ids = { 213612 }, amount = 5 },
-}
-local recipe_writhingHide = {
-    yield = 1,
-    { ids = { 219880, 219881, 219882 }, amount = 1 },
-    { ids = { 213611 }, amount = 5 },
-}
-local recipe_stormTouchedWeaponWrap = {
-    yield = 1,
-    { ids = { 212670, 212672, 212673 }, amount = 1 },
-    { ids = { 218338 }, amount = 1 },
-    { ids = { 212664, 212665, 212666 }, amount = 30 },
-}
--- OptionalsReagents
-local recipe_blessedWeaponGrip = {
-    yield = 1,
-    { ids = { 219901, 219902, 219903 }, amount = 1 },
-    { ids = { 221758 }, amount = 1 },
-}
-local recipe_writhingArmorBanding = {
-    yield = 1,
-    { ids = { 219898, 219899, 219900 }, amount = 1 },
-    { ids = { 221756 }, amount = 1 },
-}
-
-
-    -- Herbalism
-    local recipe_magicalMulch = {
-    yield = 1,
-    { ids = {210796, 210797, 210798}, amount = 5 },
-    }
-    local recipe_imbuedMulch = {
         yield = 1,
-        { ids = {210796, 210797, 210798}, amount = 10 },
-        { ids = {213613, 213614, 213615}, amount = 2 }, 
+        { ids = {223512}, amount = 10 }, -- Basic_Meat
     }
-    local recipe_empoweredMulch = {
+
+    local recipe_writhingCreatureLure = {
+        yield = 1,
+        { ids = {219007}, amount = 1 }, -- Basic_Lure
+        { ids = {213611}, amount = 1 }, -- Element
+    }
+
+    local recipe_sporefusedCreatureLure = {
+        yield = 1,
+        { ids = {219007}, amount = 1 }, -- Basic_Lure
+        { ids = {213612}, amount = 3 }, -- Element
+    }
+
+    local recipe_crystallineCreatureLure = {
+        yield = 1,
+        { ids = {219007}, amount = 1 }, -- Basic_Lure
+        { ids = {213610}, amount = 3 }, -- Element
+    }
+
+    local recipe_supremeBeastLure = {
+        yield = 1,
+        { ids = {222739}, amount = 1 }, -- Cooked_Meat
+    }
+
+    local recipe_beastLureScent = {
+        yield = 1,
+        { ids = {219007}, amount = 3 }, -- Basic_Lure
+        { ids = {222700}, amount = 5 }, -- Spice
+    }
+
+    local recipe_arathorHammerfishLure = {
+        yield = 1,
+        { ids = {220137}, amount = 2 }, -- Fish
+    }
+
+    local recipe_dornishPikeLure = {
+        yield = 1,
+        { ids = {220136}, amount = 2 }, -- Fish
+    }
+
+    local recipe_specularRainbowfishLure = {
+        yield = 1,
+        { ids = {220134}, amount = 2 }, -- Fish
+    }
+
+    local recipe_quietRiverBassLure = {
+        yield = 1,
+        { ids = {220135}, amount = 2 }, -- Fish
+    }
+
+    local recipe_roaringAnglerseekerLure = {
+        yield = 1,
+        { ids = {220134}, amount = 1 }, -- 1.Fish
+        { ids = {220135}, amount = 1 }, -- 2.Fish
+        { ids = {220136}, amount = 1 }, -- 3.Fish
+        { ids = {220137}, amount = 1 }, -- 4.Fish
+    }
+
+    ProfessionsHelperData['The War Within'].RecipeDB = ProfessionsHelperData['The War Within'].RecipeDB or {}
+    ProfessionsHelperData['The War Within'].RecipeDB['Skinning'] = {
+        -- Skinning
+                -- Baits
+                [219007] = recipe_elusiveCreatureLure, -- BasicLure
+                [219008] = recipe_supremeBeastLure, -- AdvancedLure
+                [219019] = recipe_beastLureScent, -- "GetThemAll"
+                [219009] = recipe_crystallineCreatureLure, -- InfusedLure
+                [219010] = recipe_writhingCreatureLure, -- 2ndInfusedLure
+                [219011] = recipe_sporefusedCreatureLure, -- 3rdInfusedLure
+
+                -- Fishbait
+                [219002] = recipe_specularRainbowfishLure,
+                [219003] = recipe_quietRiverBassLure,
+                [219004] = recipe_dornishPikeLure,
+                [219005] = recipe_arathorHammerfishLure,
+                [219006] = recipe_roaringAnglerseekerLure,
+    }
+end
+
+do
+    -- ========================================
+    -- Leatherworking
+    -- ========================================
+    local recipe_chitinArmorBanding = {
+        yield = 1,
+        { ids = { 218336 }, amount = 1 },
+        { ids = { 212674, 212675, 212676 }, amount = 1 },
+        { ids = { 212667, 212668, 212669 }, amount = 30 },
+    }
+
+    local recipe_carapaceBackedHide = {
+        yield = 1,
+        { ids = { 218337 }, amount = 5 },
+        { ids = { 224764 }, amount = 5 },
+        { ids = { 212670, 212672, 212673 }, amount = 1 },
+        { ids = { 212674, 212675, 212676 }, amount = 1 },
+    }
+
+    local recipe_crystalfusedHide = {
+        yield = 1,
+        { ids = { 219880, 219881, 219882 }, amount = 1 },
+        { ids = { 213610 }, amount = 5 },
+    }
+
+    local recipe_leyfusedHide = {
+        yield = 1,
+        { ids = { 219880, 219881, 219882 }, amount = 1 },
+        { ids = { 213613 }, amount = 5 },
+    }
+
+    local recipe_sporecoatedHide = {
+        yield = 1,
+        { ids = { 219880, 219881, 219882 }, amount = 1 },
+        { ids = { 213612 }, amount = 5 },
+    }
+
+    local recipe_writhingHide = {
+        yield = 1,
+        { ids = { 219880, 219881, 219882 }, amount = 1 },
+        { ids = { 213611 }, amount = 5 },
+    }
+
+    local recipe_stormTouchedWeaponWrap = {
+        yield = 1,
+        { ids = { 212670, 212672, 212673 }, amount = 1 },
+        { ids = { 218338 }, amount = 1 },
+        { ids = { 212664, 212665, 212666 }, amount = 30 },
+    }
+
+    local recipe_blessedWeaponGrip = {
+        yield = 1,
+        { ids = { 219901, 219902, 219903 }, amount = 1 },
+        { ids = { 221758 }, amount = 1 },
+    }
+
+    local recipe_writhingArmorBanding = {
+        yield = 1,
+        { ids = { 219898, 219899, 219900 }, amount = 1 },
+        { ids = { 221756 }, amount = 1 },
+    }
+
+    ProfessionsHelperData['The War Within'].RecipeDB = ProfessionsHelperData['The War Within'].RecipeDB or {}
+    ProfessionsHelperData['The War Within'].RecipeDB['Leatherworking'] = {
+        -- Leatherworking
+                -- Materials
+                [219898] = recipe_chitinArmorBanding,
+                [219899] = recipe_chitinArmorBanding,
+                [219900] = recipe_chitinArmorBanding,
+
+                [219880] = recipe_carapaceBackedHide,
+                [219881] = recipe_carapaceBackedHide,
+                [219882] = recipe_carapaceBackedHide,
+
+                [219883] = recipe_crystalfusedHide,
+                [219884] = recipe_crystalfusedHide,
+                [219885] = recipe_crystalfusedHide,
+
+                [219892] = recipe_leyfusedHide,
+                [219893] = recipe_leyfusedHide,
+                [219894] = recipe_leyfusedHide,
+
+                [219889] = recipe_sporecoatedHide,
+                [219890] = recipe_sporecoatedHide,
+                [219891] = recipe_sporecoatedHide,
+
+                [219886] = recipe_writhingHide,
+                [219887] = recipe_writhingHide,
+                [219888] = recipe_writhingHide,
+
+                [219901] = recipe_stormTouchedWeaponWrap,
+                [219902] = recipe_stormTouchedWeaponWrap,
+                [219903] = recipe_stormTouchedWeaponWrap,
+
+                -- OptionalsReagents
+                [219495] = recipe_blessedWeaponGrip,
+                [219496] = recipe_blessedWeaponGrip,
+                [219497] = recipe_blessedWeaponGrip,
+
+                [219504] = recipe_writhingArmorBanding,
+                [219505] = recipe_writhingArmorBanding,
+                [219506] = recipe_writhingArmorBanding,
+    }
+end
+
+do
+    -- ========================================
+    -- Herbalism
+    -- ========================================
+    local recipe_magicalMulch = {
         yield = 1,
         { ids = {210796, 210797, 210798}, amount = 5 },
-        { ids = {213612, 213613, 213614}, amount = 4 },
+        }
+
+    local recipe_imbuedMulch = {
+            yield = 1,
+            { ids = {210796, 210797, 210798}, amount = 10 },
+            { ids = {213613, 213614, 213615}, amount = 2 }, 
+        }
+
+    local recipe_empoweredMulch = {
+            yield = 1,
+            { ids = {210796, 210797, 210798}, amount = 5 },
+            { ids = {213612, 213613, 213614}, amount = 4 },
+        }
+
+    ProfessionsHelperData['The War Within'].RecipeDB = ProfessionsHelperData['The War Within'].RecipeDB or {}
+    ProfessionsHelperData['The War Within'].RecipeDB['Herbalism'] = {
+        -- Herbalism
+                [219194] = recipe_magicalMulch,
+                [219195] = recipe_imbuedMulch,
+                [219196] = recipe_empoweredMulch,
+    }
+end
+
+do
+    -- ========================================
+    -- Alchemy
+    -- ========================================
+    local recipe_algarManaPotion = {
+        yield = 5,
+        { ids = {211806, 211807, 211808}, amount = 1 },
+        { ids = {210796, 210797, 210798}, amount = 6 },
+        { ids = {210805, 210806, 210807}, amount = 3 },
     }
 
-    --Alchemy
-    local recipe_algarManaPotion = {
-    yield = 5,
-    { ids = {211806, 211807, 211808}, amount = 1 },
-    { ids = {210796, 210797, 210798}, amount = 6 },
-    { ids = {210805, 210806, 210807}, amount = 3 },
-}
     local recipe_algarHealPotion = {
-    yield = 5,
-    { ids = {211806, 211807, 211808}, amount = 1 },
-    { ids = {210796, 210797, 210798}, amount = 6 },
-}
+        yield = 5,
+        { ids = {211806, 211807, 211808}, amount = 1 },
+        { ids = {210796, 210797, 210798}, amount = 6 },
+    }
+
     local recipe_formCour = {
-    yield = 1,
-    { ids = {211806, 211807, 211808}, amount = 1 },
-    { ids = {210796, 210797, 210798}, amount = 8 },
-    { ids = {210805, 210806, 210807}, amount = 4 },
-}
-local recipe_harmoniousHorticulture = {
-    yield = 1,
-    { ids = {213612}, amount = 1 },                  -- Leyline Resonator
-    { ids = {210796, 210797, 210798}, amount = 12 }, -- Mycobloom
-    { ids = {210799, 210800, 210801}, amount = 6 },  -- Luredrop
-    { ids = {210802, 210803, 210804}, amount = 6 },  -- Orator's Loto
-    { ids = {210805, 210806, 210807}, amount = 6 },  -- Blessing Blossom
-    { ids = {210808, 210809, 210810}, amount = 6 },  -- Arathor's Spear
-}
-local recipe_petalPowder = {
-    yield = 1,
-    { ids = {210796, 210797, 210798}, amount = 2 },  -- Mycobloom
-    { ids = {210808, 210809, 210810}, amount = 6 },  -- Arathor's Spear
-}
-local recipe_bubblingMycobloom = {
-    yield = 1,
-    { ids = {210796, 210797, 210798}, amount = 4 },  -- Mycobloom
-    { ids = {211806, 211807, 211808}, amount = 1 },  -- Vials
-    { ids = {213611}, amount = 1 },                  -- Core Alloy (oder entsprechendes Reagenz)
-}
-local recipe_blasphemite = {
-    yield = 1,
-    { ids = {211805}, amount = 80 }, -- Crushed Glass (Glitzerndes Glas)
-}
+        yield = 1,
+        { ids = {211806, 211807, 211808}, amount = 1 },
+        { ids = {210796, 210797, 210798}, amount = 8 },
+        { ids = {210805, 210806, 210807}, amount = 4 },
+    }
 
--- 2. Das Rezept allen drei Qualitätsstufen des Endprodukts zuweisen
-ProfessionsHelperData["The War Within"].RecipeDB = {
-    -- Skinning
-    -- Baits
-    [219007] = recipe_elusiveCreatureLure, -- BasicLure
-    [219008] = recipe_supremeBeastLure, -- AdvancedLure
-    [219019] = recipe_beastLureScent, -- "GetThemAll"
-    [219009] = recipe_crystallineCreatureLure, -- InfusedLure
-    [219010] = recipe_writhingCreatureLure, -- 2ndInfusedLure
-    [219011] = recipe_sporefusedCreatureLure, -- 3rdInfusedLure
+    local recipe_harmoniousHorticulture = {
+        yield = 1,
+        { ids = {213612}, amount = 1 },                  -- Leyline Resonator
+        { ids = {210796, 210797, 210798}, amount = 12 }, -- Mycobloom
+        { ids = {210799, 210800, 210801}, amount = 6 },  -- Luredrop
+        { ids = {210802, 210803, 210804}, amount = 6 },  -- Orator's Loto
+        { ids = {210805, 210806, 210807}, amount = 6 },  -- Blessing Blossom
+        { ids = {210808, 210809, 210810}, amount = 6 },  -- Arathor's Spear
+    }
 
-    -- Fishbait
-    [219002] = recipe_specularRainbowfishLure,
-    [219003] = recipe_quietRiverBassLure,
-    [219004] = recipe_dornishPikeLure,
-    [219005] = recipe_arathorHammerfishLure,
-    [219006] = recipe_roaringAnglerseekerLure,
+    local recipe_petalPowder = {
+        yield = 1,
+        { ids = {210796, 210797, 210798}, amount = 2 },  -- Mycobloom
+        { ids = {210808, 210809, 210810}, amount = 6 },  -- Arathor's Spear
+    }
 
-    -- Leatherworking
-    -- Materials
-    [219898] = recipe_chitinArmorBanding,
-    [219899] = recipe_chitinArmorBanding,
-    [219900] = recipe_chitinArmorBanding,
+    local recipe_bubblingMycobloom = {
+        yield = 1,
+        { ids = {210796, 210797, 210798}, amount = 4 },  -- Mycobloom
+        { ids = {211806, 211807, 211808}, amount = 1 },  -- Vials
+        { ids = {213611}, amount = 1 },                  -- Core Alloy (oder entsprechendes Reagenz)
+    }
 
-    [219880] = recipe_carapaceBackedHide,
-    [219881] = recipe_carapaceBackedHide,
-    [219882] = recipe_carapaceBackedHide,
+    local recipe_blasphemite = {
+        yield = 1,
+        { ids = {211805}, amount = 80 }, -- Crushed Glass (Glitzerndes Glas)
+    }
 
-    [219883] = recipe_crystalfusedHide,
-    [219884] = recipe_crystalfusedHide,
-    [219885] = recipe_crystalfusedHide,
+    ProfessionsHelperData['The War Within'].RecipeDB = ProfessionsHelperData['The War Within'].RecipeDB or {}
+    ProfessionsHelperData['The War Within'].RecipeDB['Alchemy'] = {
+        -- Alchemy
+                [212239] = recipe_algarManaPotion,
+                [212240] = recipe_algarManaPotion,
+                [212241] = recipe_algarManaPotion,
 
-    [219892] = recipe_leyfusedHide,
-    [219893] = recipe_leyfusedHide,
-    [219894] = recipe_leyfusedHide,
+                [211878] = recipe_algarHealPotion,
+                [211879] = recipe_algarHealPotion,
+                [211880] = recipe_algarHealPotion,
 
-    [219889] = recipe_sporecoatedHide,
-    [219890] = recipe_sporecoatedHide,
-    [219891] = recipe_sporecoatedHide,
+                [212563] = recipe_harmoniousHorticulture,
+                [212564] = recipe_harmoniousHorticulture,
+                [212565] = recipe_harmoniousHorticulture,
 
-    [219886] = recipe_writhingHide,
-    [219887] = recipe_writhingHide,
-    [219888] = recipe_writhingHide,
+                [228404] = recipe_petalPowder,
+                [228405] = recipe_petalPowder,
+                [228406] = recipe_petalPowder,
 
-    [219901] = recipe_stormTouchedWeaponWrap,
-    [219902] = recipe_stormTouchedWeaponWrap,
-    [219903] = recipe_stormTouchedWeaponWrap,
+                [228401] = recipe_bubblingMycobloom,
+                [228402] = recipe_bubblingMycobloom,
+                [228403] = recipe_bubblingMycobloom,
 
-    -- OptionalsReagents
-    [219495] = recipe_blessedWeaponGrip,
-    [219496] = recipe_blessedWeaponGrip,
-    [219497] = recipe_blessedWeaponGrip,
+                -- Blasphemite
+                [212514] = recipe_blasphemite,
 
-    [219504] = recipe_writhingArmorBanding,
-    [219505] = recipe_writhingArmorBanding,
-    [219506] = recipe_writhingArmorBanding,
+                [212781] = recipe_formCour,
 
-
-    -- Herbalism
-    [219194] = recipe_magicalMulch,
-    [219195] = recipe_imbuedMulch,
-    [219196] = recipe_empoweredMulch,
-
-    -- Alchemy
-    [212239] = recipe_algarManaPotion,
-    [212240] = recipe_algarManaPotion,
-    [212241] = recipe_algarManaPotion,
-
-    [211878] = recipe_algarHealPotion,
-    [211879] = recipe_algarHealPotion,
-    [211880] = recipe_algarHealPotion,
-
-    [212563] = recipe_harmoniousHorticulture,
-    [212564] = recipe_harmoniousHorticulture,
-    [212565] = recipe_harmoniousHorticulture,
-
-    [228404] = recipe_petalPowder,
-    [228405] = recipe_petalPowder,
-    [228406] = recipe_petalPowder,
-
-    [228401] = recipe_bubblingMycobloom,
-    [228402] = recipe_bubblingMycobloom,
-    [228403] = recipe_bubblingMycobloom,
-
-    -- Blasphemite
-    [212514] = recipe_blasphemite,
-
-    [212781] = recipe_formCour,
-
-    [430345] = { isSpell = true, spellID = 430345,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 10 },
-        { ids = {210815}, amount = 6 },
-        { ids = {210814}, amount = 5 },
-        },
-    },
-    
-    [427174] = { isSpell = true, spellID = 427174,
-    slots = {
-        { type = "group", key = "ExperimentHerbs", amount = 20 },
-        { ids = {210815}, amount = 2 },
-        },
-    },
-
-    
-}
+                [430345] = { isSpell = true, spellID = 430345,
+                slots = {
+                    { type = "group", key = "ExperimentHerbs", amount = 10 },
+                    { ids = {210815}, amount = 6 },
+                    { ids = {210814}, amount = 5 },
+                    },
+                },
+                
+                [427174] = { isSpell = true, spellID = 427174,
+                slots = {
+                    { type = "group", key = "ExperimentHerbs", amount = 20 },
+                    { ids = {210815}, amount = 2 },
+                    },
+                },
+    }
+end

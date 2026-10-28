@@ -20,12 +20,47 @@ Visuals.Config = {
     RowHeight = 60
 }
 
+-- Zentrale Item-Zählung: Taschen des Charakters sind immer enthalten.
+-- Die vier optionalen Lagerorte/Filter werden über die Settings gesteuert.
+function Visuals:GetItemCount(itemID)
+    if type(itemID) ~= "number" and type(itemID) ~= "string" then
+        return 0
+    end
+
+    local profile = ProfessionsHelper.db and ProfessionsHelper.db.profile
+    local settings = profile and profile.itemCountSettings or {}
+
+    -- Bei bestehenden Profilen ohne diese neuen Werte gilt standardmäßig true.
+    return C_Item.GetItemCount(
+        itemID,
+        settings.includeBank ~= false,
+        settings.includeUses ~= false,
+        settings.includeReagentBank ~= false,
+        settings.includeAccountBank ~= false
+    ) or 0
+end
+
 local skillLineMapping = { 
     [171] = "Alchemy", [164] = "Blacksmithing", [185] = "Cooking", 
     [333] = "Enchanting", [202] = "Engineering", [356] = "Fishing", 
     [182] = "Herbalism", [773] = "Inscription", [755] = "Jewelcrafting", 
     [165] = "Leatherworking", [186] = "Mining", [393] = "Skinning", 
     [197] = "Tailoring", [129] = "FirstAid" 
+}
+
+local specializationMapping = {
+    -- Blacksmithing
+    [9787]  = { profession = "Blacksmithing", name = "Weaponsmith" },
+    [9788]  = { profession = "Blacksmithing", name = "Armorsmith" },
+
+    -- Engineering
+    [20219] = { profession = "Engineering", name = "Gnomish Engineer" },
+    [20222] = { profession = "Engineering", name = "Goblin Engineer" },
+
+    -- Leatherworking
+    [10656] = { profession = "Leatherworking", name = "Dragonscale Leatherworking" },
+    [10658] = { profession = "Leatherworking", name = "Elemental Leatherworking" },
+    [10660] = { profession = "Leatherworking", name = "Tribal Leatherworking" },
 }
 
 local PlayerCanHandle = {}
@@ -128,7 +163,35 @@ local function CanPlayerSeeItem(category, itemData, categoryOverride)
 
     local cat = tonumber(categoryOverride) or tonumber(itemData.displayCategory) or 0
 
-    if cat == 1 or cat == 5 then
+    if cat == 1 then
+        -- Kategorie 1 bleibt unverändert: keine Spezialisierungsprüfung.
+        return HasMatch(itemData.gatheringProf)
+    elseif cat == 5 then
+        -- Spezialisierungs-Icons werden nur angezeigt, wenn der Charakter
+        -- die jeweilige Spezialisierung tatsächlich kennt. Das betrifft
+        -- ausschließlich Cat 5; normale Skills behalten das bisherige Verhalten.
+        local specialization = specializationMapping[tonumber(itemData.spellID)]
+        if specialization then
+            -- Der zugehörige Beruf muss ebenfalls gelernt sein.
+            if not (learned and learned[specialization.profession]) then
+                return false
+            end
+
+            local spellID = tonumber(itemData.spellID)
+            local spellKnown = false
+            if C_SpellBook and C_SpellBook.IsSpellKnownOrInSpellBook then
+                spellKnown = C_SpellBook.IsSpellKnownOrInSpellBook(spellID)
+            elseif IsSpellKnown then
+                spellKnown = IsSpellKnown(spellID)
+            elseif IsPlayerSpell then
+                spellKnown = IsPlayerSpell(spellID)
+            end
+
+            return not not spellKnown
+        end
+
+        -- Normale Cat-5-Skills bleiben unverändert sichtbar, sofern der
+        -- zugehörige Beruf gelernt ist.
         return HasMatch(itemData.gatheringProf)
     elseif cat == 2 then
         return HasMatch(itemData.processingProfs)
@@ -228,54 +291,112 @@ local function MakeInteractive(frame, itemIDs, groupKey)
     frame:SetScript("OnLeave", function() GameTooltip:Hide() end)
 end
 
-function Visuals:GetCraftableAmount(recipeID)
-    if not ProfessionsHelperData then return 0 end
-    
-    local recipe = nil
-    for _, expData in pairs(ProfessionsHelperData) do
-        if expData.RecipeDB and expData.RecipeDB[recipeID] then
-            recipe = expData.RecipeDB[recipeID]
-            break
+-- RecipeDB lookup helpers: recipes are grouped by profession and may contain alternatives.
+local function IsRecipeDefinition(value)
+    return type(value) == "table"
+        and (value.yield ~= nil or value.slots ~= nil or value.isSpell ~= nil)
+end
+
+local function FindRecipeEntry(container, itemID)
+    if type(container) ~= "table" then return nil end
+
+    for key, value in pairs(container) do
+        if type(key) == "number" and key == itemID then
+            return value
+        end
+        if type(value) == "table" and not IsRecipeDefinition(value) then
+            local found = FindRecipeEntry(value, itemID)
+            if found ~= nil then return found end
         end
     end
-    if not recipe then return 0 end
-    local finalMax = 99999
-    local data = recipe.slots or recipe
-    for i = 1, #data do
-        local slot = data[i]
-        if type(slot) == "table" then
-            local needed = slot.amount or 1
-            local currentSlotPossible = 0
-            if slot.type == "group" and slot.key == "ExperimentHerbs" then
-                local totalApps = 0
-                for _, expData in pairs(ProfessionsHelperData) do
-                    if expData.Herbs then
-                        for _, herbData in pairs(expData.Herbs) do
-                            if herbData.canExperiment then
-                                for _, id in ipairs(herbData.IDs) do
-                                    local count = C_Item.GetItemCount(id, true, true, true, true, true)
-                                    if count >= needed then
-                                        totalApps = totalApps + math.floor(count / needed)
+
+    return nil
+end
+
+local function NormalizeRecipeList(entry)
+    if IsRecipeDefinition(entry) then
+        return { entry }
+    end
+
+    local recipes = {}
+    if type(entry) == "table" then
+        for _, recipe in ipairs(entry) do
+            if IsRecipeDefinition(recipe) then
+                recipes[#recipes + 1] = recipe
+            end
+        end
+    end
+    return recipes
+end
+
+function Visuals:GetRecipeEntry(itemID)
+    if not ProfessionsHelperData or not itemID then return nil end
+
+    for _, expData in pairs(ProfessionsHelperData) do
+        if expData.RecipeDB then
+            local entry = FindRecipeEntry(expData.RecipeDB, itemID)
+            if entry ~= nil then return entry end
+        end
+    end
+    return nil
+end
+
+function Visuals:GetCraftableAmount(recipeID)
+    local entry = self:GetRecipeEntry(recipeID)
+    local recipes = NormalizeRecipeList(entry)
+    if #recipes == 0 then return 0 end
+
+    local totalCraftable = 0
+    for _, recipe in ipairs(recipes) do
+        local finalMax = math.huge
+        local hasRequirement = false
+        local data = recipe.slots or recipe
+
+        for i = 1, #data do
+            local slot = data[i]
+            if type(slot) == "table" then
+                local needed = slot.amount or 1
+                local currentSlotPossible = 0
+
+                if slot.type == "group" and slot.key == "ExperimentHerbs" then
+                    local totalApps = 0
+                    for _, expData in pairs(ProfessionsHelperData) do
+                        if expData.Herbs then
+                            for _, herbData in pairs(expData.Herbs) do
+                                if herbData.canExperiment then
+                                    for _, id in ipairs(herbData.IDs) do
+                                        local count = self:GetItemCount(id)
+                                        if count >= needed then
+                                            totalApps = totalApps + math.floor(count / needed)
+                                        end
                                     end
                                 end
                             end
                         end
                     end
+                    currentSlotPossible = totalApps
+                    hasRequirement = true
+                elseif slot.ids then
+                    local stock = 0
+                    for _, id in ipairs(slot.ids) do
+                        stock = stock + self:GetItemCount(id)
+                    end
+                    currentSlotPossible = math.floor(stock / needed)
+                    hasRequirement = true
                 end
-                currentSlotPossible = totalApps
-            elseif slot.ids then
-                local stock = 0
-                for _, id in ipairs(slot.ids) do
-                    stock = stock + C_Item.GetItemCount(id, true, true, true, true, true)
+
+                if currentSlotPossible < finalMax then
+                    finalMax = currentSlotPossible
                 end
-                currentSlotPossible = math.floor(stock / needed)
-            end
-            if currentSlotPossible < finalMax then
-                finalMax = currentSlotPossible
             end
         end
+
+        if hasRequirement and finalMax ~= math.huge then
+            totalCraftable = totalCraftable + finalMax
+        end
     end
-    return (finalMax == 99999) and 0 or finalMax
+
+    return totalCraftable
 end
 
 function Visuals:GetSpellStatus(spellID)
@@ -443,9 +564,9 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
 
     -- 6. Update-Logik
     local function Update()
-        local b = C_Item.GetItemCount(itemIDs[1] or 0, true, true, true, true)
-        local s = C_Item.GetItemCount(itemIDs[2] or 0, true, true, true, true)
-        local g = itemIDs[3] and C_Item.GetItemCount(itemIDs[3], true, true, true, true) or 0
+        local b = self:GetItemCount(itemIDs[1] or 0)
+        local s = self:GetItemCount(itemIDs[2] or 0)
+        local g = itemIDs[3] and self:GetItemCount(itemIDs[3]) or 0
         
         tB:ClearAllPoints()
         tS:ClearAllPoints()
@@ -544,7 +665,7 @@ function Visuals:CreateMaterialIcon(parent, ids, x, y, profName, achievementID)
         -- Items zählen
         local total = 0
         for _, id in ipairs(ids) do 
-            total = total + C_Item.GetItemCount(id, true, true, true, true) 
+            total = total + self:GetItemCount(id) 
         end
         text:SetText(total > 0 and total or "")
         icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
@@ -636,24 +757,28 @@ function Visuals:CreateProfessionIcon(parent, ids, x, y, profName)
         local totalOwned = 0
         if type(ids) == "table" then
             for _, id in ipairs(ids) do 
-                totalOwned = totalOwned + C_Item.GetItemCount(id, true, true, true, true, true) 
+                totalOwned = totalOwned + self:GetItemCount(id) 
             end
         else
-            totalOwned = C_Item.GetItemCount(ids, true, true, true, true, true)
+            totalOwned = self:GetItemCount(ids)
         end
         textStock:SetText(totalOwned > 0 and totalOwned or "")
 
-        -- Yield Logik
-        local recipe = nil
-        for _, expData in pairs(ProfessionsHelperData) do
-            if expData.RecipeDB and expData.RecipeDB[frame.itemID] then
-                recipe = expData.RecipeDB[frame.itemID]
-                break
+        -- Yield Logik: only display a yield when all recipe alternatives agree.
+        local recipeEntry = self:GetRecipeEntry(frame.itemID)
+        local recipes = NormalizeRecipeList(recipeEntry)
+        local commonYield = recipes[1] and recipes[1].yield or nil
+        if commonYield then
+            for i = 2, #recipes do
+                if recipes[i].yield ~= commonYield then
+                    commonYield = nil
+                    break
+                end
             end
         end
-        
-        if recipe and recipe.yield and recipe.yield > 1 then
-            textYield:SetText("+" .. recipe.yield)
+
+        if commonYield and commonYield > 1 then
+            textYield:SetText("+" .. commonYield)
         else
             textYield:SetText("")
         end
@@ -676,14 +801,9 @@ function Visuals:CreateProfessionIcon(parent, ids, x, y, profName)
 end
 
 function Visuals:CreateSpecialActionIcon(parent, recipeID, x, y, profName)
-    local recipe = nil
-    if ProfessionsHelperData then
-        for _, expData in pairs(ProfessionsHelperData) do
-            if expData.RecipeDB and expData.RecipeDB[recipeID] then
-                recipe = expData.RecipeDB[recipeID]; break
-            end
-        end
-    end
+    local recipeEntry = self:GetRecipeEntry(recipeID)
+    local recipes = NormalizeRecipeList(recipeEntry)
+    local recipe = recipes[1]
     if not recipe then return nil end
 
     local frame = CreateFrame("Frame", nil, parent)
@@ -780,7 +900,7 @@ function Visuals:CreateFishingIcon(parent, ids, x, y, settingKey)
         -- 1. Bestand zählen
         local total = 0
         for _, id in ipairs(ids) do 
-            total = total + C_Item.GetItemCount(id, true, true, true, true) 
+            total = total + self:GetItemCount(id) 
         end
         text:SetText(total > 0 and total or "")
         icon:SetDesaturated(total == 0)
@@ -1138,7 +1258,7 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
                     local function GetTotal(itemObj)
                         local total = 0
                         for _, id in ipairs(itemObj.data.IDs or {}) do
-                            total = total + C_Item.GetItemCount(id, true, true, true, true)
+                            total = total + self:GetItemCount(id)
                         end
                         return total
                     end
@@ -1328,7 +1448,7 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
                         local total = 0
                         if itemObj.data.IDs then
                             for _, id in ipairs(itemObj.data.IDs) do
-                                total = total + C_Item.GetItemCount(id, true, true, true, true)
+                                total = total + self:GetItemCount(id)
                             end
                         end
                         return total

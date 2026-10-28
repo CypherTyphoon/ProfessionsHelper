@@ -377,581 +377,623 @@ ProfessionsHelperData["Midnight"].Skills = {
 -- Recipes of professions
 -- ==========================================
 
+ProfessionsHelperData['Midnight'].RecipeDB = {}
 
--- Herbalism
-local recipe_magicalMulch = {
-yield = 1,
-{ ids = {236761, 236767}, amount = 5 },
-}
-local recipe_imbuedMulch = {
-yield = 1,
-{ ids = {236761, 236767}, amount = 10 },
-}
-local recipe_empoweredMulch = {
-yield = 1,
-{ ids = {236761, 236767}, amount = 20 },
-}
-
-
--- Blacksmithing
-local recipe_RefulgentCopperIngot = {
-yield = 1,
-{ ids = { 243060 }, amount = 2},
-{ ids = { 237359, 237361 }, amount = 5},
-}
-
-local recipe_GloamingAlloy = {
-yield = 1,
-{ ids = { 243060 }, amount = 4},
-{ ids = { 238197, 238198 }, amount = 3},
-{ ids = { 237362, 237363 }, amount = 6},
-}
-
-local recipe_SterlingAlloy = {
-yield = 1,
-{ ids = { 243060 }, amount = 4},
-{ ids = { 238197, 238198 }, amount = 3},
-{ ids = { 237364, 237365 }, amount = 6},
-}
-
-
--- Jewelcrafting
-local recipe_KaleidoPrism = {
-yield = 1,
-{ ids = { 242610, 242726 }, amount = 1},
-{ ids = { 242611, 242725 }, amount = 1},
-{ ids = { 242612, 242727 }, amount = 1},
-{ ids = { 242613, 242728 }, amount = 1},
-{ ids = { 242620, 242621 }, amount = 10},
-}
-
-local recipe_SunglassVial = {
-yield = 1,
-{ ids = { 242786, 242787 }, amount = 5},
-{ ids = { 242788, 242789 }, amount = 1},
-}
-
-local recipe_PrismaFocusIris = {
-yield = 1,
-{ ids = { 240972, 240973 }, amount = 2},
-{ ids = { 242620, 242621 }, amount = 2},
-}
-
-local recipe_StabGemBandolier = {
-yield = 1,
-{ ids = { 242553, 242723 }, amount = 1},
-{ ids = { 242554, 242722 }, amount = 1},
-{ ids = { 242606, 242721 }, amount = 1},
-{ ids = { 242607, 242720 }, amount = 1},
-{ ids = { 242620, 242621 }, amount = 3},
-}
-
-local recipe_SindoreiLens = {
-yield = 1,
-{ ids = { 242786, 242787 }, amount = 3},
-{ ids = { 242620, 242621 }, amount = 1},
-}
-
-
--- Leatherworking
-local recipe_BlessedPangoCharm = {
-yield = 1,
-{ ids = { 236951 }, amount = 10},
-{ ids = { 238523 }, amount = 1},
-{ ids = { 244622 }, amount = 1},
-{ ids = { 238518, 238519 }, amount = 1},
-{ ids = { 242788, 242789 }, amount = 2},
-}
-
-local recipe_PrimalSporeBinding = {
-yield = 1,
-{ ids = { 236950 }, amount = 10},
-{ ids = { 238525 }, amount = 1},
-{ ids = { 244631, 244632 }, amount = 1},
-}
-
-local recipe_ScalewovenHide = {
-yield = 1,
-{ ids = { 238518, 238519 }, amount = 1},
-{ ids = { 238520, 238521 }, amount = 1},
-}
-
-local recipe_InfusedScalewovenHide = {
-yield = 1,
-{ ids = { 236949 }, amount = 2},
-{ ids = { 236950 }, amount = 2},
-{ ids = { 236951 }, amount = 2},
-{ ids = { 236952 }, amount = 2},
-{ ids = { 238529 }, amount = 1},
-{ ids = { 244631, 244632 }, amount = 1},
-}
-
-
-local recipe_SinArmorBanding = {
-yield = 1,
-{ ids = { 236949 }, amount = 2},
-{ ids = { 238525 }, amount = 1},
-{ ids = { 238520, 238521 }, amount = 1},
-}
-
-local recipe_SilverWeaponWrap = {
-yield = 1,
-{ ids = { 236949 }, amount = 2},
-{ ids = { 238523 }, amount = 1},
-{ ids = { 238518, 238519 }, amount = 1},
-}
-
-local recipe_DevourBanding = {
-yield = 1,
-{ ids = { 236852 }, amount = 10},
-{ ids = { 244635, 244636 }, amount = 1},
-}
-
-local recipe_ForestHunterArmorKit = {
-yield = 1,
-{ ids = { 251285 }, amount = 3},
-{ ids = { 251665 }, amount = 10},
-{ ids = { 236951 }, amount = 10},
-{ ids = { 244633, 244634 }, amount = 1},
-{ ids = { 244635, 244636 }, amount = 2},
-}
-
-local recipe_BloodKnightArmorKit = {
-yield = 1,
-{ ids = { 251285 }, amount = 3},
-{ ids = { 251665 }, amount = 10},
-{ ids = { 236949 }, amount = 10},
-{ ids = { 244633, 244634 }, amount = 1},
-{ ids = { 244635, 244636 }, amount = 2},
-}
-
-
--- Tailoring
-local recipe_BriLinenBolt = {
-yield = 1,
-{ ids = { 251665 }, amount = 4},
-{ ids = { 236963, 236965 }, amount = 1},
-}
-
-local recipe_ImbBriLinenBolt = {
-yield = 1,
-{ ids = { 251665 }, amount = 4},
-{ ids = { 239700, 239701 }, amount = 2},
-}
-
-local recipe_SunSilkBolt = {
-yield = 1,
-{ ids = { 236949 }, amount = 4},
-{ ids = { 237015, 237016 }, amount = 5},
-{ ids = { 239702, 239703 }, amount = 6},
-}
-
-local recipe_SunSilkLining = {
-yield = 1,
-{ ids = { 251691 }, amount = 1},
-{ ids = { 237015, 237016 }, amount = 6},
-{ ids = { 239201, 239202 }, amount = 2},
-}
-
-local recipe_ArcanoweaveLining = {
-yield = 1,
-{ ids = { 251691 }, amount = 1},
-{ ids = { 237017, 237018 }, amount = 6},
-{ ids = { 239198, 239200 }, amount = 2},
-}
-
-
--- Inscription
-local recipe_SoulCipher = {
-yield = 1,
-{ ids = { 236952 }, amount = 1},
-{ ids = { 236949 }, amount = 1},
-{ ids = { 242788, 242789 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 1},
-{ ids = { 245805, 245806 }, amount = 1},
-}
-
-local recipe_MissiveAurora = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236850 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveFeverflare = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236850 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveFireflash = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236850 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveHarmonious = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236852 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissivePeerless = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236852 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveQuickblade = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236852 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveIngenuity = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236849 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveResourcefulness = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236849 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveMulticraft = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236849 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveCraftingSpeed = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236851 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveFinesse = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236951 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissivePerception = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236949 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_MissiveDeftness = {
-yield = 1,
-{ ids = { 245881 }, amount = 1},
-{ ids = { 236951 }, amount = 1},
-{ ids = { 245801, 245802 }, amount = 2},
-{ ids = { 245805, 245806 }, amount = 2},
-}
-
-local recipe_SigilBlood = {
-yield = 1,
-{ ids = { 245882 }, amount = 1},
-{ ids = { 236949 }, amount = 10},
-{ ids = { 245755 }, amount = 1},
-{ ids = { 245766, 245767 }, amount = 5},
-}
-
-local recipe_SigilVoid = {
-yield = 1,
-{ ids = { 245882 }, amount = 1},
-{ ids = { 236952 }, amount = 10},
-{ ids = { 245750 }, amount = 1},
-{ ids = { 245766, 245767 }, amount = 5},
-}
-
-local recipe_SigilHunt = {
-yield = 1,
-{ ids = { 245882 }, amount = 1},
-{ ids = { 236951 }, amount = 10},
-{ ids = { 245829 }, amount = 1},
-{ ids = { 245766, 245767 }, amount = 5},
-}
-
-local recipe_SigilRot = {
-yield = 1,
-{ ids = { 245882 }, amount = 1},
-{ ids = { 236950 }, amount = 10},
-{ ids = { 245846 }, amount = 1},
-{ ids = { 245766, 245767 }, amount = 5},
-}
-
-
--- Alchemy
-local recipe_CompositeFlora = {
-yield = 1,
-{ ids = { 245881 }, amount = 4},
-{ ids = { 236850 }, amount = 4},
-{ ids = { 236761, 236767 }, amount = 6},
-{ ids = { 236776, 236777 }, amount = 4},
-}
-
-
--- Engineering
-local recipe_SoulSprocket = {
-yield = 1,
-{ ids = { 253302 }, amount = 1},
-{ ids = { 237359, 237361 }, amount = 5},
-{ ids = { 237362, 237363 }, amount = 10},
-}
-
-local recipe_SongGear = {
-yield = 1,
-{ ids = { 253302 }, amount = 1},
-{ ids = { 237359, 237361 }, amount = 10},
-{ ids = { 237362, 237363 }, amount = 5},
-}
-
-local recipe_FluxCogwheel = {
-yield = 1,
-{ ids = { 253303 }, amount = 5},
-{ ids = { 236950 }, amount = 1},
-{ ids = { 243574, 243575 }, amount = 2},
-{ ids = { 243576, 243577 }, amount = 1},
-}
-
-local recipe_GreasedCogwheel = {
-yield = 1,
-{ ids = { 253303 }, amount = 5},
-{ ids = { 236951 }, amount = 1},
-{ ids = { 243574, 243575 }, amount = 2},
-{ ids = { 243576, 243577 }, amount = 1},
-}
-
-local recipe_PerfCogwheel = {
-yield = 1,
-{ ids = { 253303 }, amount = 5},
-{ ids = { 236952 }, amount = 1},
-{ ids = { 243574, 243575 }, amount = 2},
-{ ids = { 243576, 243577 }, amount = 1},
-}
-
-local recipe_ConsistentCogwheel = {
-yield = 1,
-{ ids = { 253303 }, amount = 5},
-{ ids = { 236949 }, amount = 1},
-{ ids = { 243574, 243575 }, amount = 2},
-{ ids = { 243576, 243577 }, amount = 1},
-}
-
-local recipe_M3ddy = {
-yield = 1,
-{ ids = { 243576, 243577 }, amount = 1},
-{ ids = { 243578 }, amount = 3},
-{ ids = { 243581, 243582 }, amount = 2},
-}
-
-local recipe_LuckyKeychain = {
-yield = 1,
-{ ids = { 253303 }, amount = 10},
-{ ids = { 236951 }, amount = 1},
-{ ids = { 243581, 243582 }, amount = 5},
-}
-
-local recipe_B1p = {
-yield = 1,
-{ ids = { 253303 }, amount = 10},
-{ ids = { 236951 }, amount = 1},
-{ ids = { 243581, 243582 }, amount = 5},
-}
-
-local recipe_KinAnklePrimers = {
-yield = 1,
-{ ids = { 243574, 243575 }, amount = 2},
-{ ids = { 243578, 243579 }, amount = 3},
-{ ids = { 243581, 243582 }, amount = 1},
-}
-
-local recipe_Hu5h = {
-yield = 1,
-{ ids = { 253303 }, amount = 10},
-{ ids = { 236952 }, amount = 1},
-{ ids = { 243581, 243582 }, amount = 5},
-}
-
-local recipe_B0p = {
-yield = 1,
-{ ids = { 253303 }, amount = 10},
-{ ids = { 236952 }, amount = 1},
-{ ids = { 243581, 243582 }, amount = 5},
-}
-
-
-ProfessionsHelperData["Midnight"].RecipeDB = {
+do
+    -- ========================================
     -- Herbalism
-[238387] = recipe_magicalMulch,
-[238388] = recipe_imbuedMulch,
-[238389] = recipe_empoweredMulch,
+    -- ========================================
+    local recipe_magicalMulch = {
+    yield = 1,
+    { ids = {236761, 236767}, amount = 5 },
+    }
 
+    local recipe_imbuedMulch = {
+    yield = 1,
+    { ids = {236761, 236767}, amount = 10 },
+    }
 
--- Blacksmithing
-[238197] = recipe_RefulgentCopperIngot,
-[238198] = recipe_RefulgentCopperIngot,
+    local recipe_empoweredMulch = {
+    yield = 1,
+    { ids = {236761, 236767}, amount = 20 },
+    }
 
-[238202] = recipe_GloamingAlloy,
-[238203] = recipe_GloamingAlloy,
-[238204] = recipe_SterlingAlloy,
-[238205] = recipe_SterlingAlloy,
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Herbalism'] = {
+        -- Herbalism
+            [238387] = recipe_magicalMulch,
+            [238388] = recipe_imbuedMulch,
+            [238389] = recipe_empoweredMulch,
+    }
+end
 
+do
+    -- ========================================
+    -- Blacksmithing
+    -- ========================================
+    local recipe_RefulgentCopperIngot = {
+    yield = 1,
+    { ids = { 243060 }, amount = 2},
+    { ids = { 237359, 237361 }, amount = 5},
+    }
 
--- Jewelcrafting
-[240974] = recipe_KaleidoPrism,
-[240975] = recipe_KaleidoPrism,
+    local recipe_GloamingAlloy = {
+    yield = 1,
+    { ids = { 243060 }, amount = 4},
+    { ids = { 238197, 238198 }, amount = 3},
+    { ids = { 237362, 237363 }, amount = 6},
+    }
 
-[240990] = recipe_SunglassVial,
-[240991] = recipe_SunglassVial,
+    local recipe_SterlingAlloy = {
+    yield = 1,
+    { ids = { 243060 }, amount = 4},
+    { ids = { 238197, 238198 }, amount = 3},
+    { ids = { 237364, 237365 }, amount = 6},
+    }
 
-[251487] = recipe_PrismaFocusIris,
-[251488] = recipe_PrismaFocusIris,
-[251489] = recipe_StabGemBandolier,
-[251490] = recipe_StabGemBandolier,
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Blacksmithing'] = {
+        -- Blacksmithing
+            [238197] = recipe_RefulgentCopperIngot,
+            [238198] = recipe_RefulgentCopperIngot,
 
-[240972] = recipe_SindoreiLens,
-[240973] = recipe_SindoreiLens,
+            [238202] = recipe_GloamingAlloy,
+            [238203] = recipe_GloamingAlloy,
+            [238204] = recipe_SterlingAlloy,
+            [238205] = recipe_SterlingAlloy,
+    }
+end
 
+do
+    -- ========================================
+    -- Jewelcrafting
+    -- ========================================
+    local recipe_KaleidoPrism = {
+    yield = 1,
+    { ids = { 242610, 242726 }, amount = 1},
+    { ids = { 242611, 242725 }, amount = 1},
+    { ids = { 242612, 242727 }, amount = 1},
+    { ids = { 242613, 242728 }, amount = 1},
+    { ids = { 242620, 242621 }, amount = 10},
+    }
 
--- Leatherworking
-[244603] = recipe_BlessedPangoCharm,
-[244604] = recipe_BlessedPangoCharm,
+    local recipe_SunglassVial = {
+    yield = 1,
+    { ids = { 242786, 242787 }, amount = 5},
+    { ids = { 242788, 242789 }, amount = 1},
+    }
 
-[244607] = recipe_PrimalSporeBinding,
-[244608] = recipe_PrimalSporeBinding,
+    local recipe_PrismaFocusIris = {
+    yield = 1,
+    { ids = { 240972, 240973 }, amount = 2},
+    { ids = { 242620, 242621 }, amount = 2},
+    }
 
-[244631] = recipe_ScalewovenHide,
-[244632] = recipe_ScalewovenHide,
-[244633] = recipe_InfusedScalewovenHide,
-[244634] = recipe_InfusedScalewovenHide,
-[244635] = recipe_SinArmorBanding,
-[244636] = recipe_SinArmorBanding,
-[244637] = recipe_SilverWeaponWrap,
-[244638] = recipe_SilverWeaponWrap,
+    local recipe_StabGemBandolier = {
+    yield = 1,
+    { ids = { 242553, 242723 }, amount = 1},
+    { ids = { 242554, 242722 }, amount = 1},
+    { ids = { 242606, 242721 }, amount = 1},
+    { ids = { 242607, 242720 }, amount = 1},
+    { ids = { 242620, 242621 }, amount = 3},
+    }
 
-[244640] = recipe_ForestHunterArmorKit,
-[244641] = recipe_ForestHunterArmorKit,
-[244642] = recipe_BloodKnightArmorKit,
-[244643] = recipe_BloodKnightArmorKit,
+    local recipe_SindoreiLens = {
+    yield = 1,
+    { ids = { 242786, 242787 }, amount = 3},
+    { ids = { 242620, 242621 }, amount = 1},
+    }
 
-[244674] = recipe_DevourBanding,
-[244675] = recipe_DevourBanding,
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Jewelcrafting'] = {
+        -- Jewelcrafting
+            [240974] = recipe_KaleidoPrism,
+            [240975] = recipe_KaleidoPrism,
 
+            [240990] = recipe_SunglassVial,
+            [240991] = recipe_SunglassVial,
 
--- Tailoring
-[239201] = recipe_SunSilkBolt,
-[239202] = recipe_SunSilkBolt,
-[239700] = recipe_BriLinenBolt,
-[239701] = recipe_BriLinenBolt,
-[239702] = recipe_ImbBriLinenBolt,
-[239703] = recipe_ImbBriLinenBolt,
-[240164] = recipe_SunSilkLining,
-[240165] = recipe_SunSilkLining,
-[240166] = recipe_ArcanoweaveLining,
-[240167] = recipe_ArcanoweaveLining,
+            [251487] = recipe_PrismaFocusIris,
+            [251488] = recipe_PrismaFocusIris,
+            [251489] = recipe_StabGemBandolier,
+            [251490] = recipe_StabGemBandolier,
 
--- Inscription
-[245766] = recipe_SoulCipher,
-[245767] = recipe_SoulCipher,
+            [240972] = recipe_SindoreiLens,
+            [240973] = recipe_SindoreiLens,
+    }
+end
 
-[245781] = recipe_MissiveAurora,
-[245782] = recipe_MissiveAurora,
-[245783] = recipe_MissiveFeverflare,
-[245784] = recipe_MissiveFeverflare,
-[245785] = recipe_MissiveFireflash,
-[245786] = recipe_MissiveFireflash,
-[245787] = recipe_MissiveHarmonious,
-[245788] = recipe_MissiveHarmonious,
-[245789] = recipe_MissivePeerless,
-[245790] = recipe_MissivePeerless,
-[245791] = recipe_MissiveQuickblade,
-[245792] = recipe_MissiveQuickblade,
+do
+    -- ========================================
+    -- Leatherworking
+    -- ========================================
+    local recipe_BlessedPangoCharm = {
+    yield = 1,
+    { ids = { 236951 }, amount = 10},
+    { ids = { 238523 }, amount = 1},
+    { ids = { 244622 }, amount = 1},
+    { ids = { 238518, 238519 }, amount = 1},
+    { ids = { 242788, 242789 }, amount = 2},
+    }
 
-[245814] = recipe_MissiveIngenuity,
-[245815] = recipe_MissiveIngenuity,
-[245816] = recipe_MissiveResourcefulness,
-[245817] = recipe_MissiveResourcefulness,
-[245818] = recipe_MissiveMulticraft,
-[245819] = recipe_MissiveMulticraft,
-[245820] = recipe_MissiveCraftingSpeed,
-[245821] = recipe_MissiveCraftingSpeed,
-[245822] = recipe_MissiveFinesse,
-[245823] = recipe_MissiveFinesse,
-[245824] = recipe_MissivePerception,
-[245825] = recipe_MissivePerception,
-[245826] = recipe_MissiveDeftness,
-[245827] = recipe_MissiveDeftness,
+    local recipe_PrimalSporeBinding = {
+    yield = 1,
+    { ids = { 236950 }, amount = 10},
+    { ids = { 238525 }, amount = 1},
+    { ids = { 244631, 244632 }, amount = 1},
+    }
 
-[245871] = recipe_SigilBlood,
-[245872] = recipe_SigilBlood,
-[245873] = recipe_SigilVoid,
-[245874] = recipe_SigilVoid,
-[245875] = recipe_SigilHunt,
-[245876] = recipe_SigilHunt,
-[245877] = recipe_SigilRot,
-[245878] = recipe_SigilRot,
+    local recipe_ScalewovenHide = {
+    yield = 1,
+    { ids = { 238518, 238519 }, amount = 1},
+    { ids = { 238520, 238521 }, amount = 1},
+    }
 
+    local recipe_InfusedScalewovenHide = {
+    yield = 1,
+    { ids = { 236949 }, amount = 2},
+    { ids = { 236950 }, amount = 2},
+    { ids = { 236951 }, amount = 2},
+    { ids = { 236952 }, amount = 2},
+    { ids = { 238529 }, amount = 1},
+    { ids = { 244631, 244632 }, amount = 1},
+    }
 
--- Alchemy
-[241280] = recipe_CompositeFlora,
-[241281] = recipe_CompositeFlora,
+    local recipe_SinArmorBanding = {
+    yield = 1,
+    { ids = { 236949 }, amount = 2},
+    { ids = { 238525 }, amount = 1},
+    { ids = { 238520, 238521 }, amount = 1},
+    }
 
+    local recipe_SilverWeaponWrap = {
+    yield = 1,
+    { ids = { 236949 }, amount = 2},
+    { ids = { 238523 }, amount = 1},
+    { ids = { 238518, 238519 }, amount = 1},
+    }
 
--- Engineering
-[243574] = recipe_SongGear,
-[243575] = recipe_SongGear,
-[243576] = recipe_SoulSprocket,
-[243577] = recipe_SoulSprocket,
+    local recipe_DevourBanding = {
+    yield = 1,
+    { ids = { 236852 }, amount = 10},
+    { ids = { 244635, 244636 }, amount = 1},
+    }
 
-[244697] = recipe_FluxCogwheel,
-[244698] = recipe_FluxCogwheel,
-[244699] = recipe_GreasedCogwheel,
-[244700] = recipe_GreasedCogwheel,
-[244701] = recipe_PerfCogwheel,
-[244702] = recipe_PerfCogwheel,
-[244703] = recipe_ConsistentCogwheel,
-[244704] = recipe_ConsistentCogwheel,
+    local recipe_ForestHunterArmorKit = {
+    yield = 1,
+    { ids = { 251285 }, amount = 3},
+    { ids = { 251665 }, amount = 10},
+    { ids = { 236951 }, amount = 10},
+    { ids = { 244633, 244634 }, amount = 1},
+    { ids = { 244635, 244636 }, amount = 2},
+    }
 
-[248136] = recipe_M3ddy,
-[248130] = recipe_LuckyKeychain,
+    local recipe_BloodKnightArmorKit = {
+    yield = 1,
+    { ids = { 251285 }, amount = 3},
+    { ids = { 251665 }, amount = 10},
+    { ids = { 236949 }, amount = 10},
+    { ids = { 244633, 244634 }, amount = 1},
+    { ids = { 244635, 244636 }, amount = 2},
+    }
 
-[248132] = recipe_KinAnklePrimers,
-[248133] = recipe_KinAnklePrimers,
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Leatherworking'] = {
+        -- Leatherworking
+            [244603] = recipe_BlessedPangoCharm,
+            [244604] = recipe_BlessedPangoCharm,
 
-[248135] = recipe_B1p,
-[248592] = recipe_B1p,
+            [244607] = recipe_PrimalSporeBinding,
+            [244608] = recipe_PrimalSporeBinding,
 
-[255843] = recipe_Hu5h,
-[255844] = recipe_Hu5h,
+            [244631] = recipe_ScalewovenHide,
+            [244632] = recipe_ScalewovenHide,
+            [244633] = recipe_InfusedScalewovenHide,
+            [244634] = recipe_InfusedScalewovenHide,
+            [244635] = recipe_SinArmorBanding,
+            [244636] = recipe_SinArmorBanding,
+            [244637] = recipe_SilverWeaponWrap,
+            [244638] = recipe_SilverWeaponWrap,
 
-[257735] = recipe_B0p,
-[257741] = recipe_B0p,
-}
+            [244640] = recipe_ForestHunterArmorKit,
+            [244641] = recipe_ForestHunterArmorKit,
+            [244642] = recipe_BloodKnightArmorKit,
+            [244643] = recipe_BloodKnightArmorKit,
+
+            [244674] = recipe_DevourBanding,
+            [244675] = recipe_DevourBanding,
+    }
+end
+
+do
+    -- ========================================
+    -- Tailoring
+    -- ========================================
+    local recipe_BriLinenBolt = {
+    yield = 1,
+    { ids = { 251665 }, amount = 4},
+    { ids = { 236963, 236965 }, amount = 1},
+    }
+
+    local recipe_ImbBriLinenBolt = {
+    yield = 1,
+    { ids = { 251665 }, amount = 4},
+    { ids = { 239700, 239701 }, amount = 2},
+    }
+
+    local recipe_SunSilkBolt = {
+    yield = 1,
+    { ids = { 236949 }, amount = 4},
+    { ids = { 237015, 237016 }, amount = 5},
+    { ids = { 239702, 239703 }, amount = 6},
+    }
+
+    local recipe_SunSilkLining = {
+    yield = 1,
+    { ids = { 251691 }, amount = 1},
+    { ids = { 237015, 237016 }, amount = 6},
+    { ids = { 239201, 239202 }, amount = 2},
+    }
+
+    local recipe_ArcanoweaveLining = {
+    yield = 1,
+    { ids = { 251691 }, amount = 1},
+    { ids = { 237017, 237018 }, amount = 6},
+    { ids = { 239198, 239200 }, amount = 2},
+    }
+
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Tailoring'] = {
+        -- Tailoring
+            [239201] = recipe_SunSilkBolt,
+            [239202] = recipe_SunSilkBolt,
+            [239700] = recipe_BriLinenBolt,
+            [239701] = recipe_BriLinenBolt,
+            [239702] = recipe_ImbBriLinenBolt,
+            [239703] = recipe_ImbBriLinenBolt,
+            [240164] = recipe_SunSilkLining,
+            [240165] = recipe_SunSilkLining,
+            [240166] = recipe_ArcanoweaveLining,
+            [240167] = recipe_ArcanoweaveLining,
+    }
+end
+
+do
+    -- ========================================
+    -- Inscription
+    -- ========================================
+    local recipe_SoulCipher = {
+    yield = 1,
+    { ids = { 236952 }, amount = 1},
+    { ids = { 236949 }, amount = 1},
+    { ids = { 242788, 242789 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 1},
+    { ids = { 245805, 245806 }, amount = 1},
+    }
+
+    local recipe_MissiveAurora = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236850 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveFeverflare = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236850 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveFireflash = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236850 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveHarmonious = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236852 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissivePeerless = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236852 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveQuickblade = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236852 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveIngenuity = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236849 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveResourcefulness = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236849 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveMulticraft = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236849 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveCraftingSpeed = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236851 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveFinesse = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236951 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissivePerception = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236949 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_MissiveDeftness = {
+    yield = 1,
+    { ids = { 245881 }, amount = 1},
+    { ids = { 236951 }, amount = 1},
+    { ids = { 245801, 245802 }, amount = 2},
+    { ids = { 245805, 245806 }, amount = 2},
+    }
+
+    local recipe_SigilBlood = {
+    yield = 1,
+    { ids = { 245882 }, amount = 1},
+    { ids = { 236949 }, amount = 10},
+    { ids = { 245755 }, amount = 1},
+    { ids = { 245766, 245767 }, amount = 5},
+    }
+
+    local recipe_SigilVoid = {
+    yield = 1,
+    { ids = { 245882 }, amount = 1},
+    { ids = { 236952 }, amount = 10},
+    { ids = { 245750 }, amount = 1},
+    { ids = { 245766, 245767 }, amount = 5},
+    }
+
+    local recipe_SigilHunt = {
+    yield = 1,
+    { ids = { 245882 }, amount = 1},
+    { ids = { 236951 }, amount = 10},
+    { ids = { 245829 }, amount = 1},
+    { ids = { 245766, 245767 }, amount = 5},
+    }
+
+    local recipe_SigilRot = {
+    yield = 1,
+    { ids = { 245882 }, amount = 1},
+    { ids = { 236950 }, amount = 10},
+    { ids = { 245846 }, amount = 1},
+    { ids = { 245766, 245767 }, amount = 5},
+    }
+
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Inscription'] = {
+        -- Inscription
+            [245766] = recipe_SoulCipher,
+            [245767] = recipe_SoulCipher,
+
+            [245781] = recipe_MissiveAurora,
+            [245782] = recipe_MissiveAurora,
+            [245783] = recipe_MissiveFeverflare,
+            [245784] = recipe_MissiveFeverflare,
+            [245785] = recipe_MissiveFireflash,
+            [245786] = recipe_MissiveFireflash,
+            [245787] = recipe_MissiveHarmonious,
+            [245788] = recipe_MissiveHarmonious,
+            [245789] = recipe_MissivePeerless,
+            [245790] = recipe_MissivePeerless,
+            [245791] = recipe_MissiveQuickblade,
+            [245792] = recipe_MissiveQuickblade,
+
+            [245814] = recipe_MissiveIngenuity,
+            [245815] = recipe_MissiveIngenuity,
+            [245816] = recipe_MissiveResourcefulness,
+            [245817] = recipe_MissiveResourcefulness,
+            [245818] = recipe_MissiveMulticraft,
+            [245819] = recipe_MissiveMulticraft,
+            [245820] = recipe_MissiveCraftingSpeed,
+            [245821] = recipe_MissiveCraftingSpeed,
+            [245822] = recipe_MissiveFinesse,
+            [245823] = recipe_MissiveFinesse,
+            [245824] = recipe_MissivePerception,
+            [245825] = recipe_MissivePerception,
+            [245826] = recipe_MissiveDeftness,
+            [245827] = recipe_MissiveDeftness,
+
+            [245871] = recipe_SigilBlood,
+            [245872] = recipe_SigilBlood,
+            [245873] = recipe_SigilVoid,
+            [245874] = recipe_SigilVoid,
+            [245875] = recipe_SigilHunt,
+            [245876] = recipe_SigilHunt,
+            [245877] = recipe_SigilRot,
+            [245878] = recipe_SigilRot,
+    }
+end
+
+do
+    -- ========================================
+    -- Alchemy
+    -- ========================================
+    local recipe_CompositeFlora = {
+    yield = 1,
+    { ids = { 245881 }, amount = 4},
+    { ids = { 236850 }, amount = 4},
+    { ids = { 236761, 236767 }, amount = 6},
+    { ids = { 236776, 236777 }, amount = 4},
+    }
+
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Alchemy'] = {
+        -- Alchemy
+            [241280] = recipe_CompositeFlora,
+            [241281] = recipe_CompositeFlora,
+    }
+end
+
+do
+    -- ========================================
+    -- Engineering
+    -- ========================================
+    local recipe_SoulSprocket = {
+    yield = 1,
+    { ids = { 253302 }, amount = 1},
+    { ids = { 237359, 237361 }, amount = 5},
+    { ids = { 237362, 237363 }, amount = 10},
+    }
+
+    local recipe_SongGear = {
+    yield = 1,
+    { ids = { 253302 }, amount = 1},
+    { ids = { 237359, 237361 }, amount = 10},
+    { ids = { 237362, 237363 }, amount = 5},
+    }
+
+    local recipe_FluxCogwheel = {
+    yield = 1,
+    { ids = { 253303 }, amount = 5},
+    { ids = { 236950 }, amount = 1},
+    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243576, 243577 }, amount = 1},
+    }
+
+    local recipe_GreasedCogwheel = {
+    yield = 1,
+    { ids = { 253303 }, amount = 5},
+    { ids = { 236951 }, amount = 1},
+    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243576, 243577 }, amount = 1},
+    }
+
+    local recipe_PerfCogwheel = {
+    yield = 1,
+    { ids = { 253303 }, amount = 5},
+    { ids = { 236952 }, amount = 1},
+    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243576, 243577 }, amount = 1},
+    }
+
+    local recipe_ConsistentCogwheel = {
+    yield = 1,
+    { ids = { 253303 }, amount = 5},
+    { ids = { 236949 }, amount = 1},
+    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243576, 243577 }, amount = 1},
+    }
+
+    local recipe_M3ddy = {
+    yield = 1,
+    { ids = { 243576, 243577 }, amount = 1},
+    { ids = { 243578 }, amount = 3},
+    { ids = { 243581, 243582 }, amount = 2},
+    }
+
+    local recipe_LuckyKeychain = {
+    yield = 1,
+    { ids = { 253303 }, amount = 10},
+    { ids = { 236951 }, amount = 1},
+    { ids = { 243581, 243582 }, amount = 5},
+    }
+
+    local recipe_B1p = {
+    yield = 1,
+    { ids = { 253303 }, amount = 10},
+    { ids = { 236951 }, amount = 1},
+    { ids = { 243581, 243582 }, amount = 5},
+    }
+
+    local recipe_KinAnklePrimers = {
+    yield = 1,
+    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243578, 243579 }, amount = 3},
+    { ids = { 243581, 243582 }, amount = 1},
+    }
+
+    local recipe_Hu5h = {
+    yield = 1,
+    { ids = { 253303 }, amount = 10},
+    { ids = { 236952 }, amount = 1},
+    { ids = { 243581, 243582 }, amount = 5},
+    }
+
+    local recipe_B0p = {
+    yield = 1,
+    { ids = { 253303 }, amount = 10},
+    { ids = { 236952 }, amount = 1},
+    { ids = { 243581, 243582 }, amount = 5},
+    }
+
+    ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
+    ProfessionsHelperData['Midnight'].RecipeDB['Engineering'] = {
+        -- Engineering
+            [243574] = recipe_SongGear,
+            [243575] = recipe_SongGear,
+            [243576] = recipe_SoulSprocket,
+            [243577] = recipe_SoulSprocket,
+
+            [244697] = recipe_FluxCogwheel,
+            [244698] = recipe_FluxCogwheel,
+            [244699] = recipe_GreasedCogwheel,
+            [244700] = recipe_GreasedCogwheel,
+            [244701] = recipe_PerfCogwheel,
+            [244702] = recipe_PerfCogwheel,
+            [244703] = recipe_ConsistentCogwheel,
+            [244704] = recipe_ConsistentCogwheel,
+
+            [248136] = recipe_M3ddy,
+            [248130] = recipe_LuckyKeychain,
+
+            [248132] = recipe_KinAnklePrimers,
+            [248133] = recipe_KinAnklePrimers,
+
+            [248135] = recipe_B1p,
+            [248592] = recipe_B1p,
+
+            [255843] = recipe_Hu5h,
+            [255844] = recipe_Hu5h,
+
+            [257735] = recipe_B0p,
+            [257741] = recipe_B0p,
+    }
+end
