@@ -20,7 +20,7 @@ ProfessionsHelperData["The War Within"] = {
 -- ==========================================
 -- Gathered + Vendor (sources = Drop, Vendor, gatheringProf= Mining, Skinning, Herbalism, Fishing, Cooking)
 
-ProfessionsHelperData["The War Within"].Herbs = {
+ProfessionsHelperData["The War Within"].Herbalsim = {
     Mycobloom = { IDs = { 210796, 210797, 210798 }, color = "#FFBC62", sources = { "Drop", "Vendor" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Inscription" }, canExperiment = true, displayCategory = 1 },
     Luredrop = { IDs = { 210799, 210800, 210801 }, color = "#BA6E70", sources = { "Drop", "Vendor" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Inscription" }, canExperiment = true, displayCategory = 1 },
     Orbinid = { IDs = { 210802, 210803, 210804 }, color = "#A65EBA", sources = { "Drop", "Vendor" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Inscription" }, canExperiment = true, displayCategory = 1 },
@@ -32,25 +32,26 @@ ProfessionsHelperData["The War Within"].Herbs = {
     Leyline_Residue = { IDs = { 213613 }, sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Enchanting", "Inscription", "Tailoring", "Engineering", "Alchemy", "Herbalism"}, displayCategory = 2 },
 }
 
-ProfessionsHelperData["The War Within"].Ores = {
-    -- Ores
+ProfessionsHelperData["The War Within"].MiningOres = {
     Bismuth = { IDs = { 210930, 210931, 210932 }, color = "#80567A", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Jewelcrafting", "Alchemy" }, displayCategory = 1 },
     Aqirite = { IDs = { 210933, 210934, 210935 }, color = "#CA4A35", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Jewelcrafting", "Alchemy" }, displayCategory = 1 },
     Ironclaw_Ore = { IDs = { 210936, 210937, 210938 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Jewelcrafting", "Alchemy" }, displayCategory = 1 },
-
-    -- Stones
+}
+ProfessionsHelperData["The War Within"].MiningStones = {
     Null_Stone = { IDs = { 210939 }, color = "#9F2264", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Enchanting", "Tailoring", "Engineering", "Jewelcrafting", "Blacksmithing" }, displayCategory = 1 },
     Desolate_Talus = { IDs = { 238201, 238212, 238213 }, color = "#80336F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
     Kareshi_Resonating_Stone = { IDs = { 240216 }, color = "#2E349F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
     Imperfect_Null_Stone = { IDs = { 217707 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 }
 
-ProfessionsHelperData["The War Within"].Leather = {
+
+ProfessionsHelperData["The War Within"].SkinningLeatherHideCarapce = {
     StormChargedLeather = { IDs = { 212664, 212665, 212666 }, color = "#FF5900", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Alchemy" }, displayCategory = 1 },
     GloomChitin = { IDs = { 212667, 212668, 212669 }, color = "#7E94FF", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Alchemy" }, displayCategory = 1 },
     ThunderousHide = { IDs = { 212670, 212672, 212673 }, color = "#FF9F46", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
     SunlessCarapace = { IDs = { 212674, 212675, 212676 }, color = "#FF55EE", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    -- Beast Parts
+}
+ProfessionsHelperData["The War Within"].SkinningBeastParts = {
     BottledStorm = { IDs = { 218338 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Enchanting" }, displayCategory = 2 },
     KahetiSwarmChitin = { IDs = { 218336 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking" }, displayCategory = 2 },
     HonedBoneShards = { IDs = { 218337 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking" }, displayCategory = 2 },
@@ -58,12 +59,14 @@ ProfessionsHelperData["The War Within"].Leather = {
     SuperbBeastFang = { IDs = { 219013 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking", "Blacksmithing" }, displayCategory = 2 },
 }
 
+
 ProfessionsHelperData["The War Within"].Cloth = {
     AlgariFowlfeather = { IDs = { 225570 }, sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 2 },
     Duskweave = { IDs = { 224824, 228233, 228234 }, color = "#7B12FF", gradient_End_color = "#8F85D1", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     Dawnweave = { IDs = { 224826, 228235, 228236 }, color = "#D1833F", gradient_End_color = "#FFFF00", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     Weavercloth = { IDs = { 224828, 228231, 228232 }, color = "#C69052", gradient_End_color = "#FFFF00", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Alchemy" }, displayCategory = 1 },
 }
+
 
 ProfessionsHelperData["The War Within"].Fishing = {
     Dilly_Dally_Dace = { IDs = { 220134 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Cooking" }, displayCategory = 4 },
@@ -87,6 +90,7 @@ ProfessionsHelperData["The War Within"].Fishing = {
     Awoken_Coelacanth = { IDs = { 220153 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Cooking" }, displayCategory = 4 },
     Goldengill_Trout = { IDs = { 222533 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Cooking" }, displayCategory = 4 },
 }
+
 
 ProfessionsHelperData["The War Within"].VendorDrop = {
     Echoing_Flux = { IDs = { 226202 }, sources = { "Vendor" }, processingProfs = { "Blacksmithing" }, displayCategory = 2 },
@@ -116,14 +120,14 @@ ProfessionsHelperData["The War Within"].VendorDrop = {
 -- ==========================================
 -- Crafted - Items (sources = Crafted; gatheringProf = <Category> (Herbalism, Skinning, Cooking, Leatherworking, Blacksmithing, Engineering, Enchanting, Inscription, Tailoring, Jewelcrafting))
 
-ProfessionsHelperData["The War Within"].Herbalism = {
-    -- Mulch
+ProfessionsHelperData["The War Within"].HerbalismMulch = {
     MagicalMulch = { IDs = { 219194 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
     ImbuedMulch = { IDs = { 219195 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
     EmpoweredMulch = { IDs = { 219196 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
 }
 
-ProfessionsHelperData["The War Within"].Skinning = {
+
+ProfessionsHelperData["The War Within"].SkinningBaits = {
 	-- Baits
     ElusiveCreatureLure = { IDs = { 219007 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
     SupremeBeastLure = { IDs = { 219008 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
@@ -133,9 +137,8 @@ ProfessionsHelperData["The War Within"].Skinning = {
     CrystallineCreatureLure = { IDs = { 219009 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
     WrithingCreatureLure = { IDs = { 219010 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
     SporefusedCreatureLure = { IDs = { 219011 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
-
-
-	-- Fishbait
+}
+ProfessionsHelperData["The War Within"].SkinningFishingBaits = {
     SpecularRainbowfishLure = { IDs = { 219002 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
     QuietRiverBassLure = { IDs = { 219003 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
     DornishPikeLure = { IDs = { 219004 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
@@ -143,8 +146,8 @@ ProfessionsHelperData["The War Within"].Skinning = {
     RoaringAnglerseekerLure = { IDs = { 219006 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
 }
 
-ProfessionsHelperData["The War Within"].Cooking = {
-    -- Drop or Vendor
+
+ProfessionsHelperData["The War Within"].CookingDropVendor = {
     HotHoneycomb = { IDs = { 225912 }, sources = { "Drop" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 2 },
     Massive_Worm_Flank = { IDs = { 225565 }, sources = { "Drop" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Warped_Wing = { IDs = { 225566 }, sources = { "Drop" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
@@ -161,8 +164,8 @@ ProfessionsHelperData["The War Within"].Cooking = {
     Granulated_Spices = { IDs = { 222700 }, sources = { "Vendor" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Clumped_Flour = { IDs = { 222701 }, sources = { "Vendor" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Twined_Herbs = { IDs = { 222695 }, sources = { "Vendor" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
-
-    -- Crafted
+}
+ProfessionsHelperData["The War Within"].CookingCrafted = {
     Chopped_Mycobloom = { IDs = { 222737 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Spiced_Meat_Stock = { IDs = { 222739 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
     Fresh_Fillet = { IDs = { 222741 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0 },
@@ -172,96 +175,105 @@ ProfessionsHelperData["The War Within"].Cooking = {
     Hearty_Feast = { IDs = { 228721 }, sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 0, note = "Warband" },
 }
 
+
 ProfessionsHelperData["The War Within"].Leatherworking = {
     -- Crafting Materials
     CarapaceBackedHide = { IDs = { 219880, 219881, 219882 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
-    CrystalfusedHide = { IDs = { 219883, 219884, 219885 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Leatherworking" }, displayCategory = 3 },
+    CrystalfusedHide = { IDs = { 219883, 219884, 219885 }, required = 35, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Leatherworking" }, displayCategory = 3 },
     WrithingHide = { IDs = { 219886, 219887, 219888 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Leatherworking" }, displayCategory = 3 },
     SporecoatedHide = { IDs = { 219889, 219890, 219891 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
     LeyfusedHide = { IDs = { 219892, 219893, 219894 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
     ChitinArmorBanding = { IDs = { 219898, 219899, 219900 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
-    StormTouchedWeaponWrap = { IDs = { 219901, 219902, 219903 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
+    StormTouchedWeaponWrap = { IDs = { 219901, 219902, 219903 }, required = 35, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
 
     -- Optional Reagents
     Blessed_Weapon_Grip = { IDs = { 219495, 219496, 219497 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Inscription", "Enchanting" }, displayCategory = 3 },
     Writhing_Armor_Banding = { IDs = { 219504, 219505, 219506 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Tailoring", "Blacksmithing"  }, displayCategory = 3 },
 }
 
+
 ProfessionsHelperData["The War Within"].Blacksmithing = {
     -- Alloys
-    Core_Alloy = { IDs = { 222417, 222418, 222419 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing" }, displayCategory = 3 },
-    Charged_Alloy = { IDs = { 222420, 222421, 222422 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering" }, displayCategory = 3 },
-    Sanctified_Alloy = { IDs = { 222423, 222424, 222425 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Tailoring" }, displayCategory = 3 },
-    Ironclaw_Alloy = { IDs = { 222426, 222427, 222428 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing" }, displayCategory = 3 },
+    Core_Alloy = { IDs = { 222417, 222418, 222419 }, required = 5, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing" }, displayCategory = 3 },
+    Charged_Alloy = { IDs = { 222420, 222421, 222422 }, required = 25, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering" }, displayCategory = 3 },
+    Sanctified_Alloy = { IDs = { 222423, 222424, 222425 }, required = 60, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Tailoring" }, displayCategory = 3 },
+    Ironclaw_Alloy = { IDs = { 222426, 222427, 222428 }, required = 25, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing" }, displayCategory = 3 },
 
     -- Frameworks
-    ForgedFramework = { IDs = { 222499, 222500, 222501 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering" }, displayCategory = 3 },
-    AdjustableFramework = { IDs = { 222511, 222512, 222513 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering", "Leatherworking", "Inscription" }, displayCategory = 3 },
-    TemperedFramework = { IDs = { 222514, 222515, 222516 }, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering", "Leatherworking" }, displayCategory = 3 },
+    ForgedFramework = { IDs = { 222499, 222500, 222501 }, required = 60, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering" }, displayCategory = 3 },
+    AdjustableFramework = { IDs = { 222511, 222512, 222513 }, required = 50, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering", "Leatherworking", "Inscription" }, displayCategory = 3 },
+    TemperedFramework = { IDs = { 222514, 222515, 222516 }, required = 50, sources = { "Crafted" }, gatheringProf = "Blacksmithing", processingProfs = { "Blacksmithing", "Engineering", "Leatherworking" }, displayCategory = 3 },
 }
 
-ProfessionsHelperData["The War Within"].Engineering = {
+
+ProfessionsHelperData["The War Within"].EngineeringMats = {
     -- Drop
     Pile_of_Rusted_Scrap = { IDs = { 219150 }, sources = { "Drop" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
 
     -- Crafting Materials
     Handful_of_Bismuth_Bolts = { IDs = { 221853, 221854, 221855 }, sources = { "Crafted", "Drop" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Blacksmithing" }, displayCategory = 3 },
     Bountiful_Bolts = { IDs = { 227769 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
-    Chaos_Circuit = { IDs = { 221865, 221866, 221867 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Tailoring" }, displayCategory = 3 },
-    Entropy_Enhancer = { IDs = { 221868, 221869, 221870 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Chaos_Circuit = { IDs = { 221865, 221866, 221867 }, required = 35, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Tailoring" }, displayCategory = 3 },
+    Entropy_Enhancer = { IDs = { 221868, 221869, 221870 }, required = 35, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     Gyrating_Gear = { IDs = { 221859, 221860, 221861 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     Safety_Switch = { IDs = { 221862, 221863, 221864 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Tailoring" }, displayCategory = 3 },
-    Whimsical_Wiring = { IDs = { 221856, 221857, 221858 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Leatherworking", "Blacksmithing" }, displayCategory = 3 },
-
+    Whimsical_Wiring = { IDs = { 221856, 221857, 221858 }, required = 15, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Leatherworking", "Blacksmithing" }, displayCategory = 3 },
+}
+ProfessionsHelperData["The War Within"].EngineeringReagents = {
     -- Optional Reagents
-    Adjustable_Cogwheel = { IDs = { 221920, 221921, 221922 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
-    Blame_Redirection_Device = { IDs = { 221926, 221927, 221928 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
+    Adjustable_Cogwheel = { IDs = { 221920, 221921, 221922 }, required = 60, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Blame_Redirection_Device = { IDs = { 221926, 221927, 221928 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
     Complicated_Fuse_Box = { IDs = { 221932, 221933, 221934 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
-    Concealed_Chaos_Module = { IDs = { 221938, 221939, 221940 }, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
+    Concealed_Chaos_Module = { IDs = { 221938, 221939, 221940 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", displayCategory = 3 },
 
     -- Finishing Reagents
     BottledBrilliance = { IDs = { 225987, 225988, 225989 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "AllProf" }, displayCategory = 3 },
 }
 
-ProfessionsHelperData["The War Within"].Tailoring = {
+
+ProfessionsHelperData["The War Within"].TailoringSpoolsBolts = {
     -- Spools
     SpoolOfDuskthread = { IDs = { 222789, 222790, 222791 }, color = "#8F85D1", gradient_End_color = "#ED2EFF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     SpoolOfDawnthread = { IDs = { 222792, 222793, 222794 }, color = "#6C77D1", gradient_End_color = "#D1833F", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     SpoolOfWeaverthread = { IDs = { 222795, 222796, 222797 }, color = "#FFB841", gradient_End_color = "#C64DA1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
 
     -- Bolts
-    DuskweaveBolt = { IDs = { 222798, 222799, 222800 }, color = "#7250D1", gradient_End_color = "#A939FF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
-    DawnweaveBolt = { IDs = { 222801, 222802, 222803 }, color = "#FFFF00", gradient_End_color = "#D1833F", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
-    WeaverclothBolt = { IDs = { 222804, 222805, 222806 }, color = "#7B12FF", gradient_End_color = "#8F85D1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
-    ExquisiteWeaverclothBolt = { IDs = { 224832, 224833, 224834 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
-
+    DuskweaveBolt = { IDs = { 222798, 222799, 222800 }, required = 30, color = "#7250D1", gradient_End_color = "#A939FF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    DawnweaveBolt = { IDs = { 222801, 222802, 222803 }, required = 30, color = "#FFFF00", gradient_End_color = "#D1833F", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    WeaverclothBolt = { IDs = { 222804, 222805, 222806 }, required = 35, color = "#7B12FF", gradient_End_color = "#8F85D1", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    ExquisiteWeaverclothBolt = { IDs = { 224832, 224833, 224834 }, required = 35, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+}
+ProfessionsHelperData["The War Within"].TailoringReagents = {
     -- Optional Reagents
-    Dawnthread_Lining = { IDs = { 222868, 222869, 222870 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 3 },
-    Duskthread_Lining = { IDs = { 222871, 222872, 222873 }, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 3 },
+    Dawnthread_Lining = { IDs = { 222868, 222869, 222870 }, required = 80, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 3 },
+    Duskthread_Lining = { IDs = { 222871, 222872, 222873 }, required = 80, sources = { "Crafted" }, gatheringProf = "Tailoring", displayCategory = 3 },
 
     -- Finishing Reagents
     GrittyPolishingCloth = { IDs = { 222876, 222877, 222878 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
     BrightPolishingCloth = { IDs = { 222879, 222880, 222881 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
-    WeaverclothEmbroideryThread = { IDs = { 222882, 222883, 222884 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
-    PreservingEmbroideryThread = { IDs = { 222885, 222886, 222887 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
+    WeaverclothEmbroideryThread = { IDs = { 222882, 222883, 222884 }, required = 55, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
+    PreservingEmbroideryThread = { IDs = { 222885, 222886, 222887 }, required = 60, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 3 },
 }
 
-ProfessionsHelperData["The War Within"].Alchemy = {
+
+ProfessionsHelperData["The War Within"].AlchemyMatsAndReagents = {
     -- Crafting Materials
     Blasphemite = { IDs = { 212514 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy", "Jewelcrafting" }, displayCategory = 3 },
     Coreway_Catalyst = { IDs = { 210815 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 2 },
 
     -- Finishing Reagents
-    BubblingMycobloomCulture = { IDs = { 228401, 228402, 228403 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, displayCategory = 3 },
+    BubblingMycobloomCulture = { IDs = { 228401, 228402, 228403 }, required = 10, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, displayCategory = 3 },
     PetalPowder = { IDs = { 228404, 228405, 228406 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, displayCategory = 3 },
-
+}
+ProfessionsHelperData["The War Within"].AlchemyEndproducts = {
     -- Endproduct or Others
-    Algarian_Manapotion = { IDs= { 212239, 212240, 212241}, sources = { "Crafted"}, gatheringProf = "Alchemy", displayCategory = 3},
-    Algarian_Healpotion = { IDs= { 211878, 211879, 211880}, sources = { "Crafted"}, gatheringProf = "Alchemy", displayCategory = 3},
+    Algarian_Manapotion = { IDs= { 212239, 212240, 212241}, required = 25, sources = { "Crafted"}, gatheringProf = "Alchemy", displayCategory = 3},
+    Algarian_Healpotion = { IDs= { 211878, 211879, 211880}, required = 20, sources = { "Crafted"}, gatheringProf = "Alchemy", displayCategory = 3},
     Wild_Experimentation = { isSpell = true, spellID = 427174, IDs = { 427174 }, sources = { "Spell" }, gatheringProf = "Alchemy", displayCategory = 3},
     Meticulous_Experimentation = { isSpell = true, spellID = 430345, IDs = { 430345 }, sources = { "Spell" }, gatheringProf = "Alchemy", displayCategory = 3},
     harmonious_horticulture = { IDs = { 212563, 212564, 212565 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy", "Leatherworking" }, displayCategory = 3 },
-
+}
+ProfessionsHelperData["The War Within"].AlchemyMutagens = {
     -- Mutagens
     Ominous_Transmutagen = { IDs = { 211802 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 2 },
     Mercurial_Transmutagen = { IDs = { 211803 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 2 },
@@ -269,31 +281,35 @@ ProfessionsHelperData["The War Within"].Alchemy = {
     Gleaming_Transmutagen = { IDs = { 211805 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Alchemy", processingProfs = "Alchemy" , displayCategory = 2 },
 }
 
-ProfessionsHelperData["The War Within"].Enchanting = {
+
+ProfessionsHelperData["The War Within"].EnchantingOptReagents = {
     -- Optional Reagents
-    Algari_Missive_of_Crafting_Speed = { IDs = { 222635, 222636, 222637 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
-    Algari_Missive_of_Deftness = { IDs = { 222644, 222645, 222646 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
+    Algari_Missive_of_Crafting_Speed = { IDs = { 222635, 222636, 222637 }, required = 40, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
+    Algari_Missive_of_Deftness = { IDs = { 222644, 222645, 222646 }, required = 40, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_Finesse = { IDs = { 222638, 222639, 222640 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_Ingenuity = { IDs = { 222626, 222627, 222628 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
-    Algari_Missive_of_Multicraft = { IDs = { 222632, 222633, 222634 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
+    Algari_Missive_of_Multicraft = { IDs = { 222632, 222633, 222634 }, required = 40, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_Perception = { IDs = { 222641, 222642, 222643 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_Resourcefulness = { IDs = { 222629, 222630, 222631 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_the_Aurora = { IDs = { 222579, 222580, 222581 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_the_Feverflare = { IDs = { 222582, 222583, 222584 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
-    Algari_Missive_of_the_Fireflash = { IDs = { 222585, 222586, 222587 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
+    Algari_Missive_of_the_Fireflash = { IDs = { 222585, 222586, 222587 }, required = 45, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     Algari_Missive_of_the_Harmonious = { IDs = { 222588, 222589, 222590 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
-    Algari_Missive_of_the_Peerless = { IDs = { 222591, 222592, 222593 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
-    Algari_Missive_of_the_Quickblade = { IDs = { 222594, 222595, 222596 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
-    Enchanted_Gilded_Harbinger_Crest = { IDs = { 224073 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
-    Enchanted_Runed_Harbinger_Crest = { IDs = { 224072 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
-    Enchanted_Weathered_Harbinger_Crest = { IDs = { 224069 }, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
+    Algari_Missive_of_the_Peerless = { IDs = { 222591, 222592, 222593 }, required = 55, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
+    Algari_Missive_of_the_Quickblade = { IDs = { 222594, 222595, 222596 }, required = 55, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
+}
+ProfessionsHelperData["The War Within"].EnchantingCrestsAndFinishReagents = {
+    Enchanted_Gilded_Harbinger_Crest = { IDs = { 224073 }, required = 100, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
+    Enchanted_Runed_Harbinger_Crest = { IDs = { 224072 }, required = 90, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
+    Enchanted_Weathered_Harbinger_Crest = { IDs = { 224069 }, required = 70, sources = { "Crafted" }, gatheringProf = "Enchanting", displayCategory = 3 },
 
     -- Finishing Reagents
-    ConcentrationConcentrate = { IDs = { 224173, 224174, 224175 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
+    ConcentrationConcentrate = { IDs = { 224173, 224174, 224175 }, required = 65, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "AllProf" }, displayCategory = 3 },
     MirrorPowder = { IDs = { 224176, 224177, 224178 }, sources = { "Crafted" }, gatheringProf = "Enchanting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
 }
 
-ProfessionsHelperData["The War Within"].Inscription = {
+
+ProfessionsHelperData["The War Within"].InscriptionVendorAndPigments = {
     -- Vendor
     Distilled_Algari_Freshwater = { IDs = { 226205 }, sources = { "Vendor" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 2 },
 
@@ -302,19 +318,21 @@ ProfessionsHelperData["The War Within"].Inscription = {
     Luredrop_Pigment = { IDs = { 222612, 222613, 222614 }, color = "#F29134", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
     Nacreous_Pigment = { IDs = { 222618, 222619, 222620 }, color = "#B84945", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
     Orbinid_Pigment = { IDs = { 224800, 224801, 224802 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
-
+}
+ProfessionsHelperData["The War Within"].InscriptionInksAndOptReagents = {
     -- Inks
-    Shadow_Ink = { IDs = { 222609, 222610, 222611 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
-    Apricate_Ink = { IDs = { 222615, 222616, 222617 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Tailoring" }, displayCategory = 3 },
+    Shadow_Ink = { IDs = { 222609, 222610, 222611 }, required = 25, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
+    Apricate_Ink = { IDs = { 222615, 222616, 222617 }, required = 20, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Tailoring" }, displayCategory = 3 },
 
     -- Optional Reagents
     Darkmoon_Sigil_Ascension = { IDs = { 226022, 226023, 226024 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 3 },
     Darkmoon_Sigil_Radiance = { IDs = { 226025, 226026, 226027 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 3 },
-    Darkmoon_Sigil_Symbiosis = { IDs = { 226028, 226029, 226030 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 3 },
-    Darkmoon_Sigil_Vivacity = { IDs = { 226031, 226032, 226033 }, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 3 },
+    Darkmoon_Sigil_Symbiosis = { IDs = { 226028, 226029, 226030 }, required = 80, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 3 },
+    Darkmoon_Sigil_Vivacity = { IDs = { 226031, 226032, 226033 }, required = 80, sources = { "Crafted" }, gatheringProf = "Inscription", displayCategory = 3 },
 }
 
-ProfessionsHelperData["The War Within"].Jewelcrafting = {
+
+ProfessionsHelperData["The War Within"].JewelcraftingDropAndBaseReagents = {
     -- Drop
     BlackBloodInfusedBar = { IDs = { 239107 }, sources = { "Drop" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
 
@@ -326,21 +344,23 @@ ProfessionsHelperData["The War Within"].Jewelcrafting = {
     ExtravagantEmerald = { IDs = { 212505 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     StunningSapphire = { IDs = { 212508 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     OstentatiousOnyx = { IDs = { 212511 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
-    MarbledStone = { IDs = { 213756, 213757, 213758 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
-
+    MarbledStone = { IDs = { 213756, 213757, 213758 }, required = 15, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
+}
+ProfessionsHelperData["The War Within"].JewelcraftingOptReagentsAndAdvReagents = {
     -- Optional Reagents
-    Captured_Starlight = { IDs = { 213774, 213775, 213776 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 3 },
-    Elemental_Focusing_Lens = { IDs = { 213768, 213769, 213770 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 3 },
+    Captured_Starlight = { IDs = { 213774, 213775, 213776 }, required = 50, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 3 },
+    Elemental_Focusing_Lens = { IDs = { 213768, 213769, 213770 }, required = 50, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", displayCategory = 3 },
 
     -- Advanced Reagents
     EngravedGemcutter = { IDs = { 213750, 213751, 213752 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
     DecorativeLens = { IDs = { 213753, 213754, 213755 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Engineering" }, displayCategory = 3 },
-    InvertedPrism = { IDs = { 213759, 213760, 213761 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Alchemy" }, displayCategory = 3 },
-
+    InvertedPrism = { IDs = { 213759, 213760, 213761 }, required = 40, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Alchemy" }, displayCategory = 3 },
+}
+ProfessionsHelperData["The War Within"].JewelcraftingFinishReagentsAndEndproduct = {
     -- Finishing Reagents
     GlitteringGemdust = { IDs = { 214043 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     SiftedCaveSand = { IDs = { 213762, 213763, 213764 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Inscription" }, displayCategory = 3 },
-    OminousEnergyCrystal = { IDs = { 213765, 213766, 213767 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Engineering" }, displayCategory = 3 },
+    OminousEnergyCrystal = { IDs = { 213765, 213766, 213767 }, required = 35, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Engineering" }, displayCategory = 3 },
 
     -- Endproduct
     Gilded_Vial = { IDs = { 211806, 211807, 211808 }, sources = { "Crafted", "Vendor" }, gatheringProf = "Jewelcrafting",processingProfs = { "Alchemy", "Engineering" }, displayCategory = 3 },
@@ -371,11 +391,10 @@ ProfessionsHelperData["The War Within"].Skills = {
 -- ==========================================
 
 ProfessionsHelperData['The War Within'].RecipeDB = {}
-
-do
     -- ========================================
     -- Skinning
     -- ========================================
+do
     local recipe_elusiveCreatureLure = {
         yield = 1,
         { ids = {223512}, amount = 10 }, -- Basic_Meat
@@ -457,11 +476,10 @@ do
                 [219006] = recipe_roaringAnglerseekerLure,
     }
 end
-
-do
     -- ========================================
     -- Leatherworking
     -- ========================================
+do
     local recipe_chitinArmorBanding = {
         yield = 1,
         { ids = { 218336 }, amount = 1 },
@@ -562,11 +580,11 @@ do
                 [219506] = recipe_writhingArmorBanding,
     }
 end
-
-do
     -- ========================================
     -- Herbalism
     -- ========================================
+do
+
     local recipe_magicalMulch = {
         yield = 1,
         { ids = {210796, 210797, 210798}, amount = 5 },
@@ -592,11 +610,11 @@ do
                 [219196] = recipe_empoweredMulch,
     }
 end
-
-do
     -- ========================================
     -- Alchemy
     -- ========================================
+do
+
     local recipe_algarManaPotion = {
         yield = 5,
         { ids = {211806, 211807, 211808}, amount = 1 },
@@ -687,5 +705,800 @@ do
                     { ids = {210815}, amount = 2 },
                     },
                 },
+    }
+end
+    -- ========================================
+    -- Blacksmithing
+    -- ========================================
+-- Additional recipes, checked against Wowhead by crafted Item-ID
+do
+
+    local recipe_coreAlloy = {
+        yield = 1,
+        { ids = { 210930, 210931, 210932 }, amount = 10 },
+        { ids = { 226202 }, amount = 8 },
+    }
+
+    local recipe_chargedAlloy = {
+        yield = 1,
+        { ids = { 210933, 210934, 210935 }, amount = 5 },
+        { ids = { 213610 }, amount = 1 },
+        { ids = { 222417, 222418, 222419 }, amount = 2 },
+        { ids = { 226202 }, amount = 5 },
+    }
+
+    local recipe_sanctifiedAlloy = {
+        yield = 2,
+        { ids = { 210936, 210937, 210938 }, amount = 2 },
+        { ids = { 210939 }, amount = 1 },
+        { ids = { 221758 }, amount = 1 },
+        { ids = { 222417, 222418, 222419 }, amount = 1 },
+        { ids = { 226202 }, amount = 5 },
+    }
+
+    local recipe_ironclawAlloy = {
+        yield = 1,
+        { ids = { 210936, 210937, 210938 }, amount = 5 },
+        { ids = { 213610 }, amount = 1 },
+        { ids = { 222417, 222418, 222419 }, amount = 2 },
+        { ids = { 226202 }, amount = 5 },
+    }
+
+    local recipe_forgedFramework = {
+        yield = 1,
+        { ids = { 213610 }, amount = 1 },
+        { ids = { 222417, 222418, 222419 }, amount = 1 },
+    }
+
+    local recipe_adjustableFramework = {
+        yield = 1,
+        { ids = { 213610 }, amount = 1 },
+        { ids = { 222417, 222418, 222419 }, amount = 1 },
+    }
+
+    local recipe_temperedFramework = {
+        yield = 1,
+        { ids = { 213610 }, amount = 1 },
+        { ids = { 222417, 222418, 222419 }, amount = 1 },
+    }
+
+    ProfessionsHelperData['The War Within'].RecipeDB['Blacksmithing'] = {
+        -- Core Alloy
+        [222417] = recipe_coreAlloy,
+        [222418] = recipe_coreAlloy,
+        [222419] = recipe_coreAlloy,
+
+        -- Charged Alloy
+        [222420] = recipe_chargedAlloy,
+        [222421] = recipe_chargedAlloy,
+        [222422] = recipe_chargedAlloy,
+
+        -- Sanctified Alloy
+        [222423] = recipe_sanctifiedAlloy,
+        [222424] = recipe_sanctifiedAlloy,
+        [222425] = recipe_sanctifiedAlloy,
+
+        -- Ironclaw Alloy
+        [222426] = recipe_ironclawAlloy,
+        [222427] = recipe_ironclawAlloy,
+        [222428] = recipe_ironclawAlloy,
+
+        -- Forged Framework
+        [222499] = recipe_forgedFramework,
+        [222500] = recipe_forgedFramework,
+        [222501] = recipe_forgedFramework,
+
+        -- Adjustable Framework
+        [222511] = recipe_adjustableFramework,
+        [222512] = recipe_adjustableFramework,
+        [222513] = recipe_adjustableFramework,
+
+        -- Tempered Framework
+        [222514] = recipe_temperedFramework,
+        [222515] = recipe_temperedFramework,
+        [222516] = recipe_temperedFramework,
+    }
+end
+    -- ========================================
+    -- Enchanting
+    -- ========================================
+do
+
+    local recipe_enchantedWeatheredHarbingerCrest = {
+        yield = 1,
+        { ids = { 219946, 219947, 219948 }, amount = 30 },
+        { ids = { 219949, 219950, 219951 }, amount = 5 },
+        { ids = { 220788 }, amount = 1 },
+    }
+
+    local recipe_enchantedRunedHarbingerCrest = {
+        yield = 1,
+        { ids = { 219946, 219947, 219948 }, amount = 60 },
+        { ids = { 219949, 219950, 219951 }, amount = 10 },
+        { ids = { 219952 }, amount = 1 },
+        { ids = { 220790 }, amount = 1 },
+    }
+
+    local recipe_enchantedGildedHarbingerCrest = {
+        yield = 1,
+        { ids = { 219946, 219947, 219948 }, amount = 100 },
+        { ids = { 219949, 219950, 219951 }, amount = 15 },
+        { ids = { 219952 }, amount = 2 },
+        { ids = { 220789 }, amount = 1 },
+    }
+
+    local recipe_concentrationConcentrate = {
+        yield = 1,
+        { ids = { 213610 }, amount = 1 },
+        { ids = { 219946, 219947, 219948 }, amount = 3 },
+        { ids = { 219949, 219950, 219951 }, amount = 1 },
+    }
+
+    local recipe_mirrorPowder = {
+        yield = 1,
+        { ids = { 213613 }, amount = 1 },
+        { ids = { 219946, 219947, 219948 }, amount = 3 },
+        { ids = { 219949, 219950, 219951 }, amount = 1 },
+    }
+    ProfessionsHelperData['The War Within'].RecipeDB['Enchanting'] = {
+        -- Enchanted Weathered Harbinger Crest
+        [224069] = recipe_enchantedWeatheredHarbingerCrest,
+
+        -- Enchanted Runed Harbinger Crest
+        [224072] = recipe_enchantedRunedHarbingerCrest,
+
+        -- Enchanted Gilded Harbinger Crest
+        [224073] = recipe_enchantedGildedHarbingerCrest,
+
+        -- Concentration Concentrate
+        [224173] = recipe_concentrationConcentrate,
+        [224174] = recipe_concentrationConcentrate,
+        [224175] = recipe_concentrationConcentrate,
+
+        -- Mirror Powder
+        [224176] = recipe_mirrorPowder,
+        [224177] = recipe_mirrorPowder,
+        [224178] = recipe_mirrorPowder,
+    }
+end
+    -- ========================================
+    -- Engineering
+    -- ========================================
+do
+
+    local recipe_handfulofBismuthBolts = {
+        yield = 2,
+        { ids = { 210930, 210931, 210932 }, amount = 4 },
+    }
+
+    local recipe_whimsicalWiring = {
+        yield = 2,
+        { ids = { 210930, 210931, 210932 }, amount = 3 },
+        { ids = { 228414 }, amount = 1 },
+    }
+
+    local recipe_gyratingGear = {
+        yield = 2,
+        { ids = { 210930, 210931, 210932 }, amount = 3 },
+        { ids = { 210933, 210934, 210935 }, amount = 1 },
+        { ids = { 228956 }, amount = 1 },
+    }
+
+    local recipe_safetySwitch = {
+        yield = 1,
+        { ids = { 210930, 210931, 210932 }, amount = 5 },
+        { ids = { 210933, 210934, 210935 }, amount = 3 },
+        { ids = { 213610 }, amount = 1 },
+    }
+
+    local recipe_chaosCircuit = {
+        yield = 1,
+        { ids = { 210933, 210934, 210935 }, amount = 5 },
+        { ids = { 210936, 210937, 210938 }, amount = 3 },
+        { ids = { 210939 }, amount = 1 },
+    }
+
+    local recipe_entropyEnhancer = {
+        yield = 1,
+        { ids = { 210930, 210931, 210932 }, amount = 4 },
+        { ids = { 210933, 210934, 210935 }, amount = 2 },
+        { ids = { 210936, 210937, 210938 }, amount = 2 },
+        { ids = { 213611 }, amount = 1 },
+    }
+
+    local recipe_adjustableCogwheel = {
+        yield = 1,
+        { ids = { 212508 }, amount = 1 },
+        { ids = { 221853, 221854, 221855 }, amount = 1 },
+        { ids = { 221859, 221860, 221861 }, amount = 1 },
+        { ids = { 221868, 221869, 221870 }, amount = 1 },
+    }
+
+    local recipe_blameRedirectionDevice = {
+        yield = 1,
+        { ids = { 219150 }, amount = 15 },
+        { ids = { 221853, 221854, 221855 }, amount = 4 },
+        { ids = { 221856, 221857, 221858 }, amount = 2 },
+        { ids = { 221859, 221860, 221861 }, amount = 3 },
+        { ids = { 221868, 221869, 221870 }, amount = 1 },
+    }
+
+    local recipe_complicatedFuseBox = {
+        yield = 1,
+        { ids = { 219150 }, amount = 15 },
+        { ids = { 221853, 221854, 221855 }, amount = 6 },
+        { ids = { 221856, 221857, 221858 }, amount = 2 },
+        { ids = { 221859, 221860, 221861 }, amount = 2 },
+        { ids = { 221865, 221866, 221867 }, amount = 1 },
+        { ids = { 221868, 221869, 221870 }, amount = 1 },
+    }
+
+    local recipe_concealedChaosModule = {
+        yield = 1,
+        { ids = { 219150 }, amount = 15 },
+        { ids = { 221853, 221854, 221855 }, amount = 6 },
+        { ids = { 221856, 221857, 221858 }, amount = 2 },
+        { ids = { 221859, 221860, 221861 }, amount = 3 },
+        { ids = { 221865, 221866, 221867 }, amount = 2 },
+    }
+
+    local recipe_bottledBrilliance = {
+        yield = 1,
+        { ids = { 211806, 211807, 211808 }, amount = 1 },
+        { ids = { 213610 }, amount = 1 },
+        { ids = { 213613 }, amount = 2 },
+    }
+
+    ProfessionsHelperData['The War Within'].RecipeDB['Engineering'] = {
+        -- Handful of Bismuth Bolts
+        [221853] = recipe_handfulofBismuthBolts,
+        [221854] = recipe_handfulofBismuthBolts,
+        [221855] = recipe_handfulofBismuthBolts,
+
+        -- Whimsical Wiring
+        [221856] = recipe_whimsicalWiring,
+        [221857] = recipe_whimsicalWiring,
+        [221858] = recipe_whimsicalWiring,
+
+        -- Gyrating Gear
+        [221859] = recipe_gyratingGear,
+        [221860] = recipe_gyratingGear,
+        [221861] = recipe_gyratingGear,
+
+        -- Safety Switch
+        [221862] = recipe_safetySwitch,
+        [221863] = recipe_safetySwitch,
+        [221864] = recipe_safetySwitch,
+
+        -- Chaos Circuit
+        [221865] = recipe_chaosCircuit,
+        [221866] = recipe_chaosCircuit,
+        [221867] = recipe_chaosCircuit,
+
+        -- Entropy Enhancer
+        [221868] = recipe_entropyEnhancer,
+        [221869] = recipe_entropyEnhancer,
+        [221870] = recipe_entropyEnhancer,
+
+        -- Adjustable Cogwheel
+        [221920] = recipe_adjustableCogwheel,
+        [221921] = recipe_adjustableCogwheel,
+        [221922] = recipe_adjustableCogwheel,
+
+        -- Blame Redirection Device
+        [221926] = recipe_blameRedirectionDevice,
+        [221927] = recipe_blameRedirectionDevice,
+        [221928] = recipe_blameRedirectionDevice,
+
+        -- Complicated Fuse Box
+        [221932] = recipe_complicatedFuseBox,
+        [221933] = recipe_complicatedFuseBox,
+        [221934] = recipe_complicatedFuseBox,
+
+        -- Concealed Chaos Module
+        [221938] = recipe_concealedChaosModule,
+        [221939] = recipe_concealedChaosModule,
+        [221940] = recipe_concealedChaosModule,
+
+        -- Bottled Brilliance
+        [225987] = recipe_bottledBrilliance,
+        [225988] = recipe_bottledBrilliance,
+        [225989] = recipe_bottledBrilliance,
+    }
+end
+    -- ========================================
+    -- Inscription
+    -- ========================================
+do
+
+    local recipe_algariMissiveoftheAurora = {
+        yield = 1,
+        { ids = { 213612 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222615, 222616, 222617 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveoftheFeverflare = {
+        yield = 1,
+        { ids = { 213612 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222615, 222616, 222617 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveoftheFireflash = {
+        yield = 1,
+        { ids = { 213612 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222615, 222616, 222617 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveoftheHarmonious = {
+        yield = 1,
+        { ids = { 213612 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222615, 222616, 222617 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveofthePeerless = {
+        yield = 1,
+        { ids = { 213612 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222615, 222616, 222617 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveoftheQuickblade = {
+        yield = 1,
+        { ids = { 213612 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222615, 222616, 222617 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_shadowInk = {
+        yield = 1,
+        { ids = { 224800, 224801, 224802 }, amount = 5 },
+        { ids = { 224803, 224804, 224805 }, amount = 5 },
+        { ids = { 226205 }, amount = 20 },
+    }
+
+    local recipe_apricateInk = {
+        yield = 1,
+        { ids = { 222612, 222613, 222614 }, amount = 5 },
+        { ids = { 222618, 222619, 222620 }, amount = 10 },
+        { ids = { 226205 }, amount = 20 },
+    }
+
+    local recipe_algariMissiveofIngenuity = {
+        yield = 1,
+        { ids = { 213613 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222609, 222610, 222611 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveofResourcefulness = {
+        yield = 1,
+        { ids = { 213613 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222609, 222610, 222611 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveofMulticraft = {
+        yield = 1,
+        { ids = { 213613 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222609, 222610, 222611 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveofCraftingSpeed = {
+        yield = 1,
+        { ids = { 213613 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222609, 222610, 222611 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveofFinesse = {
+        yield = 1,
+        { ids = { 213613 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222609, 222610, 222611 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveofPerception = {
+        yield = 1,
+        { ids = { 213613 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222609, 222610, 222611 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_algariMissiveofDeftness = {
+        yield = 1,
+        { ids = { 213613 }, amount = 5 },
+        { ids = { 222558 }, amount = 1 },
+        { ids = { 222609, 222610, 222611 }, amount = 1 },
+        { ids = { 226204 }, amount = 2 },
+        { ids = { 226205 }, amount = 5 },
+    }
+
+    local recipe_darkmoonSigilAscension = {
+        yield = 1,
+        { ids = { 213611 }, amount = 8 },
+        { ids = { 222558 }, amount = 4 },
+        { ids = { 222609, 222610, 222611 }, amount = 4 },
+        { ids = { 222680 }, amount = 1 },
+    }
+
+    local recipe_darkmoonSigilRadiance = {
+        yield = 1,
+        { ids = { 213611 }, amount = 8 },
+        { ids = { 219672 }, amount = 1 },
+        { ids = { 222558 }, amount = 4 },
+        { ids = { 222615, 222616, 222617 }, amount = 4 },
+    }
+
+    local recipe_darkmoonSigilSymbiosis = {
+        yield = 1,
+        { ids = { 213611 }, amount = 8 },
+        { ids = { 222558 }, amount = 4 },
+        { ids = { 222609, 222610, 222611 }, amount = 4 },
+        { ids = { 222653 }, amount = 1 },
+    }
+
+    local recipe_darkmoonSigilVivacity = {
+        yield = 1,
+        { ids = { 213611 }, amount = 8 },
+        { ids = { 222558 }, amount = 4 },
+        { ids = { 222615, 222616, 222617 }, amount = 4 },
+        { ids = { 222671 }, amount = 1 },
+    }
+
+    ProfessionsHelperData['The War Within'].RecipeDB['Inscription'] = {
+        -- Algari Missive of the Aurora
+        [222579] = recipe_algariMissiveoftheAurora,
+        [222580] = recipe_algariMissiveoftheAurora,
+        [222581] = recipe_algariMissiveoftheAurora,
+
+        -- Algari Missive of the Feverflare
+        [222582] = recipe_algariMissiveoftheFeverflare,
+        [222583] = recipe_algariMissiveoftheFeverflare,
+        [222584] = recipe_algariMissiveoftheFeverflare,
+
+        -- Algari Missive of the Fireflash
+        [222585] = recipe_algariMissiveoftheFireflash,
+        [222586] = recipe_algariMissiveoftheFireflash,
+        [222587] = recipe_algariMissiveoftheFireflash,
+
+        -- Algari Missive of the Harmonious
+        [222588] = recipe_algariMissiveoftheHarmonious,
+        [222589] = recipe_algariMissiveoftheHarmonious,
+        [222590] = recipe_algariMissiveoftheHarmonious,
+
+        -- Algari Missive of the Peerless
+        [222591] = recipe_algariMissiveofthePeerless,
+        [222592] = recipe_algariMissiveofthePeerless,
+        [222593] = recipe_algariMissiveofthePeerless,
+
+        -- Algari Missive of the Quickblade
+        [222594] = recipe_algariMissiveoftheQuickblade,
+        [222595] = recipe_algariMissiveoftheQuickblade,
+        [222596] = recipe_algariMissiveoftheQuickblade,
+
+        -- Shadow Ink
+        [222609] = recipe_shadowInk,
+        [222610] = recipe_shadowInk,
+        [222611] = recipe_shadowInk,
+
+        -- Apricate Ink
+        [222615] = recipe_apricateInk,
+        [222616] = recipe_apricateInk,
+        [222617] = recipe_apricateInk,
+
+        -- Algari Missive of Ingenuity
+        [222626] = recipe_algariMissiveofIngenuity,
+        [222627] = recipe_algariMissiveofIngenuity,
+        [222628] = recipe_algariMissiveofIngenuity,
+
+        -- Algari Missive of Resourcefulness
+        [222629] = recipe_algariMissiveofResourcefulness,
+        [222630] = recipe_algariMissiveofResourcefulness,
+        [222631] = recipe_algariMissiveofResourcefulness,
+
+        -- Algari Missive of Multicraft
+        [222632] = recipe_algariMissiveofMulticraft,
+        [222633] = recipe_algariMissiveofMulticraft,
+        [222634] = recipe_algariMissiveofMulticraft,
+
+        -- Algari Missive of Crafting Speed
+        [222635] = recipe_algariMissiveofCraftingSpeed,
+        [222636] = recipe_algariMissiveofCraftingSpeed,
+        [222637] = recipe_algariMissiveofCraftingSpeed,
+
+        -- Algari Missive of Finesse
+        [222638] = recipe_algariMissiveofFinesse,
+        [222639] = recipe_algariMissiveofFinesse,
+        [222640] = recipe_algariMissiveofFinesse,
+
+        -- Algari Missive of Perception
+        [222641] = recipe_algariMissiveofPerception,
+        [222642] = recipe_algariMissiveofPerception,
+        [222643] = recipe_algariMissiveofPerception,
+
+        -- Algari Missive of Deftness
+        [222644] = recipe_algariMissiveofDeftness,
+        [222645] = recipe_algariMissiveofDeftness,
+        [222646] = recipe_algariMissiveofDeftness,
+
+        -- Darkmoon Sigil: Ascension
+        [226022] = recipe_darkmoonSigilAscension,
+        [226023] = recipe_darkmoonSigilAscension,
+        [226024] = recipe_darkmoonSigilAscension,
+
+        -- Darkmoon Sigil: Radiance
+        [226025] = recipe_darkmoonSigilRadiance,
+        [226026] = recipe_darkmoonSigilRadiance,
+        [226027] = recipe_darkmoonSigilRadiance,
+
+        -- Darkmoon Sigil: Symbiosis
+        [226028] = recipe_darkmoonSigilSymbiosis,
+        [226029] = recipe_darkmoonSigilSymbiosis,
+        [226030] = recipe_darkmoonSigilSymbiosis,
+
+        -- Darkmoon Sigil: Vivacity
+        [226031] = recipe_darkmoonSigilVivacity,
+        [226032] = recipe_darkmoonSigilVivacity,
+        [226033] = recipe_darkmoonSigilVivacity,
+    }
+end
+    -- ========================================
+    -- Jewelcrafting
+    -- ========================================
+do
+
+    local recipe_gildedVial = {
+        yield = 4,
+        { ids = { 212498 }, amount = 1 },
+        { ids = { 213219, 213220, 213221 }, amount = 3 },
+        { ids = { 213399 }, amount = 6 },
+    }
+
+    local recipe_engravedGemcutter = {
+        yield = 3,
+        { ids = { 210930, 210931, 210932 }, amount = 5 },
+        { ids = { 213398 }, amount = 5 },
+        { ids = { 213399 }, amount = 1 },
+    }
+
+    local recipe_decorativeLens = {
+        yield = 2,
+        { ids = { 212498 }, amount = 2 },
+        { ids = { 213219, 213220, 213221 }, amount = 4 },
+        { ids = { 213399 }, amount = 10 },
+    }
+
+    local recipe_marbledStone = {
+        yield = 4,
+        { ids = { 210930, 210931, 210932 }, amount = 3 },
+        { ids = { 213398 }, amount = 4 },
+    }
+
+    local recipe_invertedPrism = {
+        yield = 1,
+        { ids = { 210939 }, amount = 1 },
+        { ids = { 212495 }, amount = 1 },
+        { ids = { 212505 }, amount = 1 },
+        { ids = { 212508 }, amount = 1 },
+        { ids = { 212511 }, amount = 1 },
+        { ids = { 219949, 219950, 219951 }, amount = 1 },
+    }
+
+    local recipe_siftedCaveSand = {
+        yield = 1,
+        { ids = { 213756, 213757, 213758 }, amount = 15 },
+    }
+
+    local recipe_ominousEnergyCrystal = {
+        yield = 1,
+        { ids = { 213219, 213220, 213221 }, amount = 5 },
+    }
+
+    local recipe_elementalFocusingLens = {
+        yield = 1,
+        { ids = { 210939 }, amount = 1 },
+        { ids = { 213753, 213754, 213755 }, amount = 1 },
+    }
+
+    local recipe_capturedStarlight = {
+        yield = 1,
+        { ids = { 210939 }, amount = 1 },
+        { ids = { 212498 }, amount = 2 },
+        { ids = { 213759, 213760, 213761 }, amount = 1 },
+    }
+
+    ProfessionsHelperData['The War Within'].RecipeDB['Jewelcrafting'] = {
+        -- Gilded Vial
+        [211806] = recipe_gildedVial,
+        [211807] = recipe_gildedVial,
+        [211808] = recipe_gildedVial,
+
+        -- Engraved Gemcutter
+        [213750] = recipe_engravedGemcutter,
+        [213751] = recipe_engravedGemcutter,
+        [213752] = recipe_engravedGemcutter,
+
+        -- Decorative Lens
+        [213753] = recipe_decorativeLens,
+        [213754] = recipe_decorativeLens,
+        [213755] = recipe_decorativeLens,
+
+        -- Marbled Stone
+        [213756] = recipe_marbledStone,
+        [213757] = recipe_marbledStone,
+        [213758] = recipe_marbledStone,
+
+        -- Inverted Prism
+        [213759] = recipe_invertedPrism,
+        [213760] = recipe_invertedPrism,
+        [213761] = recipe_invertedPrism,
+
+        -- Sifted Cave Sand
+        [213762] = recipe_siftedCaveSand,
+        [213763] = recipe_siftedCaveSand,
+        [213764] = recipe_siftedCaveSand,
+
+        -- Ominous Energy Crystal
+        [213765] = recipe_ominousEnergyCrystal,
+        [213766] = recipe_ominousEnergyCrystal,
+        [213767] = recipe_ominousEnergyCrystal,
+
+        -- Elemental Focusing Lens
+        [213768] = recipe_elementalFocusingLens,
+        [213769] = recipe_elementalFocusingLens,
+        [213770] = recipe_elementalFocusingLens,
+
+        -- Captured Starlight
+        [213774] = recipe_capturedStarlight,
+        [213775] = recipe_capturedStarlight,
+        [213776] = recipe_capturedStarlight,
+    }
+end
+    -- ========================================
+    -- Tailoring
+    -- ========================================
+do
+    local recipe_duskweaveBolt = {
+        yield = 2,
+        { ids = { 222789, 222790, 222791 }, amount = 8 },
+        { ids = { 224832, 224833, 224834 }, amount = 2 },
+    }
+
+    local recipe_dawnweaveBolt = {
+        yield = 2,
+        { ids = { 222792, 222793, 222794 }, amount = 8 },
+        { ids = { 224832, 224833, 224834 }, amount = 2 },
+    }
+
+    local recipe_weaverclothBolt = {
+        yield = 1,
+        { ids = { 222795, 222796, 222797 }, amount = 10 },
+        { ids = { 224764 }, amount = 6 },
+    }
+
+    local recipe_dawnthreadLining = {
+        yield = 1,
+        { ids = { 222792, 222793, 222794 }, amount = 6 },
+        { ids = { 222801, 222802, 222803 }, amount = 2 },
+        { ids = { 228930 }, amount = 1 },
+    }
+
+    local recipe_duskthreadLining = {
+        yield = 1,
+        { ids = { 222789, 222790, 222791 }, amount = 6 },
+        { ids = { 222798, 222799, 222800 }, amount = 2 },
+        { ids = { 228930 }, amount = 1 },
+    }
+
+    local recipe_grittyPolishingCloth = {
+        yield = 1,
+        { ids = { 213613 }, amount = 2 },
+        { ids = { 222804, 222805, 222806 }, amount = 1 },
+    }
+
+    local recipe_brightPolishingCloth = {
+        yield = 1,
+        { ids = { 213613 }, amount = 2 },
+        { ids = { 222804, 222805, 222806 }, amount = 1 },
+    }
+
+    local recipe_weaverclothEmbroideryThread = {
+        yield = 1,
+        { ids = { 213611 }, amount = 1 },
+        { ids = { 222804, 222805, 222806 }, amount = 1 },
+    }
+
+    local recipe_preservingEmbroideryThread = {
+        yield = 1,
+        { ids = { 213611 }, amount = 1 },
+        { ids = { 222804, 222805, 222806 }, amount = 1 },
+    }
+
+    local recipe_exquisiteWeaverclothBolt = {
+        yield = 1,
+        { ids = { 219946, 219947, 219948 }, amount = 1 },
+        { ids = { 222804, 222805, 222806 }, amount = 2 },
+        { ids = { 224764 }, amount = 2 },
+    }
+
+    ProfessionsHelperData['The War Within'].RecipeDB['Tailoring'] = {
+        -- Duskweave Bolt
+        [222798] = recipe_duskweaveBolt,
+        [222799] = recipe_duskweaveBolt,
+        [222800] = recipe_duskweaveBolt,
+
+        -- Dawnweave Bolt
+        [222801] = recipe_dawnweaveBolt,
+        [222802] = recipe_dawnweaveBolt,
+        [222803] = recipe_dawnweaveBolt,
+
+        -- Weavercloth Bolt
+        [222804] = recipe_weaverclothBolt,
+        [222805] = recipe_weaverclothBolt,
+        [222806] = recipe_weaverclothBolt,
+
+        -- Dawnthread Lining
+        [222868] = recipe_dawnthreadLining,
+        [222869] = recipe_dawnthreadLining,
+        [222870] = recipe_dawnthreadLining,
+
+        -- Duskthread Lining
+        [222871] = recipe_duskthreadLining,
+        [222872] = recipe_duskthreadLining,
+        [222873] = recipe_duskthreadLining,
+
+        -- Gritty Polishing Cloth
+        [222876] = recipe_grittyPolishingCloth,
+        [222877] = recipe_grittyPolishingCloth,
+        [222878] = recipe_grittyPolishingCloth,
+
+        -- Bright Polishing Cloth
+        [222879] = recipe_brightPolishingCloth,
+        [222880] = recipe_brightPolishingCloth,
+        [222881] = recipe_brightPolishingCloth,
+
+        -- Weavercloth Embroidery Thread
+        [222882] = recipe_weaverclothEmbroideryThread,
+        [222883] = recipe_weaverclothEmbroideryThread,
+        [222884] = recipe_weaverclothEmbroideryThread,
+
+        -- Preserving Embroidery Thread
+        [222885] = recipe_preservingEmbroideryThread,
+        [222886] = recipe_preservingEmbroideryThread,
+        [222887] = recipe_preservingEmbroideryThread,
+
+        -- Exquisite Weavercloth Bolt
+        [224832] = recipe_exquisiteWeaverclothBolt,
+        [224833] = recipe_exquisiteWeaverclothBolt,
+        [224834] = recipe_exquisiteWeaverclothBolt,
     }
 end

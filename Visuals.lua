@@ -1412,82 +1412,381 @@ end
 -- Rendering Cat 3 (Berufs-Icons)
 if ProfessionsHelper.db.profile.catSettings[3].enabled then
     local profGroups = {}
+    local professionGroups = {}
     local currentMode = self:GetCurrentZoneMode()
 
-    -- 1. Gruppierung
+    local layerRanges = {
+        { min = 0,   max = 50,  label = "0–50" },
+        { min = 51,  max = 100, label = "51–100" },
+        { min = 101, max = 150, label = "101–150" },
+        { min = 151, max = 200, label = "151–200" },
+        { min = 201, max = 250, label = "201–250" },
+        { min = 251, max = 300, label = "251–300" },
+        { min = 301, max = math.huge, label = "301+" },
+    }
+
+    local function GetLayerIndex(required)
+        required = tonumber(required)
+        if not required or required < 0 then return nil end
+        for index, range in ipairs(layerRanges) do
+            if required >= range.min and required <= range.max then
+                return index
+            end
+        end
+        return nil
+    end
+
+    local function CreateLayerTabs(settingKey, pos, layerFrames, layerCounts, layoutGroups, contentX, initialTop)
+        local tabWidth, tabHeight, tabGap = 30, 24, 2
+        local totalWidth = (#layerRanges * tabWidth) + ((#layerRanges - 1) * tabGap)
+        local tabBar = CreateFrame("Frame", nil, UIParent)
+        tabBar:SetSize(totalWidth, tabHeight)
+        tabBar:SetPoint("BOTTOMLEFT", UIParent, "CENTER", pos.x - (totalWidth / 2), pos.y + 25)
+        tabBar:SetFrameStrata("MEDIUM")
+        tabBar:SetFrameLevel(20)
+
+        local tabs = {}
+        local activeLayer = nil
+        for index = 1, #layerRanges do
+            if layerCounts[index] > 0 then
+                activeLayer = activeLayer or index
+            end
+        end
+
+        local function RefreshTabs()
+            for index, button in ipairs(tabs) do
+                if index == activeLayer then
+                    button.bg:SetColorTexture(0.16, 0.38, 0.68, 1)
+                    button.label:SetTextColor(1, 1, 1, 1)
+                elseif layerCounts[index] > 0 then
+                    button.bg:SetColorTexture(0.20, 0.20, 0.20, 0.95)
+                    button.label:SetTextColor(0.85, 0.85, 0.85, 1)
+                else
+                    button.bg:SetColorTexture(0.08, 0.08, 0.08, 0.55)
+                    button.label:SetTextColor(0.40, 0.40, 0.40, 0.8)
+                end
+            end
+        end
+
+        for index, range in ipairs(layerRanges) do
+            local button = CreateFrame("Button", nil, tabBar)
+            button:SetSize(tabWidth, tabHeight)
+            button:SetPoint("LEFT", tabBar, "LEFT", (index - 1) * (tabWidth + tabGap), 0)
+            button.bg = button:CreateTexture(nil, "BACKGROUND")
+            button.bg:SetAllPoints()
+            button.label = button:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            button.label:SetPoint("CENTER")
+            button.label:SetText(index)
+
+            if layerCounts[index] > 0 then
+                button:SetScript("OnClick", function()
+                    activeLayer = index
+                    for layerIndex, frames in ipairs(layerFrames) do
+                        for _, iconFrame in ipairs(frames) do
+                            if layerIndex == activeLayer then iconFrame:Show() else iconFrame:Hide() end
+                        end
+                    end
+                    if layoutGroups then
+                        local nextTop = initialTop
+                        for _, layoutGroup in ipairs(layoutGroups) do
+                            local frames = layoutGroup.framesByLayer[activeLayer] or {}
+                            local itemCount = #frames
+
+                            if itemCount > 0 then
+                                layoutGroup.header:ClearAllPoints()
+                                layoutGroup.header:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, nextTop)
+                                layoutGroup.header:Show()
+
+                                for itemIndex, iconFrame in ipairs(frames) do
+                                    local col = (itemIndex - 1) % layoutGroup.maxCols
+                                    local row = math.floor((itemIndex - 1) / layoutGroup.maxCols)
+                                    iconFrame:ClearAllPoints()
+                                    iconFrame:SetPoint(
+                                        "CENTER", UIParent, "CENTER",
+                                        contentX + 20 + (col * layoutGroup.spacingX),
+                                        nextTop - 26 - (row * layoutGroup.spacingY)
+                                    )
+                                    iconFrame:Show()
+                                end
+
+                                local rows = math.ceil(itemCount / layoutGroup.maxCols)
+                                nextTop = nextTop - 58 - (math.max(0, rows - 1) * layoutGroup.spacingY)
+                            else
+                                layoutGroup.header:Hide()
+                            end
+                        end
+                    end
+                    RefreshTabs()
+                end)
+            else
+                button:EnableMouse(false)
+            end
+
+            button:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_TOP")
+                GameTooltip:AddLine("Layer " .. index, 1, 1, 1)
+                GameTooltip:AddLine("Required: " .. range.label, 0.8, 0.8, 0.8)
+                GameTooltip:AddLine("Items: " .. tostring(layerCounts[index]), 0.7, 0.7, 0.7)
+                GameTooltip:Show()
+            end)
+            button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+            tabs[index] = button
+        end
+
+        for layerIndex, frames in ipairs(layerFrames) do
+            for _, iconFrame in ipairs(frames) do
+                if layerIndex == activeLayer then iconFrame:Show() else iconFrame:Hide() end
+            end
+        end
+        if activeLayer and layoutGroups then
+            local nextTop = initialTop
+            for _, layoutGroup in ipairs(layoutGroups) do
+                local frames = layoutGroup.framesByLayer[activeLayer] or {}
+                if #frames > 0 then
+                    layoutGroup.header:ClearAllPoints()
+                    layoutGroup.header:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, nextTop)
+                    layoutGroup.header:Show()
+                    for itemIndex, iconFrame in ipairs(frames) do
+                        local col = (itemIndex - 1) % layoutGroup.maxCols
+                        local row = math.floor((itemIndex - 1) / layoutGroup.maxCols)
+                        iconFrame:ClearAllPoints()
+                        iconFrame:SetPoint(
+                            "CENTER", UIParent, "CENTER",
+                            contentX + 20 + (col * layoutGroup.spacingX),
+                            nextTop - 26 - (row * layoutGroup.spacingY)
+                        )
+                        iconFrame:Show()
+                    end
+                    local rows = math.ceil(#frames / layoutGroup.maxCols)
+                    nextTop = nextTop - 58 - (math.max(0, rows - 1) * layoutGroup.spacingY)
+                else
+                    layoutGroup.header:Hide()
+                end
+            end
+        end
+        RefreshTabs()
+        return tabBar
+    end
+
+    -- Die Datenbank-Untergruppen (z. B. Alchemy_c3_Potions) bleiben erhalten.
+    -- Für das Layering werden sie zusätzlich unter der eigentlichen Profession
+    -- zusammengefasst (z. B. Alchemy). Dadurch gibt es nur eine Tab-Leiste.
     for _, item in ipairs(buckets[3]) do
         local groupKey = item.groupKey or item.data.gatheringProf or item.prof or "Other"
         profGroups[groupKey] = profGroups[groupKey] or {}
         table.insert(profGroups[groupKey], item)
     end
 
-    -- 2. Rendern der Gruppen
     for groupName, items in pairs(profGroups) do
-        -- groupName ist bereits der vollständige Schlüssel inklusive _c3 und Top-Level-Tabelle.
-        -- Kein weiteres "_c3" anhängen, damit Slider, Position und Auto-Hide dieselben Settings nutzen.
-        local settingKey = groupName
-        local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
-        
-        -- PRÜFUNG: Auto-Hide Logik
-        local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or 
-                               (currentMode == "isRaid" and subSettings.hideInRaid) or 
-                               (currentMode == "isDelve" and subSettings.hideInDelve)
+        -- Für Cat 3 ist gatheringProf die verlässlichste gemeinsame Profession.
+        -- Der groupKey kann zusätzlich den Unterkategorienamen enthalten.
+        local professionName = items[1] and items[1].data and items[1].data.gatheringProf
+        if type(professionName) == "table" then professionName = professionName[1] end
+        professionName = tostring(professionName or tostring(groupName):match("^(.-)_c3") or groupName)
+        professionGroups[professionName] = professionGroups[professionName] or {}
+        table.insert(professionGroups[professionName], {
+            settingKey = groupName,
+            items = items
+        })
+    end
 
-        if subSettings.enabled ~= false and not isHiddenByMode then
-            local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = 200, y = 0}
-            local mode = subSettings.sortMode or "ID_ASC"
-            
-            -- Sortierung
-            table.sort(items, function(a, b)
-                if mode == "CUSTOM" then
-                    local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
-                    local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
-                    if sortA ~= sortB then return sortA < sortB end
-                elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
-                    local function GetTotal(itemObj)
-                        local total = 0
-                        if itemObj.data.IDs then
-                            for _, id in ipairs(itemObj.data.IDs) do
-                                total = total + self:GetItemCount(id)
+    -- Gleiche Reihenfolge bei jedem Init; die erste aktive Untergruppe bestimmt
+    -- lediglich den Ankerpunkt der gemeinsamen Tab-Leiste.
+    for professionName, groups in pairs(professionGroups) do
+        table.sort(groups, function(a, b) return tostring(a.settingKey) < tostring(b.settingKey) end)
+
+        local activeGroups = {}
+        local professionCanLayer = true
+        local visibleItemCount = 0
+        local layerCounts = {}
+        local layerFrames = {}
+        for index = 1, #layerRanges do
+            layerCounts[index] = 0
+            layerFrames[index] = {}
+        end
+
+        -- Zunächst alle aktivierten Untergruppen der Profession einsammeln.
+        for _, group in ipairs(groups) do
+            local settingKey = group.settingKey
+            local subSettings = ProfessionsHelper.db.profile.profSubSettings[settingKey] or {}
+            local isHiddenByMode = (currentMode == "isDungeon" and subSettings.hideInDungeon) or
+                                   (currentMode == "isRaid" and subSettings.hideInRaid) or
+                                   (currentMode == "isDelve" and subSettings.hideInDelve)
+
+            if subSettings.enabled ~= false and not isHiddenByMode then
+                local pos = ProfessionsHelper.db.profile.positions[settingKey] or {x = 200, y = 0}
+                local mode = subSettings.sortMode or "ID_ASC"
+
+                table.sort(group.items, function(a, b)
+                    if mode == "CUSTOM" then
+                        local sortA = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[a.name] or 99
+                        local sortB = ProfessionsHelper.db.profile.itemSortOrder and ProfessionsHelper.db.profile.itemSortOrder[b.name] or 99
+                        if sortA ~= sortB then return sortA < sortB end
+                    elseif mode == "COUNT_DESC" or mode == "COUNT_ASC" then
+                        local function GetTotal(itemObj)
+                            local total = 0
+                            if itemObj.data.IDs then
+                                for _, id in ipairs(itemObj.data.IDs) do total = total + self:GetItemCount(id) end
                             end
+                            return total
                         end
-                        return total
+                        local cA, cB = GetTotal(a), GetTotal(b)
+                        if cA ~= cB then return mode == "COUNT_DESC" and cA > cB or cA < cB end
+                    elseif mode == "ID_DESC" then
+                        local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                        local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                        if idA ~= idB then return idA > idB end
+                    elseif mode == "ID_ASC" then
+                        local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
+                        local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
+                        if idA ~= idB then return idA < idB end
                     end
-                    local cA, cB = GetTotal(a), GetTotal(b)
-                    if cA ~= cB then return mode == "COUNT_DESC" and cA > cB or cA < cB end
-                elseif mode == "ID_DESC" then
                     local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
                     local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
-                    if idA ~= idB then return idA > idB end
-                elseif mode == "ID_ASC" then
-                    local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
-                    local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
-                    if idA ~= idB then return idA < idB end
+                    return idA < idB
+                end)
+
+                local visibleItems = {}
+                for _, item in ipairs(group.items) do
+                    if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
+                        local layerIndex = GetLayerIndex(item.data and item.data.required)
+                        if not layerIndex then professionCanLayer = false end
+                        visibleItems[#visibleItems + 1] = { item = item, layer = layerIndex }
+                    end
                 end
-                local idA = tonumber(a.data.IDs and a.data.IDs[1]) or 0
-                local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
-                return idA < idB
-            end)
 
-            -- 3. Grid-Parameter
-            local maxCols = subSettings.maxColumns or 5
-            local spacingX = self.Config.SpacingX_Prof or 44
-            local spacingY = subSettings.customSpacingY or 44
-            local vIdx = 0 -- Index für die Grid-Berechnung
+                if #visibleItems > 0 then
+                    visibleItemCount = visibleItemCount + #visibleItems
+                    table.insert(activeGroups, {
+                        settingKey = settingKey,
+                        pos = pos,
+                        subSettings = subSettings,
+                        visibleItems = visibleItems
+                    })
+                end
+            end
+        end
 
-            for _, item in ipairs(items) do
-                if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
-                    -- GRID-BERECHNUNG
-                    local col = vIdx % maxCols
-                    local row = math.floor(vIdx / maxCols)
-                    
-                    local pX = pos.x + (col * spacingX)
-                    local pY = pos.y - (row * spacingY)
-                    
-                    local iconFrame = self:CreateProfessionIcon(UIParent, item.data.IDs, pX, pY, settingKey)
-                    if iconFrame then
-                        AddToUI(iconFrame)
-                        vIdx = vIdx + 1
+        if visibleItemCount > 0 then
+            if professionCanLayer then
+                -- Ein gemeinsamer Layer-Filter für alle Unterkategorien der Profession.
+                -- Die Unterkategorien werden im gemeinsamen Fenster untereinander angeordnet.
+                local anchorGroup = activeGroups[1]
+                local windowX = anchorGroup and anchorGroup.pos.x or 200
+                local windowY = anchorGroup and anchorGroup.pos.y or 0
+                -- Linke Kante des Icon-Blocks exakt an die linke Kante von Tab 1 setzen.
+                local tabWidth, tabGap = 30, 2
+                local tabBarWidth = (#layerRanges * tabWidth) + ((#layerRanges - 1) * tabGap)
+                local contentOffsetX = -(tabBarWidth / 2) + 20 -- 20 = halbe Icon-Breite
+                local contentX = windowX + contentOffsetX
+                local sectionTop = windowY + 10
+                local layoutGroups = {}
+
+                for _, group in ipairs(activeGroups) do
+                    local maxCols = math.max(1, tonumber(group.subSettings.maxColumns) or 5)
+                    local spacingX = self.Config.SpacingX_Prof or 44
+                    local spacingY = group.subSettings.customSpacingY or 40
+                    local layerItemIndexes = {}
+                    local groupLayerCounts = {}
+                    local maxRows = 0
+                    for index = 1, #layerRanges do
+                        layerItemIndexes[index] = 0
+                        groupLayerCounts[index] = 0
+                    end
+                    for _, entry in ipairs(group.visibleItems) do
+                        groupLayerCounts[entry.layer] = groupLayerCounts[entry.layer] + 1
+                        layerCounts[entry.layer] = layerCounts[entry.layer] + 1
+                    end
+                    for index = 1, #layerRanges do
+                        maxRows = math.max(maxRows, math.ceil(groupLayerCounts[index] / maxCols))
+                    end
+
+                    -- Überschrift der Unterkategorie innerhalb des gemeinsamen
+                    -- Layering-Bereichs; die Unterkategorien bleiben getrennt.
+                    local rawSettingKey = tostring(group.settingKey)
+                    -- Erst den technischen Kategorie-Suffix aus dem Setting-Key lesen:
+                    -- z. B. Alchemy_c3_AlchemyBarsAndMixed -> AlchemyBarsAndMixed.
+                    local categoryLabel = rawSettingKey:match("_c3_(.+)$") or rawSettingKey
+                    -- Manche Top-Level-Datenbanknamen enthalten die Profession nochmals:
+                    -- AlchemyBarsAndMixed -> BarsAndMixed.
+                    if categoryLabel:sub(1, #professionName) == professionName then
+                        categoryLabel = categoryLabel:sub(#professionName + 1)
+                    end
+                    categoryLabel = categoryLabel:gsub("^[_%-]+", "")
+                    categoryLabel = categoryLabel:gsub("_", " "):gsub("(%l)(%u)", "%1 %2")
+                    if categoryLabel == "" then categoryLabel = rawSettingKey end
+
+                    local headerFrame = CreateFrame("Frame", nil, UIParent)
+                    headerFrame:SetSize(1, 1)
+                    headerFrame:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, sectionTop)
+                    local headerText = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+                    headerText:SetPoint("BOTTOMLEFT", headerFrame, "TOPLEFT", 0, 2)
+                    headerText:SetText(categoryLabel)
+                    AddToUI(headerFrame)
+
+                    local layoutGroup = {
+                        header = headerFrame,
+                        framesByLayer = {},
+                        maxCols = maxCols,
+                        spacingX = spacingX,
+                        spacingY = spacingY
+                    }
+                    for index = 1, #layerRanges do
+                        layoutGroup.framesByLayer[index] = {}
+                    end
+
+                    for _, entry in ipairs(group.visibleItems) do
+                        local layerIndex = entry.layer
+                        layerItemIndexes[layerIndex] = layerItemIndexes[layerIndex] + 1
+                        local itemIndex = layerItemIndexes[layerIndex]
+                        local col = (itemIndex - 1) % maxCols
+                        local row = math.floor((itemIndex - 1) / maxCols)
+                        -- Die endgültige Position wird abhängig vom aktiven Layer
+                        -- in CreateLayerTabs gesetzt, damit leere Gruppen aufrücken.
+                        local iconFrame = self:CreateProfessionIcon(
+                            UIParent, entry.item.data.IDs, contentX + 20, sectionTop - 26, group.settingKey
+                        )
+                        if iconFrame then
+                            layerFrames[layerIndex][#layerFrames[layerIndex] + 1] = iconFrame
+                            layoutGroup.framesByLayer[layerIndex][#layoutGroup.framesByLayer[layerIndex] + 1] = iconFrame
+                            AddToUI(iconFrame)
+                        end
+                    end
+
+                    -- Die Gruppe wird für das dynamische Layout gespeichert.
+                    -- Unterkategorien ohne Rezepte im aktiven Layer werden ausgeblendet
+                    -- und belegen beim Umschalten keinen vertikalen Platz.
+                    layoutGroups[#layoutGroups + 1] = layoutGroup
+                end
+
+                -- Eine gemeinsame Tab-Leiste steuert Sichtbarkeit und Anordnung
+                -- sämtlicher Unterkategorien innerhalb der Profession.
+                if anchorGroup then
+                    local tabBar = CreateLayerTabs(
+                        professionName, anchorGroup.pos, layerFrames, layerCounts,
+                        layoutGroups, contentX, windowY + 10
+                    )
+                    AddToUI(tabBar)
+                end
+            else
+                -- Sicherheits-Fallback: Sobald ein sichtbares Rezept der
+                -- Profession keinen gültigen required-Wert hat, bleibt die
+                -- komplette Profession in der bisherigen Untergruppen-Ansicht.
+                for _, group in ipairs(activeGroups) do
+                    local maxCols = math.max(1, tonumber(group.subSettings.maxColumns) or 5)
+                    local spacingX = self.Config.SpacingX_Prof or 44
+                    local spacingY = group.subSettings.customSpacingY or 40
+                    local vIdx = 0
+                    for _, entry in ipairs(group.visibleItems) do
+                        local col = vIdx % maxCols
+                        local row = math.floor(vIdx / maxCols)
+                        local pX = group.pos.x + (col * spacingX)
+                        local pY = group.pos.y - (row * spacingY)
+                        local iconFrame = self:CreateProfessionIcon(UIParent, entry.item.data.IDs, pX, pY, group.settingKey)
+                        if iconFrame then
+                            AddToUI(iconFrame)
+                            vIdx = vIdx + 1
+                        end
                     end
                 end
             end

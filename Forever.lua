@@ -105,6 +105,7 @@ ProfessionsHelperData["Forever"].Herbalism = {
     FrilledLichen = { IDs = { 249399 }, sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Enchanting" }, displayCategory = 1 },
 }
 
+
 ProfessionsHelperData["Forever"].Ores = {
     CopperOre = { IDs = { 2770 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining" }, displayCategory = 1 },
     TinOre = { IDs = { 2771 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Mining" }, displayCategory = 1 },
@@ -150,6 +151,7 @@ ProfessionsHelperData["Forever"].Jewels = {
     Souldarite = { IDs = { 19774 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing" }, displayCategory = 2 },
     FelCrystal = { IDs = { 248819 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Enchanting", "Alchemy" }, displayCategory = 2 },
 }
+
 
 ProfessionsHelperData["Forever"].Leather = {
     -- Leather
@@ -202,6 +204,7 @@ ProfessionsHelperData["Forever"].Scales = {
     WornDragonscale = { IDs = { 8165 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 2 },
 }
 
+
 ProfessionsHelperData["Forever"].Cloth = {
     LinenCloth = { IDs = { 2589 }, sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Engineering", "Tailoring", "Blacksmithing", "FirstAid" }, displayCategory = 1 },
     WoolCloth = { IDs = { 2592 }, sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Engineering", "FirstAid" }, displayCategory = 1 },
@@ -209,6 +212,7 @@ ProfessionsHelperData["Forever"].Cloth = {
     FelCloth = { IDs = { 14256 }, sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Leatherworking" }, displayCategory = 1 },
     MoonCloth = { IDs = { 14342 }, sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Leatherworking" }, displayCategory = 1 },
 }
+
 
 ProfessionsHelperData["Forever"].Fishing = {
     RawSpottedYellowtail = { IDs = { 4603 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Cooking" }, displayCategory = 4 },
@@ -239,6 +243,7 @@ ProfessionsHelperData["Forever"].Fishing = {
     RawGreaterSagefish = { IDs = { 21153 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Cooking" }, displayCategory = 4 },
     Whimsyfin = { IDs = { 251524 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Cooking" }, displayCategory = 4 },
 }
+
 
 ProfessionsHelperData["Forever"].EnchantingEssences = {
     LesserMagicEssence = { IDs = { 10938 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Blacksmithing", "Enchanting" }, displayCategory = 1 },
@@ -271,6 +276,7 @@ ProfessionsHelperData["Forever"].EnchantingDusts = {
     IllusionDust = { IDs = { 16204 }, sources = { "Drop" }, gatheringerProf = "Enchanting", processingProfs = { "Enchanting"  }, displayCategory = 1 },
 }
 
+
 ProfessionsHelperData["Forever"].VendorDrop = {
 
 }
@@ -282,12 +288,18 @@ ProfessionsHelperData["Forever"].VendorDrop = {
 -- Crafted - Items (sources = Crafted; gatheringProf = <Category> (Herbalism, Skinning, Cooking, Leatherworking, Blacksmithing, Engineering, Enchanting, Inscription, Tailoring, Jewelcrafting))
 
 ProfessionsHelperData["Forever"].Herbalism = {
-
+    SeedHybridizerTier3 = { IDs = { 279947 }, sources = { "Crafted" }, gatheringProf = "Herbalism", displayCategory = 3, required = 300 },
+    IncenseCandleTier1 = { IDs = { 279962 }, sources = { "Crafted" }, gatheringProf = "Herbalism", displayCategory = 3, required = 20 },
+    GreenhouseTier2 = { IDs = { 279964 }, sources = { "Crafted" }, gatheringProf = "Herbalism", displayCategory = 3, required = 140 },
 }
+
 
 ProfessionsHelperData["Forever"].Skinning = {
-
+    CampChairTier1 = { IDs = { 279979 }, sources = { "Crafted" }, gatheringProf = "Skinning", displayCategory = 3, required = 20 },
+    FieldGuideTier2 = { IDs = { 279969 }, sources = { "Crafted" }, gatheringProf = "Skinning", displayCategory = 3, required = 140 },
+    TrappersWorkbenchTier3 = { IDs = { 279938 }, sources = { "Crafted" }, gatheringProf = "Skinning", displayCategory = 3, required = 300 },
 }
+
 
 ProfessionsHelperData["Forever"].MiningCampfireItems = {
     RockGarden = { IDs = { 279948 }, sources = { "Crafted" }, gatheringProf = "Mining", displayCategory = 3, required = 140 },
@@ -312,7 +324,7 @@ ProfessionsHelperData["Forever"].MiningBars = {
     HeavyThoriumBar = { IDs = { 251291 }, sources = { "Crafted" }, gatheringProf = "Mining", displayCategory = 3, required = 300 },
 }
 
--- Leatherworking
+
 ProfessionsHelperData["Forever"].LeatherworkingLeatherAndHide = {
     LightLeather = { IDs = { 2318 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
     MediumLeather = { IDs = { 2319 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
@@ -721,11 +733,15 @@ ProfessionsHelperData["Forever"].FirstAidOthers = {
 
 
 ProfessionsHelperData["Forever"].Cooking = {
-
+    BasicCampfireTier1 = { IDs = { 279981 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 3, required = 20 },
+    CookiesFeastTier2 = { IDs = { 279957 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 3, required = 140 },
+    JourneymanCampfireTier2 = { IDs = { 279961 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 3, required = 90 },
+    ExpertCampfireTier3 = { IDs = { 279974 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 3, required = 200 },
+    IronOvenTier4 = { IDs = { 279982 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 3, required = 300 },
 }
 
-ProfessionsHelperData["Forever"].AllProf = {}
 
+ProfessionsHelperData["Forever"].AllProf = {}
 
 -- ==========================================
 -- Spells of professions
@@ -752,6 +768,40 @@ ProfessionsHelperData["Forever"].Skills = {
 -- ==========================================
 
 ProfessionsHelperData['Forever'].RecipeDB = {}
+    -- ========================================
+    -- Herbalism
+    -- ========================================
+do
+    -- Campfire
+    local recipe_SeedHybridizerTier3 = { yield = 1, { ids = { 13465 }, amount = 4 }, { ids = { 8925 }, amount = 1 }, { ids = { 14047 }, amount = 2 }, }
+    local recipe_IncenseCandleTier1 = { yield = 1, { ids = { 2447 }, amount = 1 }, { ids = { 765 }, amount = 1 }, }
+    local recipe_GreenhouseTier2 = { yield = 1, { ids = { 4470 }, amount = 1 }, { ids = { 8836 }, amount = 2 }, { ids = { 8831 }, amount = 1 }, }
+
+-- Segment 3: Recipe Callings
+ProfessionsHelperData['Forever'].RecipeDB['Herbalism'] = {
+    -- Campfire
+    [279947] = recipe_SeedHybridizerTier3,
+    [279962] = recipe_IncenseCandleTier1,
+    [279964] = recipe_GreenhouseTier2,
+}
+end
+    -- ========================================
+    -- Skinning
+    -- ========================================
+do
+    -- Campfire
+    local recipe_TrappersWorkbenchTier3 = { yield = 1, { ids = { 4470 }, amount = 2 }, { ids = { 4234 }, amount = 4 }, { ids = { 3575 }, amount = 1 }, }
+    local recipe_FieldGuideTier2 = { yield = 1, { ids = { 2319 }, amount = 3 }, { ids = { 5784 }, amount = 2 }, { ids = { 2321 }, amount = 1 }, }
+    local recipe_CampChairTier1 = { yield = 1, { ids = { 2318 }, amount = 3 }, { ids = { 4470 }, amount = 2 }, }
+
+-- Segment 3: Recipe Callings
+ProfessionsHelperData['Forever'].RecipeDB['Skinning'] = {
+    -- Campfire
+    [279938] = recipe_TrappersWorkbenchTier3,
+    [279969] = recipe_FieldGuideTier2,
+    [279979] = recipe_CampChairTier1,
+}
+end
     -- ========================================
     -- Mining
     -- ========================================
@@ -1445,207 +1495,6 @@ do
         [252488] = recipe_ForcefulRuggedArmorKit,
         [279258] = recipe_WildLeatherArmorKit,
         [18251] = recipe_CoreArmorKit,
-    }
-end
-    -- ========================================
-    -- FirstAid
-    -- ========================================
-do
-
-    local recipe_LinenBandage = {
-        yield = 1,
-        { ids = { 2589 }, amount = 1 },
-    }
-
-    local recipe_HeavyLinenBandage = {
-        yield = 1,
-        { ids = { 2589 }, amount = 2 },
-    }
-
-    local recipe_WoolBandage = {
-        yield = 1,
-        { ids = { 2592 }, amount = 1 },
-    }
-
-    local recipe_HeavyWoolBandage = {
-        yield = 1,
-        { ids = { 2592 }, amount = 2 },
-    }
-
-    local recipe_SilkBandage = {
-        yield = 1,
-        { ids = { 4306 }, amount = 1 },
-    }
-
-    local recipe_HeavySilkBandage = {
-        yield = 1,
-        { ids = { 4306 }, amount = 2 },
-    }
-
-    local recipe_MageWeaveBandage = {
-        yield = 1,
-        { ids = { 4338 }, amount = 1 },
-    }
-
-    local recipe_HeavyMageWeaveBandage = {
-        yield = 1,
-        { ids = { 4338 }, amount = 2 },
-    }
-
-    local recipe_RuneClothBandage = {
-        yield = 1,
-        { ids = { 14047 }, amount = 1 },
-    }
-
-    local recipe_HeavyRuneClothBandage = {
-        yield = 1,
-        { ids = { 14047 }, amount = 2 },
-    }
-
-    local recipe_DenseRuneClothBandage = {
-        yield = 1,
-        { ids = { 18630 }, amount = 1 },
-    }
-
-    local recipe_MinorHealingPotion = {
-        yield = 2,
-        { ids = { 3371 }, amount = 1 },
-        { ids = { 2678 }, amount = 1 },
-        { ids = { 2447 }, amount = 1 },
-    }
-
-    local recipe_LesserHealingPotion = {
-        yield = 2,
-        { ids = { 3371 }, amount = 1 },
-        { ids = { 2678 }, amount = 2 },
-        { ids = { 2450 }, amount = 1 },
-    }
-
-    local recipe_HealingPotion = {
-        yield = 2,
-        { ids = { 3372 }, amount = 1 },
-        { ids = { 2692 }, amount = 2 },
-        { ids = { 2453 }, amount = 1 },
-    }
-
-    local recipe_GreaterHealingPotion = {
-        yield = 2,
-        { ids = { 3372 }, amount = 1 },
-        { ids = { 2692 }, amount = 3 },
-        { ids = { 3357 }, amount = 1 },
-    }
-
-    local recipe_SuperiorHealingPotion = {
-        yield = 2,
-        { ids = { 8925 }, amount = 1 },
-        { ids = { 3713 }, amount = 1 },
-        { ids = { 8838 }, amount = 1 },
-    }
-
-    local recipe_MajorHealingPotion = {
-        yield = 2,
-        { ids = { 8925 }, amount = 1 },
-        { ids = { 3713 }, amount = 3 },
-        { ids = { 13464 }, amount = 1 },
-    }
-
-    local recipe_SimplePoultice = {
-        yield = 4,
-        { ids = { 3174 }, amount = 1 },
-        { ids = { 2678 }, amount = 1 },
-        { ids = { 2723 }, amount = 1 },
-    }
-
-    local recipe_CleverPoultice = {
-        yield = 4,
-        { ids = { 1468 }, amount = 1 },
-        { ids = { 3713 }, amount = 1 },
-        { ids = { 2686 }, amount = 1 },
-    }
-
-    local recipe_SuperiorPoultice = {
-        yield = 4,
-        { ids = { 7070 }, amount = 1 },
-        { ids = { 2692 }, amount = 1 },
-        { ids = { 2596 }, amount = 1 },
-    }
-
-    local recipe_PowerfulPoultice = {
-        yield = 4,
-        { ids = { 7080 }, amount = 1 },
-        { ids = { 2692 }, amount = 1 },
-        { ids = { 2594 }, amount = 1 },
-    }
-
-    local recipe_WoolenTourniquet = {
-        yield = 2,
-        { ids = { 2592 }, amount = 2 },
-        { ids = { 2321 }, amount = 2 },
-    }
-
-    local recipe_LeatherTourniquet = {
-        yield = 2,
-        { ids = { 4304 }, amount = 2 },
-        { ids = { 4291 }, amount = 2 },
-    }
-
-    local recipe_SurgicalTourniquet = {
-        yield = 2,
-        { ids = { 8170 }, amount = 2 },
-        { ids = { 14047 }, amount = 2 },
-        { ids = { 7343 }, amount = 2 },
-    }
-
-    local recipe_AntiVenom = {
-        yield = 4,
-        { ids = { 1475 }, amount = 1 },
-    }
-
-    local recipe_StrongAntiVenom = {
-        yield = 4,
-        { ids = { 1288 }, amount = 1 },
-    }
-
-    local recipe_PotentAntiVenom = {
-        yield = 4,
-        { ids = { 255645 }, amount = 1 },
-    }
-
-    local recipe_PowerfulAntiVenom = {
-        yield = 4,
-        { ids = { 19441 }, amount = 1 },
-    }
-
-    ProfessionsHelperData['Forever'].RecipeDB = ProfessionsHelperData['Forever'].RecipeDB or {}
-    ProfessionsHelperData['Forever'].RecipeDB['FirstAid'] = {
-        [1251] = recipe_LinenBandage,
-        [2581] = recipe_HeavyLinenBandage,
-        [3530] = recipe_WoolBandage,
-        [3531] = recipe_HeavyWoolBandage,
-        [6450] = recipe_SilkBandage,
-        [6451] = recipe_HeavySilkBandage,
-        [8544] = recipe_MageWeaveBandage,
-        [8545] = recipe_HeavyMageWeaveBandage,
-        [14529] = recipe_RuneClothBandage,
-        [14530] = recipe_HeavyRuneClothBandage,
-        [470349] = recipe_DenseRuneClothBandage,
-        [118] = recipe_MinorHealingPotion,
-        [858] = recipe_LesserHealingPotion,
-        [929] = recipe_HealingPotion,
-        [1710] = recipe_GreaterHealingPotion,
-        [3928] = recipe_SuperiorHealingPotion,
-        [13446] = recipe_MajorHealingPotion,
-        [255716] = recipe_SimplePoultice,
-        [255717] = recipe_CleverPoultice,
-        [255718] = recipe_SuperiorPoultice,
-        [255719] = recipe_PowerfulPoultice,
-        [255720] = recipe_WoolenTourniquet,
-        [255721] = recipe_LeatherTourniquet,
-        [255722] = recipe_SurgicalTourniquet,
-        [6452] = recipe_AntiVenom,
-        [6453] = recipe_StrongAntiVenom,
-        [255715] = recipe_PotentAntiVenom,
-        [19440] = recipe_PowerfulAntiVenom,
     }
 end
     -- ========================================
@@ -3245,3 +3094,225 @@ do
         [18631] = recipe_TruesilverTransformer,
     }
 end
+    -- ========================================
+    -- FirstAid
+    -- ========================================
+do
+
+    local recipe_LinenBandage = {
+        yield = 1,
+        { ids = { 2589 }, amount = 1 },
+    }
+
+    local recipe_HeavyLinenBandage = {
+        yield = 1,
+        { ids = { 2589 }, amount = 2 },
+    }
+
+    local recipe_WoolBandage = {
+        yield = 1,
+        { ids = { 2592 }, amount = 1 },
+    }
+
+    local recipe_HeavyWoolBandage = {
+        yield = 1,
+        { ids = { 2592 }, amount = 2 },
+    }
+
+    local recipe_SilkBandage = {
+        yield = 1,
+        { ids = { 4306 }, amount = 1 },
+    }
+
+    local recipe_HeavySilkBandage = {
+        yield = 1,
+        { ids = { 4306 }, amount = 2 },
+    }
+
+    local recipe_MageWeaveBandage = {
+        yield = 1,
+        { ids = { 4338 }, amount = 1 },
+    }
+
+    local recipe_HeavyMageWeaveBandage = {
+        yield = 1,
+        { ids = { 4338 }, amount = 2 },
+    }
+
+    local recipe_RuneClothBandage = {
+        yield = 1,
+        { ids = { 14047 }, amount = 1 },
+    }
+
+    local recipe_HeavyRuneClothBandage = {
+        yield = 1,
+        { ids = { 14047 }, amount = 2 },
+    }
+
+    local recipe_DenseRuneClothBandage = {
+        yield = 1,
+        { ids = { 18630 }, amount = 1 },
+    }
+
+    local recipe_MinorHealingPotion = {
+        yield = 2,
+        { ids = { 3371 }, amount = 1 },
+        { ids = { 2678 }, amount = 1 },
+        { ids = { 2447 }, amount = 1 },
+    }
+
+    local recipe_LesserHealingPotion = {
+        yield = 2,
+        { ids = { 3371 }, amount = 1 },
+        { ids = { 2678 }, amount = 2 },
+        { ids = { 2450 }, amount = 1 },
+    }
+
+    local recipe_HealingPotion = {
+        yield = 2,
+        { ids = { 3372 }, amount = 1 },
+        { ids = { 2692 }, amount = 2 },
+        { ids = { 2453 }, amount = 1 },
+    }
+
+    local recipe_GreaterHealingPotion = {
+        yield = 2,
+        { ids = { 3372 }, amount = 1 },
+        { ids = { 2692 }, amount = 3 },
+        { ids = { 3357 }, amount = 1 },
+    }
+
+    local recipe_SuperiorHealingPotion = {
+        yield = 2,
+        { ids = { 8925 }, amount = 1 },
+        { ids = { 3713 }, amount = 1 },
+        { ids = { 8838 }, amount = 1 },
+    }
+
+    local recipe_MajorHealingPotion = {
+        yield = 2,
+        { ids = { 8925 }, amount = 1 },
+        { ids = { 3713 }, amount = 3 },
+        { ids = { 13464 }, amount = 1 },
+    }
+
+    local recipe_SimplePoultice = {
+        yield = 4,
+        { ids = { 3174 }, amount = 1 },
+        { ids = { 2678 }, amount = 1 },
+        { ids = { 2723 }, amount = 1 },
+    }
+
+    local recipe_CleverPoultice = {
+        yield = 4,
+        { ids = { 1468 }, amount = 1 },
+        { ids = { 3713 }, amount = 1 },
+        { ids = { 2686 }, amount = 1 },
+    }
+
+    local recipe_SuperiorPoultice = {
+        yield = 4,
+        { ids = { 7070 }, amount = 1 },
+        { ids = { 2692 }, amount = 1 },
+        { ids = { 2596 }, amount = 1 },
+    }
+
+    local recipe_PowerfulPoultice = {
+        yield = 4,
+        { ids = { 7080 }, amount = 1 },
+        { ids = { 2692 }, amount = 1 },
+        { ids = { 2594 }, amount = 1 },
+    }
+
+    local recipe_WoolenTourniquet = {
+        yield = 2,
+        { ids = { 2592 }, amount = 2 },
+        { ids = { 2321 }, amount = 2 },
+    }
+
+    local recipe_LeatherTourniquet = {
+        yield = 2,
+        { ids = { 4304 }, amount = 2 },
+        { ids = { 4291 }, amount = 2 },
+    }
+
+    local recipe_SurgicalTourniquet = {
+        yield = 2,
+        { ids = { 8170 }, amount = 2 },
+        { ids = { 14047 }, amount = 2 },
+        { ids = { 7343 }, amount = 2 },
+    }
+
+    local recipe_AntiVenom = {
+        yield = 4,
+        { ids = { 1475 }, amount = 1 },
+    }
+
+    local recipe_StrongAntiVenom = {
+        yield = 4,
+        { ids = { 1288 }, amount = 1 },
+    }
+
+    local recipe_PotentAntiVenom = {
+        yield = 4,
+        { ids = { 255645 }, amount = 1 },
+    }
+
+    local recipe_PowerfulAntiVenom = {
+        yield = 4,
+        { ids = { 19441 }, amount = 1 },
+    }
+
+    ProfessionsHelperData['Forever'].RecipeDB = ProfessionsHelperData['Forever'].RecipeDB or {}
+    ProfessionsHelperData['Forever'].RecipeDB['FirstAid'] = {
+        [1251] = recipe_LinenBandage,
+        [2581] = recipe_HeavyLinenBandage,
+        [3530] = recipe_WoolBandage,
+        [3531] = recipe_HeavyWoolBandage,
+        [6450] = recipe_SilkBandage,
+        [6451] = recipe_HeavySilkBandage,
+        [8544] = recipe_MageWeaveBandage,
+        [8545] = recipe_HeavyMageWeaveBandage,
+        [14529] = recipe_RuneClothBandage,
+        [14530] = recipe_HeavyRuneClothBandage,
+        [470349] = recipe_DenseRuneClothBandage,
+        [118] = recipe_MinorHealingPotion,
+        [858] = recipe_LesserHealingPotion,
+        [929] = recipe_HealingPotion,
+        [1710] = recipe_GreaterHealingPotion,
+        [3928] = recipe_SuperiorHealingPotion,
+        [13446] = recipe_MajorHealingPotion,
+        [255716] = recipe_SimplePoultice,
+        [255717] = recipe_CleverPoultice,
+        [255718] = recipe_SuperiorPoultice,
+        [255719] = recipe_PowerfulPoultice,
+        [255720] = recipe_WoolenTourniquet,
+        [255721] = recipe_LeatherTourniquet,
+        [255722] = recipe_SurgicalTourniquet,
+        [6452] = recipe_AntiVenom,
+        [6453] = recipe_StrongAntiVenom,
+        [255715] = recipe_PotentAntiVenom,
+        [19440] = recipe_PowerfulAntiVenom,
+    }
+end
+    -- ========================================
+    -- Cooking
+    -- ========================================
+do
+    -- Campfire
+    local recipe_CookiesFeastTier2 = { yield = 1, { ids = { 12037 }, amount = 1 }, { ids = { 12204 }, amount = 2 }, { ids = { 3713 }, amount = 1 }, }
+    local recipe_BasicCampfireTier1 = { yield = 1, { ids = { 4470 }, amount = 1 }, }
+    local recipe_JourneymanCampfireTier2 = { yield = 1, { ids = { 11291 }, amount = 1 }, }
+    local recipe_ExpertCampfireTier3 = { yield = 1, { ids = { 272941 }, amount = 1 }, }
+    local recipe_IronOvenTier4 = { yield = 1, { ids = { 10284 }, amount = 10 }, { ids = { 159 }, amount = 5 }, { ids = { 3713 }, amount = 4 }, }
+
+-- Segment 3: Recipe Callings
+ProfessionsHelperData['Forever'].RecipeDB['Cooking'] = {
+    -- Campfire
+    [279957] = recipe_CookiesFeastTier2,
+    [279961] = recipe_JourneymanCampfireTier2,
+    [279974] = recipe_ExpertCampfireTier3,
+    [279981] = recipe_BasicCampfireTier1,
+    [279982] = recipe_IronOvenTier4,
+}
+end    
