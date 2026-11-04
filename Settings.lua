@@ -182,13 +182,48 @@ function PH:SetupOptions()
 
 
             ------------------------------------------------
+            -- LAYERING
+            ------------------------------------------------
+            layering = {
+                type = "group",
+                name = "Layering",
+                order = 2,
+                args = {
+                    info = { type = "description", name = "Layer gruppieren Items nach ihrem vorhandenen required-Wert. Gruppen mit fehlenden oder ungültigen Werten bleiben in der bisherigen Darstellung.", order = 1, width = "full" },
+                    rangeMode = { type = "select", name = "Bereiche", order = 2, width = "full",
+                        values = { STANDARD = "Standard", CUSTOM = "Benutzerdefiniert" },
+                        get = function() return PH.db.profile.layeringSettings.rangeMode or "STANDARD" end,
+                        set = function(_, value) PH.db.profile.layeringSettings.rangeMode = value; PH:GetModule("Visuals"):Init() end },
+                    categorySelection = {
+                        type = "group", name = "Layering für Kategorien", order = 3,
+                        inline = true,
+                        args = {
+                            category1 = { type = "toggle", name = "Cat 1 – Balken", order = 1, width = "full",
+                                get = function() return PH.db.profile.layeringSettings.enabledCategories[1] end,
+                                set = function(_, value) PH.db.profile.layeringSettings.enabledCategories[1] = value; PH:GetModule("Visuals"):Init() end },
+                            category2 = { type = "toggle", name = "Cat 2 – Material-Icons", order = 2, width = "full",
+                                get = function() return PH.db.profile.layeringSettings.enabledCategories[2] end,
+                                set = function(_, value) PH.db.profile.layeringSettings.enabledCategories[2] = value; PH:GetModule("Visuals"):Init() end },
+                            category3 = { type = "toggle", name = "Cat 3 – Berufs-Icons", order = 3, width = "full",
+                                get = function() return PH.db.profile.layeringSettings.enabledCategories[3] ~= false end,
+                                set = function(_, value) PH.db.profile.layeringSettings.enabledCategories[3] = value; PH:GetModule("Visuals"):Init() end },
+                            category4 = { type = "toggle", name = "Cat 4 – Angeln", order = 4, width = "full",
+                                get = function() return PH.db.profile.layeringSettings.enabledCategories[4] end,
+                                set = function(_, value) PH.db.profile.layeringSettings.enabledCategories[4] = value; PH:GetModule("Visuals"):Init() end },
+                        },
+                    },
+                    customHeader = { type = "header", name = "Benutzerdefinierte Bereiche", order = 10 },
+                },
+            },
+
+            ------------------------------------------------
             -- 3. DESIGN: SAMMEL-BALKEN
             ------------------------------------------------
 
             barDesign = {
                 type = "group",
                 name = "Ressourcen-Balken",
-                order = 2,
+                order = 3,
 
                 args = {
 
@@ -387,7 +422,7 @@ function PH:SetupOptions()
             matFilters = {
                 name = "Material-Icons",
                 type = "group",
-                order = 3,
+                order = 4,
                 childGroups = "tree",
 
                 args = {
@@ -421,7 +456,7 @@ function PH:SetupOptions()
             profIcons = {
                 name = "Berufs-Icons",
                 type = "group",
-                order = 4,
+                order = 5,
                 childGroups = "tree",
 
                 args = {
@@ -455,7 +490,7 @@ function PH:SetupOptions()
             fishingMenu = {
                 name = "Angel-Matrix",
                 type = "group",
-                order = 40,
+                order = 6,
                 childGroups = "tree",
 
                 args = {
@@ -489,7 +524,7 @@ function PH:SetupOptions()
             skillsMenu = {
                 name = "Berufs-Skills",
                 type = "group",
-                order = 50,
+                order = 7,
                 childGroups = "tree",
 
                 args = {
@@ -518,6 +553,76 @@ function PH:SetupOptions()
         }
     }
 
+
+    -- Benutzerdefinierte Ranges als editierbare Zeilen erzeugen.
+    local layeringArgs = options.args.layering.args
+    for index in ipairs(PH.db.profile.layeringSettings.customRanges) do
+        local rangeIndex = index
+        local rowOrder = 10 + rangeIndex
+        layeringArgs["rangeMin" .. rangeIndex] = {
+            type = "input", name = "Layer " .. rangeIndex .. " – Minimum", order = rowOrder,
+            disabled = function() return PH.db.profile.layeringSettings.rangeMode ~= "CUSTOM" end,
+            get = function() return tostring(PH.db.profile.layeringSettings.customRanges[rangeIndex].min) end,
+            set = function(_, value)
+                local number = tonumber(value)
+                local range = PH.db.profile.layeringSettings.customRanges[rangeIndex]
+                local valid = number and number >= 0 and number == math.floor(number) and number <= range.max
+                local previous = PH.db.profile.layeringSettings.customRanges[rangeIndex - 1]
+                local following = PH.db.profile.layeringSettings.customRanges[rangeIndex + 1]
+                if previous and number and previous.max >= number then valid = false end
+                if following and following.min <= range.max then valid = false end
+                for otherIndex, other in ipairs(PH.db.profile.layeringSettings.customRanges) do
+                    if otherIndex ~= rangeIndex and number and number <= other.max and range.max >= other.min then valid = false end
+                end
+                if valid then
+                    range.min = number
+                    PH:GetModule("Visuals"):Init()
+                end
+            end,
+        }
+        layeringArgs["rangeMax" .. rangeIndex] = {
+            type = "input", name = "Maximum", order = rowOrder + 0.1,
+            disabled = function() return PH.db.profile.layeringSettings.rangeMode ~= "CUSTOM" end,
+            get = function() return tostring(PH.db.profile.layeringSettings.customRanges[rangeIndex].max) end,
+            set = function(_, value)
+                local number = tonumber(value)
+                local range = PH.db.profile.layeringSettings.customRanges[rangeIndex]
+                local valid = number and number >= range.min and number == math.floor(number)
+                local previous = PH.db.profile.layeringSettings.customRanges[rangeIndex - 1]
+                local following = PH.db.profile.layeringSettings.customRanges[rangeIndex + 1]
+                if previous and previous.max >= range.min then valid = false end
+                if following and number and following.min <= number then valid = false end
+                for otherIndex, other in ipairs(PH.db.profile.layeringSettings.customRanges) do
+                    if otherIndex ~= rangeIndex and number and range.min <= other.max and number >= other.min then valid = false end
+                end
+                if valid then
+                    range.max = number
+                    PH:GetModule("Visuals"):Init()
+                end
+            end,
+        }
+    end
+    layeringArgs.addRange = {
+        type = "execute", name = "Layer hinzufügen", order = 1000,
+        disabled = function() return PH.db.profile.layeringSettings.rangeMode ~= "CUSTOM" end,
+        func = function()
+            local ranges = PH.db.profile.layeringSettings.customRanges
+            local last = ranges[#ranges]
+            local minValue = (tonumber(last and last.max) or -1) + 1
+            table.insert(ranges, { min = minValue, max = minValue + 49 })
+            PH:SetupOptions()
+            PH:GetModule("Visuals"):Init()
+        end,
+    }
+    layeringArgs.removeRange = {
+        type = "execute", name = "Letzten Layer entfernen", order = 1001,
+        disabled = function() return PH.db.profile.layeringSettings.rangeMode ~= "CUSTOM" or #PH.db.profile.layeringSettings.customRanges <= 1 end,
+        func = function()
+            table.remove(PH.db.profile.layeringSettings.customRanges)
+            PH:SetupOptions()
+            PH:GetModule("Visuals"):Init()
+        end,
+    }
 
     --------------------------------------------------------
     -- LABELS

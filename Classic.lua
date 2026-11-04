@@ -160,11 +160,11 @@ ProfessionsHelperData["Classic"].MiningJeweles = {
 
 ProfessionsHelperData["Classic"].SkinningLeatherAndHide = {
     Verdorbene_Lederfetzen = { IDs = { 2934 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Leichtes_Leder = { IDs = { 2318 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Mittleres_Leder = { IDs = { 2319 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Schweres_Leder = { IDs = { 4234 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Dickes_Leder = { IDs = { 4304 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Unverwuestliches_Leder = { IDs = { 8170 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Leichtes_Leder = { IDs = { 2318 }, required = 20, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Mittleres_Leder = { IDs = { 2319 }, required = 100, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Schweres_Leder = { IDs = { 4234 }, required = 150, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Dickes_Leder = { IDs = { 4304 }, required = 200, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Unverwuestliches_Leder = { IDs = { 8170 }, required = 250, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
 
     Duennes_Kodoleder = { IDs = { 5082 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 0 },
     Kernleder = { IDs = { 17012 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
@@ -173,10 +173,10 @@ ProfessionsHelperData["Classic"].SkinningLeatherAndHide = {
     Urzeitliches_Tigerleder = { IDs = { 19768 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking", "Blacksmithing", "Tailoring" }, displayCategory = 2 },
 
     Leichter_Balg = { IDs = { 783 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Mittlerer_Balg = { IDs = { 4232 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Schwerer_Balg = { IDs = { 4235 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Dicker_Balg = { IDs = { 8169 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
-    Unverwuestlicher_Balg = { IDs = { 8171 }, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Mittlerer_Balg = { IDs = { 4232 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Schwerer_Balg = { IDs = { 4235 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Dicker_Balg = { IDs = { 8169 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
+    Unverwuestlicher_Balg = { IDs = { 8171 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
 }
 ProfessionsHelperData["Classic"].SkinningScales = {
     -- Beast Parts
@@ -289,12 +289,12 @@ ProfessionsHelperData["Classic"].DropNatureMats = {
     Lavakern = { IDs = { 17011 }, sources = { "Drop" }, processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
 }
 ProfessionsHelperData["Classic"].DropEssences = {
-    Essenz_der_Erde = { IDs = { 7076 }, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
-    Essenz_des_Feuers = { IDs = { 7078 }, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
-    Essenz_des_Wassers = { IDs = { 7080 }, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
-    Essenz_der_Luft = { IDs = { 7082 }, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
-    Essenz_des_Lebens = { IDs = { 12803 }, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
-    Essenz_des_Untodes = { IDs = { 12808 }, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
+    Essenz_der_Erde = { IDs = { 7076 }, required = 275, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
+    Essenz_des_Feuers = { IDs = { 7078 }, required = 275, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
+    Essenz_des_Wassers = { IDs = { 7080 }, required = 275, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
+    Essenz_der_Luft = { IDs = { 7082 }, required = 275, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
+    Essenz_des_Lebens = { IDs = { 12803 }, required = 275, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
+    Essenz_des_Untodes = { IDs = { 12808 }, required = 275, sources = { "Drop", "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
 }
 ProfessionsHelperData["Classic"].VendorMats = {
     Kristallphiole = { IDs = { 3371 }, sources = { "Vendor" }, processingProfs = { "Enchanting", "Alchemy", "Engineering", "Tailoring", "Leatherworking", "Cooking", "FirstAid", "Blacksmithing" }, displayCategory = 2 },
@@ -517,8 +517,7 @@ ProfessionsHelperData["Classic"].Tailoring = {
 }
 
 
-ProfessionsHelperData["Classic"].Leatherworking = {
-    -- Fine Skins
+ProfessionsHelperData["Classic"].LeatherworkingHides = {
     Geschmeidiger_leichter_Balg = { IDs = { 4231 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 3, required = 35 },
     Geschmeidiger_mittlerer_Balg = { IDs = { 4233 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 3, required = 100 },
     Geschmeidiger_schwerer_Balg = { IDs = { 4236 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 3, required = 150 },
@@ -598,10 +597,10 @@ do
     -- Bars
     local recipe_Arkanitbarren = { yield = 1, { ids = { 12359 }, amount = 1 }, { ids = { 12363 }, amount = 1 }, }
     -- Blasphemite
-    local recipe_Spell427174 = { isSpell = true, spellID = 427174, slots = { { type = "group", key = "ExperimentHerbs", amount = 20 }, { ids = { 210815 }, amount = 2 } } }
-    local recipe_Spell430345 = { isSpell = true, spellID = 430345, slots = { { type = "group", key = "ExperimentHerbs", amount = 10 }, { ids = { 210815 }, amount = 6 }, { ids = { 210814 }, amount = 5 } } }
+    local recipe_Spell427174 = { isSpell = true, spellID = 427174, slots = { { type = "group", key = "ExperimentHerbs", amount = 20 }, { ids = { 210815 }, required = 15, amount = 2 } } }
+    local recipe_Spell430345 = { isSpell = true, spellID = 430345, slots = { { type = "group", key = "ExperimentHerbs", amount = 10 }, { ids = { 210815 }, required = 15, amount = 6 }, { ids = { 210814 }, required = 15, amount = 5 } } }
     -- Unmapped (preserved from the source)
-    local recipe_algarManaPotion = { yield = 5, { ids = { 211806, 211807, 211808 }, amount = 1 }, { ids = { 210796, 210797, 210798 }, amount = 6 }, { ids = { 210805, 210806, 210807 }, amount = 3 }, }
+    local recipe_algarManaPotion = { yield = 5, { ids = { 211806, 211807, 211808 }, required = 30, amount = 1 }, { ids = { 210796, 210797, 210798 }, required = 30, amount = 6 }, { ids = { 210805, 210806, 210807 }, required = 30, amount = 3 }, }
     -- Elixirs
     local recipe_Elixier_der_schwachen_Beweglichkeit = { yield = 1, { ids = { 2452 }, amount = 1 }, { ids = { 765 }, amount = 1 }, { ids = { 3371 }, amount = 1 }, }
     local recipe_Elixier_der_Weisheit = { yield = 1, { ids = { 785 }, amount = 1 }, { ids = { 2450 }, amount = 2 }, { ids = { 3371 }, amount = 1 }, }
@@ -732,7 +731,7 @@ end
 do
     -- Enchanted Materials
     local recipe_Verzauberte_Thoriumbarren = { yield = 1, { ids = { 12359 }, amount = 1 }, { ids = { 156930 }, amount = 3 }, }
-    local recipe_Verzaubertes_Leder = { yield = 1, { ids = { 8170 }, amount = 1 }, { ids = { 16203 }, amount = 3 }, }
+    local recipe_Verzaubertes_Leder = { yield = 1, { ids = { 8170 }, required = 250, amount = 1 }, { ids = { 16203 }, required = 250, amount = 3 }, }
 
 -- Segment 3: Recipe Callings
 ProfessionsHelperData['Classic'].RecipeDB['Enchanting'] = {
@@ -836,10 +835,10 @@ end
 do
     -- Fine Skins
     local recipe_Geschmeidiger_leichter_Balg = { yield = 1, { ids = { 783 }, amount = 1 }, { ids = { 4289 }, amount = 1 }, }
-    local recipe_Geschmeidiger_mittlerer_Balg = { yield = 1, { ids = { 4232 }, amount = 1 }, { ids = { 4289 }, amount = 1 }, }
-    local recipe_Geschmeidiger_schwerer_Balg = { yield = 1, { ids = { 4235 }, amount = 1 }, { ids = { 4289 }, amount = 3 }, }
-    local recipe_Geschmeidiger_dicker_Balg = { yield = 1, { ids = { 8169 }, amount = 1 }, { ids = { 8150 }, amount = 1 }, }
-    local recipe_Geschmeidiger_unverwuestlicher_Balg = { yield = 1, { ids = { 8171 }, amount = 1 }, { ids = { 8150 }, amount = 1 }, }
+    local recipe_Geschmeidiger_mittlerer_Balg = { yield = 1, { ids = { 4232 }, required = 1, amount = 1 }, { ids = { 4289 }, required = 1, amount = 1 }, }
+    local recipe_Geschmeidiger_schwerer_Balg = { yield = 1, { ids = { 4235 }, required = 1, amount = 1 }, { ids = { 4289 }, required = 1, amount = 3 }, }
+    local recipe_Geschmeidiger_dicker_Balg = { yield = 1, { ids = { 8169 }, required = 1, amount = 1 }, { ids = { 8150 }, required = 1, amount = 1 }, }
+    local recipe_Geschmeidiger_unverwuestlicher_Balg = { yield = 1, { ids = { 8171 }, required = 1, amount = 1 }, { ids = { 8150 }, required = 1, amount = 1 }, }
     -- Materials
     local recipe_chitinArmorBanding = { yield = 1, { ids = { 218336 }, amount = 1 }, { ids = { 212674, 212675, 212676 }, amount = 1 }, { ids = { 212667, 212668, 212669 }, amount = 30 }, }
     -- OptionalReagents

@@ -31,12 +31,14 @@ ProfessionsHelperData["Midnight"].Herbs = {
     Nocturnal_Lotus = { IDs = { 236780 }, color = "#4B0082", sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Leatherworking" }, canExperiment = true, displayCategory = 1 },
 }
 
+
 ProfessionsHelperData["Midnight"].Ores = {
     Refulgent_Copper_Ore = { IDs = { 237359, 237361 }, color = "#B87333", sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Jewelcrafting", "Blacksmithing", "Engineering" }, displayCategory = 1 },
     Umbral_Tin_Ore = { IDs = { 237362, 237363 }, color = "#7F7F7F", sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Jewelcrafting", "Blacksmithing", "Engineering" }, displayCategory = 1 },
     Brilliant_Silver_Ore = { IDs = { 237364, 237365 }, color = "#C0C0C0", sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing" }, displayCategory = 1 },
     Dazzling_Thorium = { IDs = { 237366 }, sources = { "Drop" }, gatheringProf = "Mining", processingProfs = { "Engineering", "Blacksmithing" }, displayCategory = 2 },
 }
+
 
 ProfessionsHelperData["Midnight"].Leather = {
     VoidTempered_Leather = { IDs = { 238511, 238512 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
@@ -53,6 +55,7 @@ ProfessionsHelperData["Midnight"].Leather = {
     Fantastic_Fur = { IDs = { 238525 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Tailoring", "Alchemy", "Leatherworking", "Enchanting" }, displayCategory = 2 },
 }
 
+
 ProfessionsHelperData["Midnight"].Cloth = {
     -- Category 2: Material-Icons (Vendor / Hilfsmittel)
     Embroidery_Floss = { IDs = { 251691 }, sources = { "Vendor" }, processingProfs = { "Tailoring" }, displayCategory = 2 },
@@ -63,6 +66,7 @@ ProfessionsHelperData["Midnight"].Cloth = {
     Arcanoweave = { IDs = { 237017, 237018 }, color = "#3F00FF", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     Bright_Linen = { IDs = { 236963, 236965 }, color = "#F5F5DC", sources = { "Drop" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
 }
+
 
 ProfessionsHelperData["Midnight"].Fishing = {
     Sin_dorei_Swarmer = { IDs = { 238365 }, sources = { "Drop" }, gatheringProf = "Fishing", processingProfs = { "Fishing", "Cooking", "Alchemy" }, displayCategory = 4 },
@@ -103,6 +107,7 @@ ProfessionsHelperData["Midnight"].Fishing = {
     Blackened_Sludgefish = { IDs = { 279207 }, sources = { "Drop" }, gatheringProf = "Fishing", displayCategory = 4 },
 }
 
+
 ProfessionsHelperData["Midnight"].Wood = {
     -- expID Mapping: 0=Classic, 1=BC, 2=WotLK, 3=Cata, 4=MoP, 5=WoD, 6=Legion, 7=BfA, 8=SL, 9=DF, 10=TWW, 11=Midnight
     Ironwood_Lumber      = { IDs = { 245586 }, expID = 0,  sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62357 },
@@ -119,6 +124,7 @@ ProfessionsHelperData["Midnight"].Wood = {
     Thalassian_Lumber    = { IDs = { 256963 }, expID = 11, sources = { "Drop" }, gatheringProf = "Woodcutting", displayCategory = 2, achievementID = 62370 },
 }
 
+
 ProfessionsHelperData["Midnight"].VendorDrop = {
     -- Vendor Materials
     Luminant_Flux = { IDs = { 243060 }, sources = { "Vendor" }, processingProfs = { "Enchanting", "Blacksmithing" }, displayCategory = 2 },
@@ -133,9 +139,9 @@ ProfessionsHelperData["Midnight"].VendorDrop = {
     Artisans_Moxie = { IDs = { 237505 }, sources = { "Drop" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
     Pure_Loanite = { IDs = { 239611 }, sources = { "Drop" }, displayCategory = 2 },
     Apprentices_Scribbles = { IDs = { 246447 }, sources = { "Drop" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
-    Artisans_Ledger = { IDs = { 246448 }, sources = { "Drop", "Crafted" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
-    Mentors_Helpful_Handiwork = { IDs = { 246449 }, sources = { "Drop", "Crafted" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
-    Artisans_Consortium_Gold_Star = { IDs = { 246450 }, sources = { "Drop", "Crafted" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
+    Artisans_Ledger = { IDs = { 246448 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
+    Mentors_Helpful_Handiwork = { IDs = { 246449 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
+    Artisans_Consortium_Gold_Star = { IDs = { 246450 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "AllProf", processingProfs = { "AllProf" }, displayCategory = 2 },
     Petrified_Root = { IDs = { 251285 }, sources = { "Drop" }, processingProfs = { "Tailoring", "Leatherworking", "Alchemy" }, displayCategory = 2 },
     Tormented_Tantalum = { IDs = { 251283 }, sources = { "Drop" }, processingProfs = { "Tailoring", "Leatherworking", "Blacksmithing", "Jewelcrafting" }, displayCategory = 2 },
     Thalassian_Essence_of_the_Faire = { IDs = { 251923 }, sources = { "Drop" }, processingProfs = { "Inscription" }, displayCategory = 2 },
@@ -159,9 +165,11 @@ ProfessionsHelperData["Midnight"].Herbalism = {
     Empowered_Mulch = { IDs = { 238389 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
 }
 
+
 ProfessionsHelperData["Midnight"].Skinning = {
     Neutralized_Venom_Clot = { IDs = { 274777 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Cooking", "Alchemy", "Leatherworking", "Engineering", "Blacksmithing", "Jewelcrafting", "Fishing", "Tailoring", "Enchanting", "Inscription" }, displayCategory = 2 },
 }
+
 
 ProfessionsHelperData["Midnight"].Cooking = {
     -- Drop
@@ -181,38 +189,26 @@ ProfessionsHelperData["Midnight"].Cooking = {
 
     -- Crafted
     Thalassian_Filet = { IDs = { 253403 }, color = "#FA8072", sources = { "Crafted" }, gatheringProf = "Cooking", processingProfs = { "Cooking" }, displayCategory = 2 },
-
-    -- House Decor
-    Caramel_Mint_Noodle_Dish = { IDs = { 246705 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Kaheti_Predators_Assortment = { IDs = { 245326 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Dornic_Sliced_Mineloaf = { IDs = { 246708 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Hungry_Humans_Platter = { IDs = { 245428 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Dornic_Mine_and_Cheese_Platter = { IDs = { 239170 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Mushan_Dumpling_Stack = { IDs = { 247220 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Boralus_Style_Lobster_Platter = { IDs = { 245484 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Drake_Kebab_Platter = { IDs = { 247222 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Valdrakken_Blossomfruit_Platter = { IDs = { 247224 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Earthen_Hospitality_Cheese_Like_Brick = { IDs = { 246709 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
-    Bruffalon_Rib_Platter = { IDs = { 247225 }, sources = { "Crafted" }, gatheringProf = "Cooking", displayCategory = 0 },
 }
 
-ProfessionsHelperData["Midnight"].Leatherworking = {
--- Crafting Materials
+
+ProfessionsHelperData["Midnight"].LeatherworkingCraftingMaterials = {
     Scalewoven_Hide = { IDs = { 244631, 244632 }, required = 35, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking" }, displayCategory = 3 },
-    Infused_Scalewoven_Hide = { IDs = { 244633, 244634 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Jewelcrafting" }, displayCategory = 3 },
-    Sin_dorei_Armor_Banding = { IDs = { 244635, 244636 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Blacksmithing" }, displayCategory = 3 },
-
-    -- Optional Reagents
-    Blessed_Pango_Charm = { IDs = { 244603, 244604 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
-    Primal_Spore_Binding = { IDs = { 244607, 244608 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting" }, displayCategory = 3 },
-    Silvermoon_Weapon_Wrap = { IDs = { 244637, 244638 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Jewelcrafting", "Blacksmithing", "Enchanting" }, displayCategory = 3 },
-    Devouring_Banding = { IDs = { 244674, 244675 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting" }, displayCategory = 3 },
-
-    -- Endproduct (Armor Kits)
-    Forest_Hunters_Armor_Kit = { IDs = { 244640, 244641 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
-    Blood_Knights_Armor_Kit = { IDs = { 244642, 244643 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
+    Infused_Scalewoven_Hide = { IDs = { 244633, 244634 }, required = 35, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Jewelcrafting" }, displayCategory = 3 },
+    Sin_dorei_Armor_Banding = { IDs = { 244635, 244636 }, required = 35, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Leatherworking", "Blacksmithing" }, displayCategory = 3 },
+}
+ProfessionsHelperData["Midnight"].LeatherworkingOptionalReagents = {
+    Blessed_Pango_Charm = { IDs = { 244603, 244604 }, required = 80, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
+    Primal_Spore_Binding = { IDs = { 244607, 244608 }, required = 80, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting" }, displayCategory = 3 },
+    Silvermoon_Weapon_Wrap = { IDs = { 244637, 244638 }, required = 35, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Jewelcrafting", "Blacksmithing", "Enchanting" }, displayCategory = 3 },
+    Devouring_Banding = { IDs = { 244674, 244675 }, required = 80, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting" }, displayCategory = 3 },
+}
+ProfessionsHelperData["Midnight"].LeatherworkingArmorKits = {
+    Forest_Hunters_Armor_Kit = { IDs = { 244640, 244641 }, required = 50, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
+    Blood_Knights_Armor_Kit = { IDs = { 244642, 244643 }, required = 50, sources = { "Crafted" }, gatheringProf = "Leatherworking", displayCategory = 3 },
 
 }
+
 
 ProfessionsHelperData["Midnight"].Blacksmithing = {
     -- Alloys
@@ -223,6 +219,7 @@ ProfessionsHelperData["Midnight"].Blacksmithing = {
     -- Frameworks
 }
 
+
 ProfessionsHelperData["Midnight"].Engineering = {
 -- Category 2: Icons (Drop / Vendor)
     Aetherlume = { IDs = { 243578, 243579 }, sources = { "Drop" }, gatheringProf = "Engineering", processingProfs = { "Engineering", "Leatherworking" }, displayCategory = 2 },
@@ -230,51 +227,54 @@ ProfessionsHelperData["Midnight"].Engineering = {
     Malleable_Wireframe = { IDs = { 253302 }, sources = { "Vendor" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 2 },
 
     -- Category 3: Crafting Materials
-    Song_Gear = { IDs = { 243574, 243575 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Song_Gear = { IDs = { 243574, 243575 }, required = 15, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     Soul_Sprocket = { IDs = { 243576, 243577 }, required = 35, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
 
     -- Optional Reagents
-    Flux_Cogwheel = { IDs = { 244697, 244698 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
-    Greased_Cogwheel = { IDs = { 244699, 244700 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
-    Perfected_Cogwheel = { IDs = { 244701, 244702 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
-    Consistent_Cogwheel = { IDs = { 244703, 244704 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Flux_Cogwheel = { IDs = { 244697, 244698 }, required = 60, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Greased_Cogwheel = { IDs = { 244699, 244700 }, required = 60, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Perfected_Cogwheel = { IDs = { 244701, 244702 }, required = 60, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    Consistent_Cogwheel = { IDs = { 244703, 244704 }, required = 60, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     Mini_Medical_Team = { IDs = { 244705, 244706 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     Lucky_Keychain = { IDs = { 248130 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Tailoring", "Engineering", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
     Kinetic_Ankle_Primers = { IDs = { 248132, 248133 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
-    B1P_Scorcher_of_Souls = { IDs = { 248135, 248592 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    B1P_Scorcher_of_Souls = { IDs = { 248135, 248592 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     M3DDY_Travel_Sized = { IDs = { 248136 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     HU5H_Nonchalant_Pup = { IDs = { 255843, 255844 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
     M0LL1_Atomic_Anomaly = { IDs = { 257733, 257734 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
-    B0P_Curator_of_Booms = { IDs = { 257735, 257741 }, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
+    B0P_Curator_of_Booms = { IDs = { 257735, 257741 }, required = 70, sources = { "Crafted" }, gatheringProf = "Engineering", processingProfs = { "Engineering" }, displayCategory = 3 },
 }
+
 
 ProfessionsHelperData["Midnight"].Tailoring = {
 -- Bolts (Category 1 - Balkenanzeige mit Farben)
     Arcanoweave_Bolt = { IDs = { 239198, 239200 }, required = 80, color = "#3F00FF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Enchanting" }, displayCategory = 1 },
-    Sunfire_Silk_Bolt = { IDs = { 239201, 239202 }, color = "#FFD700", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Enchanting" }, displayCategory = 1 },
-    Bright_Linen_Bolt = { IDs = { 239700, 239701 }, color = "#F5F5DC", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
+    Sunfire_Silk_Bolt = { IDs = { 239201, 239202 }, required = 80, color = "#FFD700", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Enchanting" }, displayCategory = 1 },
+    Bright_Linen_Bolt = { IDs = { 239700, 239701 }, required = 15, color = "#F5F5DC", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring" }, displayCategory = 1 },
     Imbued_Bright_Linen_Bolt = { IDs = { 239702, 239703 }, required = 35, color = "#E0FFFF", sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Engineering" }, displayCategory = 1 },
 
     -- Optional Reagents (Category 3 - Icons)
-    Sunfire_Silk_Lining = { IDs = { 240164, 240165 }, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Blacksmithing", "Leatherworking" }, displayCategory = 3 },
+    Sunfire_Silk_Lining = { IDs = { 240164, 240165 }, required = 80, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Blacksmithing", "Leatherworking" }, displayCategory = 3 },
     Arcanoweave_Lining = { IDs = { 240166, 240167 }, required = 80, sources = { "Crafted" }, gatheringProf = "Tailoring", processingProfs = { "Tailoring", "Blacksmithing", "Leatherworking" }, displayCategory = 3 },
 }
+
 
 ProfessionsHelperData["Midnight"].Alchemy = {
     -- Crafting Materials
     Mote_of_Light = { IDs = { 236949 }, required = 15, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Tailoring", "Leatherworking", "Engineering", "Inscription", "Enchanting", "Alchemy", "Jewelcrafting" }, displayCategory = 3 },
-    Mote_of_Primal_Energy = { IDs = { 236950 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Engineering", "Tailoring", "Cooking", "Inscription", "Alchemy", "Enchanting", "Jewelcrafting", "Leatherworking" }, canExperiment = true, displayCategory = 3 },
-    Mote_of_Wild_Magic = { IDs = { 236951 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Engineering", "Tailoring", "Leatherworking", "Inscription", "Alchemy", "Enchanting", "Cooking", "Skinning" }, displayCategory = 3 },
+    Mote_of_Primal_Energy = { IDs = { 236950 }, required = 15, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Engineering", "Tailoring", "Cooking", "Inscription", "Alchemy", "Enchanting", "Jewelcrafting", "Leatherworking" }, canExperiment = true, displayCategory = 3 },
+    Mote_of_Wild_Magic = { IDs = { 236951 }, required = 15, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Engineering", "Tailoring", "Leatherworking", "Inscription", "Alchemy", "Enchanting", "Cooking", "Skinning" }, displayCategory = 3 },
     Mote_of_Pure_Void = { IDs = { 236952 }, required = 15, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Tailoring", "Engineering", "Leatherworking", "Enchanting", "Alchemy", "Jewelcrafting", "Inscription", "Skinning" }, canExperiment = true, displayCategory = 3 },
     
-    Stabilized_Derivate = { IDs = { 242651 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, canExperiment = true, displayCategory = 3 },
+    Stabilized_Derivate = { IDs = { 242651 }, required = 15, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, canExperiment = true, displayCategory = 3 },
 
     -- Finishing Reagents / Intermediate
-    Composite_Flora = { IDs = { 241280, 241281 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy", "Leatherworking" }, displayCategory = 3 },
-    Wondrous_Synergist = { IDs = { 241282, 241283 }, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, displayCategory = 3 },
+    Composite_Flora = { IDs = { 241280, 241281 }, required = 30, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy", "Leatherworking" }, displayCategory = 3 },
+    Wondrous_Synergist = { IDs = { 241282, 241283 }, required = 90, sources = { "Crafted" }, gatheringProf = "Alchemy", processingProfs = { "Alchemy" }, displayCategory = 3 },
 
     -- Endproduct or Others (Platzhalter für Elixiere/Tränke/Experimente)
 }
+
 
 ProfessionsHelperData["Midnight"].Enchanting = {
     -- Basic Materials (Category 1 - Balkenanzeige)
@@ -286,42 +286,44 @@ ProfessionsHelperData["Midnight"].Enchanting = {
     -- Finishing Reagents
 }
 
+
 ProfessionsHelperData["Midnight"].Inscription = {
     -- Pigments (Category 1 - Balkenanzeige mit Farben)
-    Argentleaf_Pigment = { IDs = { 245803, 245804 }, color = "#E6E6E6", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
-    Powder_Pigment = { IDs = { 245807, 245808 }, color = "#F5F5F5", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
-    Sanguithorn_Pigment = { IDs = { 245864, 245865 }, color = "#8B0000", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
-    Mana_Lily_Pigment = { IDs = { 245866, 245867 }, color = "#A335EE", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
+    Argentleaf_Pigment = { IDs = { 245803, 245804 }, required = 1, color = "#E6E6E6", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
+    Powder_Pigment = { IDs = { 245807, 245808 }, required = 1, color = "#F5F5F5", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
+    Sanguithorn_Pigment = { IDs = { 245864, 245865 }, required = 1, color = "#8B0000", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
+    Mana_Lily_Pigment = { IDs = { 245866, 245867 }, required = 1, color = "#A335EE", sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 1 },
 
     -- Inks (Category 3 - Icons)
-    Munsell_Ink = { IDs = { 245801, 245802 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
-    Sienna_Ink = { IDs = { 245805, 245806 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
+    Munsell_Ink = { IDs = { 245801, 245802 }, required = 20, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
+    Sienna_Ink = { IDs = { 245805, 245806 }, required = 25, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
 
     -- Inscribed Items
-    Codified_Azeroot = { IDs = { 245764, 245765 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
-    Soul_Cipher = { IDs = { 245766, 245767 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
+    Codified_Azeroot = { IDs = { 245764, 245765 }, required = 35, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
+    Soul_Cipher = { IDs = { 245766, 245767 }, required = 30, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription" }, displayCategory = 3 },
 
     -- Missives (Optional Reagents)
     Thalassian_Missive_of_the_Aurora = { IDs = { 245781, 245782 }, required = 35, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
     Thalassian_Missive_of_the_Feverflare = { IDs = { 245783, 245784 }, required = 35, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
     Thalassian_Missive_of_the_Fireflash = { IDs = { 245785, 245786 }, required = 45, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
-    Thalassian_Missive_of_the_Harmonious = { IDs = { 245787, 245788 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
+    Thalassian_Missive_of_the_Harmonious = { IDs = { 245787, 245788 }, required = 50, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
     Thalassian_Missive_of_the_Peerless = { IDs = { 245789, 245790 }, required = 55, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
     Thalassian_Missive_of_the_Quickblade = { IDs = { 245791, 245792 }, required = 55, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Inscription", "Blacksmithing", "Leatherworking", "Enchanting", "Jewelcrafting" }, displayCategory = 3 },
-    Thalassian_Missive_of_Ingenuity = { IDs = { 245814, 245815 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
-    Thalassian_Missive_of_Resourcefulness = { IDs = { 245816, 245817 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
-    Thalassian_Missive_of_Multicraft = { IDs = { 245818, 245819 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
-    Thalassian_Missive_of_Crafting_Speed = { IDs = { 245820, 245821 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
+    Thalassian_Missive_of_Ingenuity = { IDs = { 245814, 245815 }, required = 50, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
+    Thalassian_Missive_of_Resourcefulness = { IDs = { 245816, 245817 }, required = 50, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
+    Thalassian_Missive_of_Multicraft = { IDs = { 245818, 245819 }, required = 50, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
+    Thalassian_Missive_of_Crafting_Speed = { IDs = { 245820, 245821 }, required = 50, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Engineering", "Inscription", "Enchanting", "Blacksmithing" }, displayCategory = 3 },
     Thalassian_Missive_of_Finesse = { IDs = { 245822, 245823 }, required = 40, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Blacksmithing" }, displayCategory = 3 },
     Thalassian_Missive_of_Perception = { IDs = { 245824, 245825 }, required = 40, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Blacksmithing" }, displayCategory = 3 },
-    Thalassian_Missive_of_Deftness = { IDs = { 245826, 245827 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Blacksmithing" }, displayCategory = 3 },
+    Thalassian_Missive_of_Deftness = { IDs = { 245826, 245827 }, required = 50, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Tailoring", "Blacksmithing" }, displayCategory = 3 },
 
     -- Darkmoon Sigils
-    Darkmoon_Sigil_Blood = { IDs = { 245871, 245872 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering" }, displayCategory = 3 },
-    Darkmoon_Sigil_Void = { IDs = { 245873, 245874 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering" }, displayCategory = 3 },
-    Darkmoon_Sigil_Hunt = { IDs = { 245875, 245876 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering", "Enchanting" }, displayCategory = 3 },
-    Darkmoon_Sigil_Rot = { IDs = { 245877, 245878 }, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering" }, displayCategory = 3 },
+    Darkmoon_Sigil_Blood = { IDs = { 245871, 245872 }, required = 30, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering" }, displayCategory = 3 },
+    Darkmoon_Sigil_Void = { IDs = { 245873, 245874 }, required = 30, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering" }, displayCategory = 3 },
+    Darkmoon_Sigil_Hunt = { IDs = { 245875, 245876 }, required = 30, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering", "Enchanting" }, displayCategory = 3 },
+    Darkmoon_Sigil_Rot = { IDs = { 245877, 245878 }, required = 30, sources = { "Crafted" }, gatheringProf = "Inscription", processingProfs = { "Inscription", "Blacksmithing", "Engineering" }, displayCategory = 3 },
 }
+
 
 ProfessionsHelperData["Midnight"].Jewelcrafting = {
     -- Base Reagents (Category 2 - Icons für Drops & Edelsteine)
@@ -332,25 +334,26 @@ ProfessionsHelperData["Midnight"].Jewelcrafting = {
     Sanguine_Garnet = { IDs = { 242553, 242723 }, sources = { "Drop" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
     
     Flawless_Sanguine_Garnet = { IDs = { 242613, 242724 }, required = 60, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 2 },
-    Flawless_Tenebrous_Amethyst = { IDs = { 242611, 242725 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Enchanting", "Jewelcrafting" }, displayCategory = 2 },
+    Flawless_Tenebrous_Amethyst = { IDs = { 242611, 242725 }, required = 1, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Enchanting", "Jewelcrafting" }, displayCategory = 2 },
     Flawless_Harandar_Peridot = { IDs = { 242610, 242726 }, required = 60, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Enchanting", "Jewelcrafting" }, displayCategory = 2 },
     Flawless_Amani_Lapis = { IDs = { 242612, 242727 }, required = 60, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Enchanting", "Jewelcrafting" }, displayCategory = 2 },
     
-    Glimmering_Gemdust = { IDs = { 242620, 242621 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Leatherworking" }, displayCategory = 2 },
+    Glimmering_Gemdust = { IDs = { 242620, 242621 }, required = 10, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Leatherworking" }, displayCategory = 2 },
     Crystalline_Glass = { IDs = { 242786, 242787 }, sources = { "Drop" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Enchanting" }, displayCategory = 2 },
     Duskshrouded_Stone = { IDs = { 242788, 242789 }, sources = { "Drop" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting", "Leatherworking", "Enchanting", "Blacksmithing", "Inscription" }, displayCategory = 2 },
 
     -- Optional Reagents (Category 3)
-    Prismatic_Focusing_Iris = { IDs = { 251487, 251488 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
-    Stabilizing_Gemstone_Bandolier = { IDs = { 251489, 251490 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Tailoring", "Blacksmithing", "Leatherworking", "Jewelcrafting" }, displayCategory = 3 },
+    Prismatic_Focusing_Iris = { IDs = { 251487, 251488 }, required = 80, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
+    Stabilizing_Gemstone_Bandolier = { IDs = { 251489, 251490 }, required = 80, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Tailoring", "Blacksmithing", "Leatherworking", "Jewelcrafting" }, displayCategory = 3 },
 
     -- Advanced Reagents (Category 3)
-    Sin_dorei_Lens = { IDs = { 240972, 240973 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
-    Kaleidoscopic_Prism = { IDs = { 240974, 240975 }, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
+    Sin_dorei_Lens = { IDs = { 240972, 240973 }, required = 20, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
+    Kaleidoscopic_Prism = { IDs = { 240974, 240975 }, required = 50, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Jewelcrafting" }, displayCategory = 3 },
 
     -- Endproduct
     Vial = { IDs = { 240990, 240991 }, required = 15, sources = { "Crafted" }, gatheringProf = "Jewelcrafting", processingProfs = { "Alchemy", "Enchanting" }, displayCategory = 3 },
 }
+
 
 ProfessionsHelperData["Midnight"].Other = {}
 
@@ -449,10 +452,10 @@ do
     local recipe_KaleidoPrism = {
     yield = 1,
     { ids = { 242610, 242726 }, amount = 1},
-    { ids = { 242611, 242725 }, amount = 1},
+    { ids = { 242611, 242725 }, required = 1, amount = 1},
     { ids = { 242612, 242727 }, amount = 1},
     { ids = { 242613, 242728 }, amount = 1},
-    { ids = { 242620, 242621 }, amount = 10},
+    { ids = { 242620, 242621 }, required = 10, amount = 10},
     }
 
     local recipe_SunglassVial = {
@@ -463,8 +466,8 @@ do
 
     local recipe_PrismaFocusIris = {
     yield = 1,
-    { ids = { 240972, 240973 }, amount = 2},
-    { ids = { 242620, 242621 }, amount = 2},
+    { ids = { 240972, 240973 }, required = 20, amount = 2},
+    { ids = { 242620, 242621 }, required = 10, amount = 2},
     }
 
     local recipe_StabGemBandolier = {
@@ -473,13 +476,13 @@ do
     { ids = { 242554, 242722 }, amount = 1},
     { ids = { 242606, 242721 }, amount = 1},
     { ids = { 242607, 242720 }, amount = 1},
-    { ids = { 242620, 242621 }, amount = 3},
+    { ids = { 242620, 242621 }, required = 10, amount = 3},
     }
 
     local recipe_SindoreiLens = {
     yield = 1,
     { ids = { 242786, 242787 }, amount = 3},
-    { ids = { 242620, 242621 }, amount = 1},
+    { ids = { 242620, 242621 }, required = 10, amount = 1},
     }
 
     ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
@@ -506,7 +509,7 @@ end
 do
     local recipe_BlessedPangoCharm = {
     yield = 1,
-    { ids = { 236951 }, amount = 10},
+    { ids = { 236951 }, required = 15, amount = 10},
     { ids = { 238523 }, amount = 1},
     { ids = { 244622 }, amount = 1},
     { ids = { 238518, 238519 }, amount = 1},
@@ -515,7 +518,7 @@ do
 
     local recipe_PrimalSporeBinding = {
     yield = 1,
-    { ids = { 236950 }, amount = 10},
+    { ids = { 236950 }, required = 15, amount = 10},
     { ids = { 238525 }, amount = 1},
     { ids = { 244631, 244632 }, amount = 1},
     }
@@ -529,8 +532,8 @@ do
     local recipe_InfusedScalewovenHide = {
     yield = 1,
     { ids = { 236949 }, amount = 2},
-    { ids = { 236950 }, amount = 2},
-    { ids = { 236951 }, amount = 2},
+    { ids = { 236950 }, required = 15, amount = 2},
+    { ids = { 236951 }, required = 15, amount = 2},
     { ids = { 236952 }, amount = 2},
     { ids = { 238529 }, amount = 1},
     { ids = { 244631, 244632 }, amount = 1},
@@ -553,16 +556,16 @@ do
     local recipe_DevourBanding = {
     yield = 1,
     { ids = { 236852 }, amount = 10},
-    { ids = { 244635, 244636 }, amount = 1},
+    { ids = { 244635, 244636 }, required = 35, amount = 1},
     }
 
     local recipe_ForestHunterArmorKit = {
     yield = 1,
     { ids = { 251285 }, amount = 3},
     { ids = { 251665 }, amount = 10},
-    { ids = { 236951 }, amount = 10},
-    { ids = { 244633, 244634 }, amount = 1},
-    { ids = { 244635, 244636 }, amount = 2},
+    { ids = { 236951 }, required = 15, amount = 10},
+    { ids = { 244633, 244634 }, required = 35, amount = 1},
+    { ids = { 244635, 244636 }, required = 35, amount = 2},
     }
 
     local recipe_BloodKnightArmorKit = {
@@ -570,8 +573,8 @@ do
     { ids = { 251285 }, amount = 3},
     { ids = { 251665 }, amount = 10},
     { ids = { 236949 }, amount = 10},
-    { ids = { 244633, 244634 }, amount = 1},
-    { ids = { 244635, 244636 }, amount = 2},
+    { ids = { 244633, 244634 }, required = 35, amount = 1},
+    { ids = { 244635, 244636 }, required = 35, amount = 2},
     }
 
     ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
@@ -614,7 +617,7 @@ do
     local recipe_ImbBriLinenBolt = {
     yield = 1,
     { ids = { 251665 }, amount = 4},
-    { ids = { 239700, 239701 }, amount = 2},
+    { ids = { 239700, 239701 }, required = 15, amount = 2},
     }
 
     local recipe_SunSilkBolt = {
@@ -628,7 +631,7 @@ do
     yield = 1,
     { ids = { 251691 }, amount = 1},
     { ids = { 237015, 237016 }, amount = 6},
-    { ids = { 239201, 239202 }, amount = 2},
+    { ids = { 239201, 239202 }, required = 80, amount = 2},
     }
 
     local recipe_ArcanoweaveLining = {
@@ -662,112 +665,112 @@ do
     { ids = { 236952 }, amount = 1},
     { ids = { 236949 }, amount = 1},
     { ids = { 242788, 242789 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 1},
-    { ids = { 245805, 245806 }, amount = 1},
+    { ids = { 245801, 245802 }, required = 20, amount = 1},
+    { ids = { 245805, 245806 }, required = 25, amount = 1},
     }
 
     local recipe_MissiveAurora = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236850 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveFeverflare = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236850 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveFireflash = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236850 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveHarmonious = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236852 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissivePeerless = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236852 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveQuickblade = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236852 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveIngenuity = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236849 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveResourcefulness = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236849 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveMulticraft = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236849 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveCraftingSpeed = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236851 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveFinesse = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
-    { ids = { 236951 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 236951 }, required = 15, amount = 1},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissivePerception = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
     { ids = { 236949 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_MissiveDeftness = {
     yield = 1,
     { ids = { 245881 }, amount = 1},
-    { ids = { 236951 }, amount = 1},
-    { ids = { 245801, 245802 }, amount = 2},
-    { ids = { 245805, 245806 }, amount = 2},
+    { ids = { 236951 }, required = 15, amount = 1},
+    { ids = { 245801, 245802 }, required = 20, amount = 2},
+    { ids = { 245805, 245806 }, required = 25, amount = 2},
     }
 
     local recipe_SigilBlood = {
@@ -775,7 +778,7 @@ do
     { ids = { 245882 }, amount = 1},
     { ids = { 236949 }, amount = 10},
     { ids = { 245755 }, amount = 1},
-    { ids = { 245766, 245767 }, amount = 5},
+    { ids = { 245766, 245767 }, required = 30, amount = 5},
     }
 
     local recipe_SigilVoid = {
@@ -783,23 +786,23 @@ do
     { ids = { 245882 }, amount = 1},
     { ids = { 236952 }, amount = 10},
     { ids = { 245750 }, amount = 1},
-    { ids = { 245766, 245767 }, amount = 5},
+    { ids = { 245766, 245767 }, required = 30, amount = 5},
     }
 
     local recipe_SigilHunt = {
     yield = 1,
     { ids = { 245882 }, amount = 1},
-    { ids = { 236951 }, amount = 10},
+    { ids = { 236951 }, required = 15, amount = 10},
     { ids = { 245829 }, amount = 1},
-    { ids = { 245766, 245767 }, amount = 5},
+    { ids = { 245766, 245767 }, required = 30, amount = 5},
     }
 
     local recipe_SigilRot = {
     yield = 1,
     { ids = { 245882 }, amount = 1},
-    { ids = { 236950 }, amount = 10},
+    { ids = { 236950 }, required = 15, amount = 10},
     { ids = { 245846 }, amount = 1},
-    { ids = { 245766, 245767 }, amount = 5},
+    { ids = { 245766, 245767 }, required = 30, amount = 5},
     }
 
     ProfessionsHelperData['Midnight'].RecipeDB = ProfessionsHelperData['Midnight'].RecipeDB or {}
@@ -887,16 +890,16 @@ do
     local recipe_FluxCogwheel = {
     yield = 1,
     { ids = { 253303 }, amount = 5},
-    { ids = { 236950 }, amount = 1},
-    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 236950 }, required = 15, amount = 1},
+    { ids = { 243574, 243575 }, required = 15, amount = 2},
     { ids = { 243576, 243577 }, amount = 1},
     }
 
     local recipe_GreasedCogwheel = {
     yield = 1,
     { ids = { 253303 }, amount = 5},
-    { ids = { 236951 }, amount = 1},
-    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 236951 }, required = 15, amount = 1},
+    { ids = { 243574, 243575 }, required = 15, amount = 2},
     { ids = { 243576, 243577 }, amount = 1},
     }
 
@@ -904,7 +907,7 @@ do
     yield = 1,
     { ids = { 253303 }, amount = 5},
     { ids = { 236952 }, amount = 1},
-    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243574, 243575 }, required = 15, amount = 2},
     { ids = { 243576, 243577 }, amount = 1},
     }
 
@@ -912,7 +915,7 @@ do
     yield = 1,
     { ids = { 253303 }, amount = 5},
     { ids = { 236949 }, amount = 1},
-    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243574, 243575 }, required = 15, amount = 2},
     { ids = { 243576, 243577 }, amount = 1},
     }
 
@@ -926,20 +929,20 @@ do
     local recipe_LuckyKeychain = {
     yield = 1,
     { ids = { 253303 }, amount = 10},
-    { ids = { 236951 }, amount = 1},
+    { ids = { 236951 }, required = 15, amount = 1},
     { ids = { 243581, 243582 }, amount = 5},
     }
 
     local recipe_B1p = {
     yield = 1,
     { ids = { 253303 }, amount = 10},
-    { ids = { 236951 }, amount = 1},
+    { ids = { 236951 }, required = 15, amount = 1},
     { ids = { 243581, 243582 }, amount = 5},
     }
 
     local recipe_KinAnklePrimers = {
     yield = 1,
-    { ids = { 243574, 243575 }, amount = 2},
+    { ids = { 243574, 243575 }, required = 15, amount = 2},
     { ids = { 243578, 243579 }, amount = 3},
     { ids = { 243581, 243582 }, amount = 1},
     }

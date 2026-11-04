@@ -1189,6 +1189,7 @@ function Visuals:Init()
                                         data = itemData,
                                         prof = displayProf,
                                         bucketName = bucketToUse,
+                                        sourceBucket = catName,
                                         groupKey = candidateGroupKey,
                                         nativeCategory = candidateNative
                                     }
@@ -1216,7 +1217,154 @@ function Visuals:Init()
     end
 
     local function AddToUI(f) if f then table.insert(self.ActiveFrames, f) end end
+    -- Die linke Tab-Kante folgt der sichtbaren linken Kante des ersten Items.
+    local function GetLayerTabBarLeft(itemCenterX, _, itemWidth)
+        return itemCenterX - ((tonumber(itemWidth) or 0) / 2), 0
+    end
     local function HandleWrap(curX, startX, width) return (curX - startX) > width end
+
+    -- Cat 1/2/4 use the existing group renderer and its layout settings.
+    -- A group only enters layering when every currently visible item has a
+    -- valid required value; otherwise the original complete group is retained.
+    local function ApplyCategoryLayering(category, settingKey, items, pos)
+        local profile = ProfessionsHelper.db.profile
+        local config = profile.layeringSettings or {}
+        local enabled = config.enabledCategories and config.enabledCategories[category]
+        if not enabled then return items end
+
+        -- Wood's displayCategory 2 rendering remains deliberately unchanged.
+        if category == 2 then
+            for _, item in ipairs(items) do
+                if item.sourceBucket == "Wood" and tonumber(item.data.displayCategory) == 2 then
+                    return items
+                end
+            end
+        end
+
+        local ranges
+        if config.rangeMode == "CUSTOM" then
+            ranges = config.customRanges
+            if type(ranges) ~= "table" or #ranges == 0 then return items end
+            local previousMax = -1
+            for _, range in ipairs(ranges) do
+                if type(range) ~= "table" then return items end
+                local minValue, maxValue = tonumber(range.min), tonumber(range.max)
+                if not minValue or not maxValue or minValue < 0 or minValue ~= math.floor(minValue)
+                    or maxValue < minValue or maxValue ~= math.floor(maxValue) or minValue <= previousMax then
+                    return items
+                end
+                previousMax = maxValue
+            end
+        else
+            ranges = {
+                { min = 0, max = 50 }, { min = 51, max = 100 },
+                { min = 101, max = 150 }, { min = 151, max = 200 },
+                { min = 201, max = 250 }, { min = 251, max = 300 },
+                { min = 301, max = math.huge },
+            }
+        end
+
+        local layerByItem, counts = {}, {}
+        for index = 1, #ranges do counts[index] = 0 end
+        local visibleCount = 0
+        for _, item in ipairs(items) do
+            if profile.itemFilters[item.name] ~= false then
+                visibleCount = visibleCount + 1
+                local required = type(item.data) == "table" and tonumber(item.data.required)
+                local layer
+                if required and required >= 0 and required == math.floor(required) then
+                    for index, range in ipairs(ranges) do
+                        if required >= tonumber(range.min) and required <= tonumber(range.max) then
+                            layer = index
+                            break
+                        end
+                    end
+                end
+                if not layer then return items end
+                layerByItem[item] = layer
+                counts[layer] = counts[layer] + 1
+            end
+        end
+        if visibleCount == 0 then return items end
+
+        local layerKey = "cat" .. category .. ":" .. tostring(settingKey)
+        local selected = config.selectedLayers and config.selectedLayers[layerKey]
+        if not selected or not counts[selected] or counts[selected] == 0 then
+            selected = nil
+            for index = 1, #ranges do
+                if counts[index] > 0 then selected = index; break end
+            end
+        end
+
+        local tabWidth, tabHeight, tabGap = 30, 22, 2
+        local totalWidth = (#ranges * tabWidth) + ((#ranges - 1) * tabGap)
+        local categorySettings = profile.catSettings[category] or {}
+        local itemWidth
+        if category == 1 then
+            local subSettings = profile.profSubSettings[settingKey] or {}
+            itemWidth = (tonumber(subSettings.width) or tonumber(categorySettings.width) or 30)
+                * (tonumber(subSettings.scale) or tonumber(categorySettings.scale) or 1)
+        elseif category == 2 then
+            itemWidth = 20 * (tonumber(categorySettings.scale) or 1)
+        else
+            itemWidth = 30 * (tonumber(categorySettings.scale) or 1)
+        end
+        local tabBar = CreateFrame("Frame", nil, UIParent)
+        tabBar:SetSize(totalWidth, tabHeight)
+        local tabBarLeft, layerOffsetX = GetLayerTabBarLeft(pos.x, totalWidth, itemWidth)
+        tabBar:SetPoint("BOTTOMLEFT", UIParent, "CENTER", tabBarLeft, pos.y)
+        tabBar:SetFrameStrata("MEDIUM")
+        tabBar:SetFrameLevel(20)
+        AddToUI(tabBar)
+
+        local buttons = {}
+        local function RefreshTabs()
+            for index, button in ipairs(buttons) do
+                button.bg:SetColorTexture(index == selected and 0.16 or (counts[index] > 0 and 0.20 or 0.08),
+                    index == selected and 0.38 or (counts[index] > 0 and 0.20 or 0.08),
+                    index == selected and 0.68 or (counts[index] > 0 and 0.20 or 0.08),
+                    counts[index] > 0 and 1 or 0.55)
+                button.label:SetTextColor(counts[index] > 0 and 0.9 or 0.4, counts[index] > 0 and 0.9 or 0.4, counts[index] > 0 and 0.9 or 0.4, 1)
+            end
+        end
+        for index, range in ipairs(ranges) do
+            local button = CreateFrame("Button", nil, tabBar)
+            button:SetSize(tabWidth, tabHeight)
+            button:SetPoint("LEFT", tabBar, "LEFT", (index - 1) * (tabWidth + tabGap), 0)
+            button.bg = button:CreateTexture(nil, "BACKGROUND")
+            button.bg:SetAllPoints()
+            button.label = button:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            button.label:SetPoint("CENTER")
+            button.label:SetText(index)
+            if counts[index] > 0 then
+                button:SetScript("OnClick", function()
+                    config.selectedLayers = config.selectedLayers or {}
+                    config.selectedLayers[layerKey] = index
+                    self:Init()
+                end)
+            else
+                button:EnableMouse(false)
+            end
+            button:SetScript("OnEnter", function(selfButton)
+                GameTooltip:SetOwner(selfButton, "ANCHOR_TOP")
+                GameTooltip:AddLine("Layer " .. index, 1, 1, 1)
+                GameTooltip:AddLine("Required: " .. tostring(range.min) .. "–" .. tostring(range.max), 0.8, 0.8, 0.8)
+                GameTooltip:AddLine("Items: " .. tostring(counts[index]), 0.7, 0.7, 0.7)
+                GameTooltip:Show()
+            end)
+            button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+            buttons[index] = button
+        end
+        RefreshTabs()
+
+        local filtered = {}
+        for _, item in ipairs(items) do
+            if profile.itemFilters[item.name] ~= false and layerByItem[item] == selected then
+                filtered[#filtered + 1] = item
+            end
+        end
+        return filtered, layerOffsetX, -(tabHeight + 8)
+    end
 
 -- Rendering Cat 1 (Balken)
 if ProfessionsHelper.db.profile.catSettings[1].enabled then
@@ -1281,6 +1429,11 @@ if ProfessionsHelper.db.profile.catSettings[1].enabled then
                 local idB = tonumber(b.data.IDs and b.data.IDs[1]) or 0
                 return idA < idB -- Default: ID_ASC
             end)
+
+            local layerOffsetX, layerOffsetY
+            items, layerOffsetX, layerOffsetY = ApplyCategoryLayering(1, settingKey, items, pos)
+            currentX = pos.x + (layerOffsetX or 0)
+            currentY = pos.y + (layerOffsetY or 0)
 
             -- Schritt 3: Items der Gruppe zeichnen
             for _, item in ipairs(items) do
@@ -1367,29 +1520,35 @@ if ProfessionsHelper.db.profile.catSettings[2].enabled then
             
             -- Sortierung nach ExpID
             table.sort(items, function(a, b) return (a.data.expID or 0) < (b.data.expID or 0) end)
+            local layerOffsetX, layerOffsetY
+            items, layerOffsetX, layerOffsetY = ApplyCategoryLayering(2, gKey, items, pos)
+            layerOffsetX = layerOffsetX or 0
+            layerOffsetY = layerOffsetY or 0
+            local baseY = pos.y + layerOffsetY
 
             -- 4. Items der Gruppe im Grid zeichnen
             for _, item in ipairs(items) do
                 if ProfessionsHelper.db.profile.itemFilters[item.name] ~= false then
                     local col = visibleIdx % maxCols
                     local row = math.floor(visibleIdx / maxCols)
-                    local iX, iY = pos.x, pos.y
+                    local baseX = pos.x + layerOffsetX
+                    local iX, iY = baseX, pos.y
                     
                     -- Standardmäßig links nach rechts, danach nächste Zeile nach unten.
                     -- Die bisherigen Richtungsoptionen bleiben erhalten.
                     local growth = pSet.growth or "LEFT_RIGHT"
                     if growth == "LEFT_RIGHT" then
-                        iX = pos.x + (col * spacingX)
-                        iY = pos.y - (row * spacingY)
+                        iX = baseX + (col * spacingX)
+                        iY = baseY - (row * spacingY)
                     elseif growth == "RIGHT_LEFT" then
-                        iX = pos.x - (col * spacingX)
-                        iY = pos.y - (row * spacingY)
+                        iX = baseX - (col * spacingX)
+                        iY = baseY - (row * spacingY)
                     elseif growth == "TOP_BOTTOM" then
-                        iX = pos.x + (row * spacingX)
-                        iY = pos.y - (col * spacingY)
+                        iX = baseX + (row * spacingX)
+                        iY = baseY - (col * spacingY)
                     elseif growth == "BOTTOM_TOP" then
-                        iX = pos.x + (row * spacingX)
-                        iY = pos.y + (col * spacingY)
+                        iX = baseX + (row * spacingX)
+                        iY = baseY + (col * spacingY)
                     end
 
                     -- Frame erstellen
@@ -1425,6 +1584,8 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
         { min = 301, max = math.huge, label = "301+" },
     }
 
+    local professionIconWidth = 40 * (tonumber(ProfessionsHelper.db.profile.catSettings[3].scale) or 1)
+
     local function GetLayerIndex(required)
         required = tonumber(required)
         if not required or required < 0 then return nil end
@@ -1441,7 +1602,8 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
         local totalWidth = (#layerRanges * tabWidth) + ((#layerRanges - 1) * tabGap)
         local tabBar = CreateFrame("Frame", nil, UIParent)
         tabBar:SetSize(totalWidth, tabHeight)
-        tabBar:SetPoint("BOTTOMLEFT", UIParent, "CENTER", pos.x - (totalWidth / 2), pos.y + 25)
+        local tabBarLeft = GetLayerTabBarLeft(pos.x, totalWidth, professionIconWidth)
+        tabBar:SetPoint("BOTTOMLEFT", UIParent, "CENTER", tabBarLeft, pos.y)
         tabBar:SetFrameStrata("MEDIUM")
         tabBar:SetFrameLevel(20)
 
@@ -1494,7 +1656,7 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
 
                             if itemCount > 0 then
                                 layoutGroup.header:ClearAllPoints()
-                                layoutGroup.header:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, nextTop)
+                                layoutGroup.header:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, nextTop - 16)
                                 layoutGroup.header:Show()
 
                                 for itemIndex, iconFrame in ipairs(frames) do
@@ -1544,7 +1706,7 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
                 local frames = layoutGroup.framesByLayer[activeLayer] or {}
                 if #frames > 0 then
                     layoutGroup.header:ClearAllPoints()
-                    layoutGroup.header:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, nextTop)
+                    layoutGroup.header:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, nextTop - 16)
                     layoutGroup.header:Show()
                     for itemIndex, iconFrame in ipairs(frames) do
                         local col = (itemIndex - 1) % layoutGroup.maxCols
@@ -1668,18 +1830,23 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
         end
 
         if visibleItemCount > 0 then
-            if professionCanLayer then
+            local cat3LayeringEnabled = not (
+                ProfessionsHelper.db.profile.layeringSettings
+                and ProfessionsHelper.db.profile.layeringSettings.enabledCategories
+                and ProfessionsHelper.db.profile.layeringSettings.enabledCategories[3] == false
+            )
+            if professionCanLayer and cat3LayeringEnabled then
                 -- Ein gemeinsamer Layer-Filter für alle Unterkategorien der Profession.
                 -- Die Unterkategorien werden im gemeinsamen Fenster untereinander angeordnet.
                 local anchorGroup = activeGroups[1]
                 local windowX = anchorGroup and anchorGroup.pos.x or 200
                 local windowY = anchorGroup and anchorGroup.pos.y or 0
-                -- Linke Kante des Icon-Blocks exakt an die linke Kante von Tab 1 setzen.
-                local tabWidth, tabGap = 30, 2
-                local tabBarWidth = (#layerRanges * tabWidth) + ((#layerRanges - 1) * tabGap)
-                local contentOffsetX = -(tabBarWidth / 2) + 20 -- 20 = halbe Icon-Breite
-                local contentX = windowX + contentOffsetX
-                local sectionTop = windowY + 10
+                -- Der erste Layer-Icon-Punkt bleibt an der gespeicherten Gruppenposition.
+                local _, layerOffsetX = GetLayerTabBarLeft(windowX, (#layerRanges * 30) + ((#layerRanges - 1) * 2), professionIconWidth)
+                local contentOffsetX = -20 -- Icon-Punkt bleibt auf dem wirksamen Layer-Anker
+                local contentX = windowX + layerOffsetX + contentOffsetX
+                local layerContentOffsetY = -(24 + 8)
+                local sectionTop = windowY + layerContentOffsetY + 26
                 local layoutGroups = {}
 
                 for _, group in ipairs(activeGroups) do
@@ -1720,7 +1887,7 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
                     headerFrame:SetSize(1, 1)
                     headerFrame:SetPoint("TOPLEFT", UIParent, "CENTER", contentX, sectionTop)
                     local headerText = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-                    headerText:SetPoint("BOTTOMLEFT", headerFrame, "TOPLEFT", 0, 2)
+                    headerText:SetPoint("BOTTOMLEFT", headerFrame, "TOPLEFT", 0, 12)
                     headerText:SetText(categoryLabel)
                     AddToUI(headerFrame)
 
@@ -1763,8 +1930,8 @@ if ProfessionsHelper.db.profile.catSettings[3].enabled then
                 -- sämtlicher Unterkategorien innerhalb der Profession.
                 if anchorGroup then
                     local tabBar = CreateLayerTabs(
-                        professionName, anchorGroup.pos, layerFrames, layerCounts,
-                        layoutGroups, contentX, windowY + 10
+                        professionName, { x = windowX + layerOffsetX, y = windowY }, layerFrames, layerCounts,
+                        layoutGroups, contentX, sectionTop
                     )
                     AddToUI(tabBar)
                 end
@@ -1826,6 +1993,11 @@ if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
                 return idA < idB
             end)
 
+            local layerOffsetX, layerOffsetY
+            items, layerOffsetX, layerOffsetY = ApplyCategoryLayering(4, gKey, items, pos)
+            layerOffsetX = layerOffsetX or 0
+            layerOffsetY = layerOffsetY or 0
+
             -- 4. Grid-Parameter (analog zu Kategorie 3)
             local maxCols = pSet.maxColumns or 5
             local spacingX = self.Config.SpacingX_Fish or 35
@@ -1838,8 +2010,8 @@ if ProfessionsHelper.db.profile.catSettings[4].enabled and buckets[4] then
                     local col = vIdx % maxCols
                     local row = math.floor(vIdx / maxCols)
                     
-                    local fX = pos.x + (col * spacingX)
-                    local fY = pos.y - (row * spacingY)
+                    local fX = pos.x + layerOffsetX + (col * spacingX)
+                    local fY = pos.y + layerOffsetY - (row * spacingY)
                     
                     -- Frame erstellen
                     local iconFrame = self:CreateFishingIcon(UIParent, item.data.IDs, fX, fY, gKey)

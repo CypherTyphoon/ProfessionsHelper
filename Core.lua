@@ -51,6 +51,17 @@ local defaults = {
         },
         profSubSettings = {}, 
         itemSortOrder = {},
+        layeringSettings = {
+            enabledCategories = { [1] = false, [2] = false, [3] = true, [4] = false },
+            rangeMode = "STANDARD",
+            customRanges = {
+                { min = 0, max = 50 }, { min = 51, max = 100 },
+                { min = 101, max = 150 }, { min = 151, max = 200 },
+                { min = 201, max = 250 }, { min = 251, max = 300 },
+                { min = 301, max = 450 },
+            },
+            selectedLayers = {},
+        },
     }
 }
 
