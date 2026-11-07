@@ -98,11 +98,86 @@ function PH:SetupOptions()
                         end,
                     },
 
+                    requiredSkillFilter = {
+                        name = "Required-Skillfilter",
+                        type = "group",
+                        inline = true,
+                        order = 2,
+                        args = {
+                            description = {
+                                name = "Aktiviere den Required-Skillfilter unabhängig für jede Display-Kategorie. Ist er aktiv, werden Einträge mit required-Wert nur angezeigt, wenn der aktuelle Berufsskill den benötigten Wert erreicht. Einträge ohne gültigen required-Wert bleiben sichtbar. Kategorie 5 wird nicht gefiltert.",
+                                type = "description",
+                                order = 1,
+                                width = "full",
+                            },
+                            filterCategory1 = {
+                                name = "Cat 1 – Balken",
+                                desc = "Required-Skillfilter für Ressourcen-Balken verwenden.",
+                                type = "toggle",
+                                order = 2,
+                                get = function()
+                                    local settings = PH.db.profile.professionSkillFilterCategories or {}
+                                    return settings[1] == true
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.professionSkillFilterCategories = PH.db.profile.professionSkillFilterCategories or {}
+                                    PH.db.profile.professionSkillFilterCategories[1] = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+                            filterCategory2 = {
+                                name = "Cat 2 – Material-Icons",
+                                desc = "Required-Skillfilter für Material-Icons verwenden.",
+                                type = "toggle",
+                                order = 3,
+                                get = function()
+                                    local settings = PH.db.profile.professionSkillFilterCategories or {}
+                                    return settings[2] == true
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.professionSkillFilterCategories = PH.db.profile.professionSkillFilterCategories or {}
+                                    PH.db.profile.professionSkillFilterCategories[2] = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+                            filterCategory3 = {
+                                name = "Cat 3 – Berufs-Icons",
+                                desc = "Required-Skillfilter für Berufs-Icons verwenden.",
+                                type = "toggle",
+                                order = 4,
+                                get = function()
+                                    local settings = PH.db.profile.professionSkillFilterCategories or {}
+                                    return settings[3] == true
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.professionSkillFilterCategories = PH.db.profile.professionSkillFilterCategories or {}
+                                    PH.db.profile.professionSkillFilterCategories[3] = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+                            filterCategory4 = {
+                                name = "Cat 4 – Angel-Matrix",
+                                desc = "Required-Skillfilter für Angel-Matrix verwenden.",
+                                type = "toggle",
+                                order = 5,
+                                get = function()
+                                    local settings = PH.db.profile.professionSkillFilterCategories or {}
+                                    return settings[4] == true
+                                end,
+                                set = function(_, value)
+                                    PH.db.profile.professionSkillFilterCategories = PH.db.profile.professionSkillFilterCategories or {}
+                                    PH.db.profile.professionSkillFilterCategories[4] = value
+                                    PH:GetModule("Visuals"):Init()
+                                end,
+                            },
+                        },
+                    },
+
                     -- Bestandszählung: globale Optionen für die Item-Zählung
                     itemCount = {
                         name = "Bestandszählung",
                         type = "group",
-                        order = 2,
+                        order = 3,
                         args = {
                             description = {
                                 name = "Lege fest, welche zusätzlichen Lagerorte und Gegenstandsarten bei der Bestandszählung berücksichtigt werden. Die Taschen des Charakters werden immer mitgezählt.",
@@ -190,12 +265,12 @@ function PH:SetupOptions()
                 order = 2,
                 args = {
                     info = { type = "description", name = "Layer gruppieren Items nach ihrem vorhandenen required-Wert. Gruppen mit fehlenden oder ungültigen Werten bleiben in der bisherigen Darstellung.", order = 1, width = "full" },
-                    rangeMode = { type = "select", name = "Bereiche", order = 2, width = "full",
+                    rangeMode = { type = "select", name = "Bereiche", order = 4, width = "full",
                         values = { STANDARD = "Standard", CUSTOM = "Benutzerdefiniert" },
                         get = function() return PH.db.profile.layeringSettings.rangeMode or "STANDARD" end,
                         set = function(_, value) PH.db.profile.layeringSettings.rangeMode = value; PH:GetModule("Visuals"):Init() end },
                     categorySelection = {
-                        type = "group", name = "Layering für Kategorien", order = 3,
+                        type = "group", name = "Layering für Kategorien", order = 5,
                         inline = true,
                         args = {
                             category1 = { type = "toggle", name = "Cat 1 – Balken", order = 1, width = "full",
@@ -212,7 +287,7 @@ function PH:SetupOptions()
                                 set = function(_, value) PH.db.profile.layeringSettings.enabledCategories[4] = value; PH:GetModule("Visuals"):Init() end },
                         },
                     },
-                    customHeader = { type = "header", name = "Benutzerdefinierte Bereiche", order = 10 },
+                    customHeader = { type = "header", name = "Benutzerdefinierte Bereiche", order = 11 },
                 },
             },
 

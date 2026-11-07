@@ -8,6 +8,7 @@ RecipeInputMode.frame = nil
 RecipeInputMode.outputBox = nil
 RecipeInputMode.recipeIDBox = nil
 RecipeInputMode.yieldBox = nil
+RecipeInputMode.requiredBox = nil
 RecipeInputMode.nameBox = nil
 RecipeInputMode.reagentBoxes = {}
 
@@ -55,6 +56,8 @@ end
 function RecipeInputMode:BuildLua()
     local recipeIDs = ParseIDs(self.recipeIDBox:GetText())
     local yield = tonumber(Trim(self.yieldBox:GetText()))
+    local requiredText = Trim(self.requiredBox:GetText())
+    local required = requiredText ~= "" and tonumber(requiredText) or nil
     local recipeName = SanitizeName(self.nameBox:GetText())
 
     if #recipeIDs == 0 then
@@ -62,8 +65,13 @@ function RecipeInputMode:BuildLua()
         return
     end
 
-    if not yield or yield < 1 then
+    if not yield or yield < 1 or yield ~= math.floor(yield) then
         self.outputBox:SetText("-- Bitte eine gültige Herstellmenge eingeben.")
+        return
+    end
+
+    if requiredText ~= "" and (not required or required < 0 or required ~= math.floor(required)) then
+        self.outputBox:SetText("-- Bitte einen gültigen Required-Wert eingeben.")
         return
     end
 
@@ -71,6 +79,10 @@ function RecipeInputMode:BuildLua()
 
     table.insert(lines, "local recipe_" .. recipeName .. " = {")
     table.insert(lines, "    yield = " .. yield .. ",")
+
+    if required ~= nil then
+        table.insert(lines, "    required = " .. required .. ",")
+    end
 
     for i = 1, 6 do
         local reagent = self.reagentBoxes[i]
@@ -167,6 +179,16 @@ function RecipeInputMode:CreateFrame()
     self.yieldBox:SetPoint("TOPLEFT", yieldLabel, "BOTTOMLEFT", 0, -6)
     self.yieldBox:SetText("1")
 
+    -- Required Skill
+    local requiredLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    requiredLabel:SetPoint("TOPLEFT", self.yieldBox, "BOTTOMLEFT", 0, -12)
+    requiredLabel:SetText("Required:")
+
+    self.requiredBox = CreateInput(frame, 90, 24)
+    self.requiredBox:SetPoint("TOPLEFT", requiredLabel, "BOTTOMLEFT", 0, -6)
+    self.requiredBox:SetNumeric(true)
+    self.requiredBox:SetMaxLetters(3)
+
     -- Reagenzien-Überschrift
     local reagentHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     reagentHeader:SetPoint("TOPLEFT", self.recipeIDBox, "BOTTOMLEFT", 0, -22)
@@ -262,6 +284,7 @@ function RecipeInputMode:CreateFrame()
     self.nameBox:SetScript("OnTextChanged", UpdateOutput)
     self.recipeIDBox:SetScript("OnTextChanged", UpdateOutput)
     self.yieldBox:SetScript("OnTextChanged", UpdateOutput)
+    self.requiredBox:SetScript("OnTextChanged", UpdateOutput)
 
     for i = 1, 6 do
         self.reagentBoxes[i].idBox:SetScript("OnTextChanged", UpdateOutput)
@@ -282,6 +305,7 @@ function RecipeInputMode:Reset()
     self.nameBox:SetText("NewRecipe")
     self.recipeIDBox:SetText("")
     self.yieldBox:SetText("1")
+    self.requiredBox:SetText("")
 
     for i = 1, 6 do
         self.reagentBoxes[i].idBox:SetText("")

@@ -104,21 +104,27 @@ local function PerformCharacterScan()
     local profile = ProfessionsHelper.db.profile
     -- Reset der Liste, aber wir behalten "AllProf" als Standard
     profile.learnedProfessions = { ["AllProf"] = true }
+    local professionSkillLevels = {}
     local profs = { GetProfessions() }
     for _, index in ipairs(profs) do
         if index then
-            local _, _, _, _, _, _, skillLine = GetProfessionInfo(index)
+            local _, _, skillLevel, _, _, _, skillLine = GetProfessionInfo(index)
             local name = skillLineMapping[skillLine]
-            if name then 
-                profile.learnedProfessions[name] = true 
+            if name then
+                profile.learnedProfessions[name] = true
+                if type(skillLevel) == "number" then
+                    professionSkillLevels[name] = skillLevel
+                end
             end
         end
     end
 
     -- Spezialfall Holzfällen (Spell-Check)
-    if C_SpellBook.IsSpellKnownOrInSpellBook(1256697) then 
-        profile.learnedProfessions["Woodcutting"] = true 
+    if C_SpellBook.IsSpellKnownOrInSpellBook(1256697) then
+        profile.learnedProfessions["Woodcutting"] = true
     end
+
+    return professionSkillLevels
 end
 
 local function GetItemCategoryOverride(itemData)
@@ -135,6 +141,43 @@ local function GetItemCategoryOverride(itemData)
         if saved ~= nil then return saved end
     end
     return nil
+end
+
+local function MeetsProfessionSkillRequirement(category, categoryName, itemData, professionSkillLevels)
+    local profile = ProfessionsHelper.db.profile
+    local cat = tonumber(category)
+    if not cat and categoryName == "Fishing" then cat = 4 end
+    if not cat or cat < 1 or cat > 4 or categoryName == "Wood" then
+        return true
+    end
+
+    local filterSettings = profile.professionSkillFilterCategories or {}
+    if filterSettings[cat] ~= true then return true end
+
+    local required = tonumber(itemData and itemData.required)
+    if not required then return true end
+
+    local professions
+    if cat == 2 then
+        professions = itemData.processingProfs
+    else
+        professions = itemData.gatheringProf
+    end
+
+    local function HasSufficientSkill(profession)
+        local level = professionSkillLevels and professionSkillLevels[profession]
+        return type(level) == "number" and level >= required
+    end
+
+    if type(professions) == "string" then
+        return HasSufficientSkill(professions)
+    elseif type(professions) == "table" then
+        for _, profession in ipairs(professions) do
+            if HasSufficientSkill(profession) then return true end
+        end
+    end
+
+    return false
 end
 
 local function CanPlayerSeeItem(category, itemData, categoryOverride)
@@ -1075,7 +1118,7 @@ end
 
 function Visuals:Init()
     self:ClearFrames()
-    PerformCharacterScan()
+    local professionSkillLevels = PerformCharacterScan()
 
     local learned = ProfessionsHelper.db.profile.learnedProfessions
     local mapID = C_Map.GetBestMapForUnit("player")
@@ -1126,7 +1169,8 @@ function Visuals:Init()
                     end
 
                     for _, cat in ipairs(categoriesToProcess) do
-                        if CanPlayerSeeItem(catName, itemData, cat) then
+                        if CanPlayerSeeItem(catName, itemData, cat)
+                            and MeetsProfessionSkillRequirement(cat, catName, itemData, professionSkillLevels) then
                             local showItem = false
 
                             if catName == "Wood" then showItem = true

@@ -66,6 +66,8 @@ local CATEGORY_IGNORE = {
 
 FishingInputMode.selectedDatabase = "Forever"
 FishingInputMode.selectedProcessingProfs = {}
+FishingInputMode.required = nil
+FishingInputMode.requiredBox = nil
 
 FishingInputMode.itemIDs = {}
 FishingInputMode.itemNames = {}
@@ -350,6 +352,22 @@ function FishingInputMode:BuildLua()
     end
 
     --------------------------------------------------------
+    -- Required Skill
+    --------------------------------------------------------
+
+    local required = tonumber(self.required)
+
+    if required and required >= 0 and required == math.floor(required) then
+        table.insert(
+            lines,
+            fieldIndent ..
+            "required = " ..
+            tostring(required) ..
+            ","
+        )
+    end
+
+    --------------------------------------------------------
     -- Processing Professions
     --------------------------------------------------------
 
@@ -552,6 +570,11 @@ function FishingInputMode:Reset()
     self.itemNames = {}
 
     self.selectedProcessingProfs = {}
+    self.required = nil
+
+    if self.requiredBox then
+        self.requiredBox:SetText("")
+    end
 
     self.newCategoryMode = false
     self.newCategoryExpansion = self.selectedDatabase or "Forever"
@@ -841,12 +864,45 @@ function FishingInputMode:CreateFrame()
 
     self.idBox = idBox
 
-    idBox:SetSize(430, 30)
+    idBox:SetSize(330, 30)
     idBox:SetPoint("TOPLEFT", 100, -84)
     idBox:SetAutoFocus(false)
 
     idBox:SetScript("OnEnterPressed", function()
         self:ApplyIDs()
+    end)
+
+    --------------------------------------------------------
+    -- Required Skill
+    --------------------------------------------------------
+
+    local requiredLabel = contentFrame:CreateFontString(
+        nil,
+        "OVERLAY",
+        "GameFontNormal"
+    )
+
+    requiredLabel:SetPoint("TOPLEFT", 550, -90)
+    requiredLabel:SetText("Required:")
+
+    local requiredBox = CreateFrame(
+        "EditBox",
+        nil,
+        contentFrame,
+        "InputBoxTemplate"
+    )
+
+    self.requiredBox = requiredBox
+
+    requiredBox:SetSize(65, 30)
+    requiredBox:SetPoint("TOPLEFT", 620, -84)
+    requiredBox:SetAutoFocus(false)
+    requiredBox:SetNumeric(true)
+    requiredBox:SetMaxLetters(3)
+    requiredBox:SetScript("OnTextChanged", function(box)
+        local value = box:GetText()
+        self.required = value ~= "" and tonumber(value) or nil
+        self:UpdateOutput()
     end)
 
     local idHint = contentFrame:CreateFontString(

@@ -14,6 +14,7 @@ local defaults = {
     profile = {
         locked = false,
         learnedProfessions = {},
+        professionSkillFilterCategories = { [1] = false, [2] = false, [3] = false, [4] = false },
         fontSize = 10,
         
         -- Design (hier im Profil, damit pro Char anpassbar)
