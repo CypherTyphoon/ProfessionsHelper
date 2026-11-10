@@ -78,7 +78,7 @@ ProfessionsHelperData["Classic"] = {
 -- ==========================================
 -- Gathered + Vendor (sources = Drop, Vendor, gatheringProf= Mining, Skinning, Herbalism, Fishing, Cooking)
 
-ProfessionsHelperData["Classic"].Herbalism = {
+ProfessionsHelperData["Classic"].Herbs = {
 	Silberblatt = { IDs = { 765 }, sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Enchanting", "Tailoring", "Engineering", "Alchemy", "Leatherworking"}, displayCategory = 1 },
 	Maguskoenigskraut = { IDs = { 785 }, sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Enchanting", "Tailoring", "Engineering", "Alchemy", "Leatherworking"}, displayCategory = 1 },
 	Friedensblume = { IDs = { 2447 }, sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Enchanting", "Tailoring", "Engineering", "Alchemy", "Leatherworking"}, displayCategory = 1 },
@@ -112,7 +112,7 @@ ProfessionsHelperData["Classic"].Herbalism = {
 }
 
 
-ProfessionsHelperData["Classic"].MiningOres = {
+ProfessionsHelperData["Classic"].Ores = {
 	Kupfererz = { IDs = { 2770 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
 	Zinnerz = { IDs = { 2771 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
 	Eisenerz = { IDs = { 2772 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
@@ -124,14 +124,14 @@ ProfessionsHelperData["Classic"].MiningOres = {
 	Dunkeleisenerz = { IDs = { 11370 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
 	Elementiumblock = { IDs = { 18562 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Alchemy", "Tailoring", "Leatherworking", "Enchanting" }, displayCategory = 1 },
 }
-ProfessionsHelperData["Classic"].MiningStones = {
+ProfessionsHelperData["Classic"].Stones = {
 	Rauer_Stein = { IDs = { 2835 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 	Grober_Stein = { IDs = { 2836 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 	Schwerer_Stein = { IDs = { 2838 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 	Robuster_Stein = { IDs = { 7912 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 	Verdichteter_Stein = { IDs = { 12365 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 }
-ProfessionsHelperData["Classic"].MiningJeweles = {
+ProfessionsHelperData["Classic"].Jeweles = {
 	Malachit = { IDs = { 774 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 	Tigerauge = { IDs = { 818 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
 	Moosachat = { IDs = { 1206 }, sources = { "Drop", "Reagent" }, gatheringProf = "Mining", displayCategory = 2 },
@@ -158,7 +158,7 @@ ProfessionsHelperData["Classic"].MiningJeweles = {
 }
 
 
-ProfessionsHelperData["Classic"].SkinningLeatherAndHide = {
+ProfessionsHelperData["Classic"].LeatherAndHide = {
     Verdorbene_Lederfetzen = { IDs = { 2934 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
     Leichtes_Leder = { IDs = { 2318 }, required = 20, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
     Mittleres_Leder = { IDs = { 2319 }, required = 100, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
@@ -178,7 +178,7 @@ ProfessionsHelperData["Classic"].SkinningLeatherAndHide = {
     Dicker_Balg = { IDs = { 8169 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
     Unverwuestlicher_Balg = { IDs = { 8171 }, required = 1, sources = { "Drop", "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
 }
-ProfessionsHelperData["Classic"].SkinningScales = {
+ProfessionsHelperData["Classic"].Scales = {
     -- Beast Parts
     Abgenutzte_Drachenschuppe = { IDs = { 8165 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking", "Blacksmithing", "Tailoring" }, displayCategory = 2 },
     Glaenzende_chromatische_Schuppe = { IDs = { 12607 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking", "Blacksmithing", "Tailoring" }, displayCategory = 2 },
@@ -517,7 +517,7 @@ ProfessionsHelperData["Classic"].Tailoring = {
 }
 
 
-ProfessionsHelperData["Classic"].LeatherworkingHides = {
+ProfessionsHelperData["Classic"].Hides = {
     Geschmeidiger_leichter_Balg = { IDs = { 4231 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 3, required = 35 },
     Geschmeidiger_mittlerer_Balg = { IDs = { 4233 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 3, required = 100 },
     Geschmeidiger_schwerer_Balg = { IDs = { 4236 }, sources = { "Crafted" }, gatheringProf = "Leatherworking", processingProfs = { "Engineering", "Blacksmithing", "Tailoring", "Leatherworking" }, displayCategory = 3, required = 150 },

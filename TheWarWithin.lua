@@ -20,7 +20,7 @@ ProfessionsHelperData["The War Within"] = {
 -- ==========================================
 -- Gathered + Vendor (sources = Drop, Vendor, gatheringProf= Mining, Skinning, Herbalism, Fishing, Cooking)
 
-ProfessionsHelperData["The War Within"].Herbalsim = {
+ProfessionsHelperData["The War Within"].Herbs = {
     Mycobloom = { IDs = { 210796, 210797, 210798 }, color = "#FFBC62", sources = { "Drop", "Vendor" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Inscription" }, canExperiment = true, displayCategory = 1 },
     Luredrop = { IDs = { 210799, 210800, 210801 }, color = "#BA6E70", sources = { "Drop", "Vendor" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Inscription" }, canExperiment = true, displayCategory = 1 },
     Orbinid = { IDs = { 210802, 210803, 210804 }, color = "#A65EBA", sources = { "Drop", "Vendor" }, gatheringProf = "Herbalism", processingProfs = { "Alchemy", "Inscription" }, canExperiment = true, displayCategory = 1 },
@@ -32,12 +32,12 @@ ProfessionsHelperData["The War Within"].Herbalsim = {
     Leyline_Residue = { IDs = { 213613 }, sources = { "Drop" }, gatheringProf = "Herbalism", processingProfs = { "Enchanting", "Inscription", "Tailoring", "Engineering", "Alchemy", "Herbalism"}, displayCategory = 2 },
 }
 
-ProfessionsHelperData["The War Within"].MiningOres = {
+ProfessionsHelperData["The War Within"].Ores = {
     Bismuth = { IDs = { 210930, 210931, 210932 }, color = "#80567A", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Jewelcrafting", "Alchemy" }, displayCategory = 1 },
     Aqirite = { IDs = { 210933, 210934, 210935 }, color = "#CA4A35", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Jewelcrafting", "Alchemy" }, displayCategory = 1 },
     Ironclaw_Ore = { IDs = { 210936, 210937, 210938 }, color = "#ACFCF8", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Blacksmithing", "Engineering", "Jewelcrafting", "Alchemy" }, displayCategory = 1 },
 }
-ProfessionsHelperData["The War Within"].MiningStones = {
+ProfessionsHelperData["The War Within"].Stones = {
     Null_Stone = { IDs = { 210939 }, color = "#9F2264", sources = { "Drop", "Vendor" }, gatheringProf = "Mining", processingProfs = { "Enchanting", "Tailoring", "Engineering", "Jewelcrafting", "Blacksmithing" }, displayCategory = 1 },
     Desolate_Talus = { IDs = { 238201, 238212, 238213 }, color = "#80336F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
     Kareshi_Resonating_Stone = { IDs = { 240216 }, color = "#2E349F", sources = { "Drop", "Currency" }, gatheringProf = "Mining", displayCategory = 1 },
@@ -45,13 +45,13 @@ ProfessionsHelperData["The War Within"].MiningStones = {
 }
 
 
-ProfessionsHelperData["The War Within"].SkinningLeatherHideCarapce = {
+ProfessionsHelperData["The War Within"].LeatherHideCarapce = {
     StormChargedLeather = { IDs = { 212664, 212665, 212666 }, color = "#FF5900", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Alchemy" }, displayCategory = 1 },
     GloomChitin = { IDs = { 212667, 212668, 212669 }, color = "#7E94FF", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Alchemy" }, displayCategory = 1 },
     ThunderousHide = { IDs = { 212670, 212672, 212673 }, color = "#FF9F46", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
     SunlessCarapace = { IDs = { 212674, 212675, 212676 }, color = "#FF55EE", sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking" }, displayCategory = 1 },
 }
-ProfessionsHelperData["The War Within"].SkinningBeastParts = {
+ProfessionsHelperData["The War Within"].BeastParts = {
     BottledStorm = { IDs = { 218338 }, sources = { "Drop" }, gatheringProf = "Skinning", processingProfs = { "Leatherworking", "Enchanting" }, displayCategory = 2 },
     KahetiSwarmChitin = { IDs = { 218336 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking" }, displayCategory = 2 },
     HonedBoneShards = { IDs = { 218337 }, sources = { "Drop" }, gatheringProf = "Skinning", extraCategories = { "Beast Part" }, processingProfs = { "Leatherworking" }, displayCategory = 2 },
@@ -120,14 +120,14 @@ ProfessionsHelperData["The War Within"].VendorDrop = {
 -- ==========================================
 -- Crafted - Items (sources = Crafted; gatheringProf = <Category> (Herbalism, Skinning, Cooking, Leatherworking, Blacksmithing, Engineering, Enchanting, Inscription, Tailoring, Jewelcrafting))
 
-ProfessionsHelperData["The War Within"].HerbalismMulch = {
+ProfessionsHelperData["The War Within"].Mulch = {
     MagicalMulch = { IDs = { 219194 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
     ImbuedMulch = { IDs = { 219195 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
     EmpoweredMulch = { IDs = { 219196 }, sources = { "Crafted" }, gatheringProf = "Herbalism", processingProfs = { "Herbalism" }, displayCategory = 3 },
 }
 
 
-ProfessionsHelperData["The War Within"].SkinningBaits = {
+ProfessionsHelperData["The War Within"].Baits = {
 	-- Baits
     ElusiveCreatureLure = { IDs = { 219007 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
     SupremeBeastLure = { IDs = { 219008 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
@@ -138,7 +138,7 @@ ProfessionsHelperData["The War Within"].SkinningBaits = {
     WrithingCreatureLure = { IDs = { 219010 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
     SporefusedCreatureLure = { IDs = { 219011 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Skinning" }, displayCategory = 3 },
 }
-ProfessionsHelperData["The War Within"].SkinningFishingBaits = {
+ProfessionsHelperData["The War Within"].FishingBaits = {
     SpecularRainbowfishLure = { IDs = { 219002 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
     QuietRiverBassLure = { IDs = { 219003 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },
     DornishPikeLure = { IDs = { 219004 }, sources = { "Crafted" }, gatheringProf = "Skinning", processingProfs = { "Fishing" }, displayCategory = 3 },

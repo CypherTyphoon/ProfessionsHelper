@@ -105,7 +105,7 @@ function PH:SetupOptions()
                         order = 2,
                         args = {
                             description = {
-                                name = "Aktiviere den Required-Skillfilter unabhängig für jede Display-Kategorie. Ist er aktiv, werden Einträge mit required-Wert nur angezeigt, wenn der aktuelle Berufsskill den benötigten Wert erreicht. Einträge ohne gültigen required-Wert bleiben sichtbar. Kategorie 5 wird nicht gefiltert.",
+                                name = "Aktiviere den Required-Skillfilter unabhängig für jede Display-Kategorie. Ist er aktiv, werden Einträge mit required-Wert nur angezeigt, wenn der aktuelle Berufsskill den benötigten Wert erreicht. Einträge ohne gültigen required-Wert bleiben sichtbar.",
                                 type = "description",
                                 order = 1,
                                 width = "full",
