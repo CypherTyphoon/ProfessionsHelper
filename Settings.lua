@@ -249,6 +249,196 @@ function PH:SetupOptions()
                                     PH:GetModule("Visuals"):Init()
                                 end,
                             },
+
+                            displayHeader = { name = "Darstellung der Bestände", type = "header", order = 10 },
+                            displayMode = {
+                                name = "Anzeige-Modus",
+                                desc = "Gesamt zeigt wie bisher eine Summe. Getrennt zeigt jeden Lagerort einzeln. Gruppiert addiert Lagerorte anhand ihrer Gruppenzuordnung.",
+                                type = "select", order = 11,
+                                values = { TOTAL = "Gesamt", SPLIT = "Getrennt", GROUPED = "Gruppiert" },
+                                get = function() return (PH.db.profile.itemCountSettings or {}).displayMode or "TOTAL" end,
+                                set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.displayMode = value; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorInfo = { name = "Kürzel: I = Inventar, B = Bank, R = Reagenzienbank, W = Kriegsmeutenbank, U = Uses. Farben gelten für die getrennte Anzeige.", type = "description", order = 12, width = "full" },
+                            colorInventory = {
+                                name = "Farbe: Inventar", type = "color", order = 13, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {})["colorInventory"] or {r=0.35,g=1,b=0.35}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["colorInventory"] = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorBank = {
+                                name = "Farbe: Character Bank", type = "color", order = 14, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {})["colorBank"] or {r=0.35,g=0.75,b=1}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["colorBank"] = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorReagentBank = {
+                                name = "Farbe: Reagent Bank", type = "color", order = 15, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {})["colorReagentBank"] or {r=0.75,g=0.55,b=1}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["colorReagentBank"] = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorAccountBank = {
+                                name = "Farbe: Warband Bank", type = "color", order = 16, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {})["colorAccountBank"] or {r=1,g=0.75,b=0.25}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["colorAccountBank"] = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorUses = {
+                                name = "Farbe: Uses", type = "color", order = 17, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {})["colorUses"] or {r=1,g=0.55,b=0.55}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["colorUses"] = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            countFontSizes = {
+                                name = "Schriftgröße je Kategorie", type = "group", order = 18, inline = true,
+                                args = {
+                                    cat1Header = { name = "Cat 1 – Ressourcen-Balken", type = "header", order = 1 },
+                                    countFontSizeCat1 = {
+                                        name = "Schriftgröße Cat 1", type = "range", order = 2,
+                                        min = 6, max = 18, step = 1,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tonumber(s.countFontSizeCat1) or tonumber(s.countFontSize) or 10 end,
+                                        set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat1 = value; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    countFontSizeCat1Manual = {
+                                        name = "Wert direkt eingeben (6–18)", type = "input", order = 3,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tostring(tonumber(s.countFontSizeCat1) or tonumber(s.countFontSize) or 10) end,
+                                        set = function(_, value) local n = tonumber(value); if not n then return end; n = math.max(6, math.min(18, math.floor(n + 0.5))); PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat1 = n; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    cat2Header = { name = "Cat 2 – Material-Icons", type = "header", order = 4 },
+                                    countFontSizeCat2 = {
+                                        name = "Schriftgröße Cat 2", type = "range", order = 5,
+                                        min = 6, max = 18, step = 1,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tonumber(s.countFontSizeCat2) or tonumber(s.countFontSize) or 12 end,
+                                        set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat2 = value; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    countFontSizeCat2Manual = {
+                                        name = "Wert direkt eingeben (6–18)", type = "input", order = 6,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tostring(tonumber(s.countFontSizeCat2) or tonumber(s.countFontSize) or 12) end,
+                                        set = function(_, value) local n = tonumber(value); if not n then return end; n = math.max(6, math.min(18, math.floor(n + 0.5))); PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat2 = n; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    cat3Header = { name = "Cat 3 – Berufe-Icons", type = "header", order = 7 },
+                                    countFontSizeCat3 = {
+                                        name = "Schriftgröße Cat 3", type = "range", order = 8,
+                                        min = 6, max = 18, step = 1,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tonumber(s.countFontSizeCat3) or tonumber(s.countFontSize) or 10 end,
+                                        set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat3 = value; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    countFontSizeCat3Manual = {
+                                        name = "Wert direkt eingeben (6–18)", type = "input", order = 9,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tostring(tonumber(s.countFontSizeCat3) or tonumber(s.countFontSize) or 10) end,
+                                        set = function(_, value) local n = tonumber(value); if not n then return end; n = math.max(6, math.min(18, math.floor(n + 0.5))); PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat3 = n; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    cat4Header = { name = "Cat 4 – Angeln", type = "header", order = 10 },
+                                    countFontSizeCat4 = {
+                                        name = "Schriftgröße Cat 4", type = "range", order = 11,
+                                        min = 6, max = 18, step = 1,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tonumber(s.countFontSizeCat4) or tonumber(s.countFontSize) or 12 end,
+                                        set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat4 = value; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    countFontSizeCat4Manual = {
+                                        name = "Wert direkt eingeben (6–18)", type = "input", order = 12,
+                                        get = function() local s = PH.db.profile.itemCountSettings or {}; return tostring(tonumber(s.countFontSizeCat4) or tonumber(s.countFontSize) or 12) end,
+                                        set = function(_, value) local n = tonumber(value); if not n then return end; n = math.max(6, math.min(18, math.floor(n + 0.5))); PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.countFontSizeCat4 = n; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                },
+                            },
+                            displayLineBreak = {
+                                name = "Bestandskomponenten untereinander anzeigen", type = "toggle", order = 19,
+                                desc = "Aktiviert Zeilenumbrüche zwischen Inventar, Bank und weiteren Bestandsorten.",
+                                get = function() return (PH.db.profile.itemCountSettings or {}).displayLineBreak ~= false end,
+                                set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.displayLineBreak = value; PH:GetModule("Visuals"):Init() end,
+                            },
+                            itemQualities = {
+                                name = "Item-Qualitäten", type = "group", order = 20, inline = true,
+                                args = {
+                                    qualityInfo = { type = "description", order = 1, width = "full", name = "Qualitätsstufen werden je Item-ID getrennt angezeigt. Die Bestandsorte und deren Farben folgen weiterhin dem oben gewählten Anzeige-Modus." },
+                                    qualityCat1 = {
+                                        name = "Cat 1 – Ressourcen-Balken", type = "toggle", order = 2,
+                                        get = function() local v = (PH.db.profile.itemCountSettings or {}).qualityCat1; return v ~= false end,
+                                        set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.qualityCat1 = value; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    qualityCat2 = {
+                                        name = "Cat 2 – Material-Icons", type = "toggle", order = 3,
+                                        get = function() return (PH.db.profile.itemCountSettings or {}).qualityCat2 == true end,
+                                        set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.qualityCat2 = value; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    qualityCat3 = {
+                                        name = "Cat 3 – Berufs-Icons", type = "toggle", order = 4,
+                                        get = function() return (PH.db.profile.itemCountSettings or {}).qualityCat3 == true end,
+                                        set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.qualityCat3 = value; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    qualityColorHeader = { type = "header", name = "Qualitätsfarben", order = 5 },
+                                    colorQuality1 = {
+                                        name = "Qualität 1 (Bronze)", type = "color", order = 6, hasAlpha = false,
+                                        get = function() local db = PH.db.profile.itemCountSettings or {}; local cat = (PH.db.profile.catSettings or {})[1] or {}; local c = db.colorQuality1 or cat.colorQ1 or {r=1,g=0.5,b=0}; return c.r,c.g,c.b end,
+                                        set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorQuality1 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    colorQuality2 = {
+                                        name = "Qualität 2 (Silber)", type = "color", order = 7, hasAlpha = false,
+                                        get = function() local db = PH.db.profile.itemCountSettings or {}; local cat = (PH.db.profile.catSettings or {})[1] or {}; local c = db.colorQuality2 or cat.colorQ2 or {r=0.8,g=0.8,b=0.8}; return c.r,c.g,c.b end,
+                                        set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorQuality2 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                    colorQuality3 = {
+                                        name = "Qualität 3 (Gold)", type = "color", order = 8, hasAlpha = false,
+                                        get = function() local db = PH.db.profile.itemCountSettings or {}; local cat = (PH.db.profile.catSettings or {})[1] or {}; local c = db.colorQuality3 or cat.colorQ3 or {r=1,g=0.85,b=0}; return c.r,c.g,c.b end,
+                                        set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorQuality3 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                                    },
+                                },
+                            },
+                            groupingHeader = { name = "Gruppenzuordnung", type = "header", order = 30 },
+                            groupingInfo = { name = "Im Modus 'Gruppiert' werden Bestände derselben Gruppe addiert. Gruppe 1–5 kann pro Lagerort frei gewählt werden.", type = "description", order = 31, width = "full" },
+                            groupinventory = {
+                                name = "Inventar → Gruppe", type = "select", order = 32,
+                                values = { [1] = "Gruppe 1", [2] = "Gruppe 2", [3] = "Gruppe 3", [4] = "Gruppe 4", [5] = "Gruppe 5" },
+                                get = function() return (PH.db.profile.itemCountSettings or {})["groupinventory"] or 1 end,
+                                set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["groupinventory"] = value; PH:GetModule("Visuals"):Init() end,
+                            },
+                            groupbank = {
+                                name = "Character Bank → Gruppe", type = "select", order = 33,
+                                values = { [1] = "Gruppe 1", [2] = "Gruppe 2", [3] = "Gruppe 3", [4] = "Gruppe 4", [5] = "Gruppe 5" },
+                                get = function() return (PH.db.profile.itemCountSettings or {})["groupbank"] or 1 end,
+                                set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["groupbank"] = value; PH:GetModule("Visuals"):Init() end,
+                            },
+                            groupreagentBank = {
+                                name = "Reagent Bank → Gruppe", type = "select", order = 34,
+                                values = { [1] = "Gruppe 1", [2] = "Gruppe 2", [3] = "Gruppe 3", [4] = "Gruppe 4", [5] = "Gruppe 5" },
+                                get = function() return (PH.db.profile.itemCountSettings or {})["groupreagentBank"] or 1 end,
+                                set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["groupreagentBank"] = value; PH:GetModule("Visuals"):Init() end,
+                            },
+                            groupaccountBank = {
+                                name = "Warband Bank → Gruppe", type = "select", order = 35,
+                                values = { [1] = "Gruppe 1", [2] = "Gruppe 2", [3] = "Gruppe 3", [4] = "Gruppe 4", [5] = "Gruppe 5" },
+                                get = function() return (PH.db.profile.itemCountSettings or {})["groupaccountBank"] or 1 end,
+                                set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["groupaccountBank"] = value; PH:GetModule("Visuals"):Init() end,
+                            },
+                            groupuses = {
+                                name = "Uses → Gruppe", type = "select", order = 36,
+                                values = { [1] = "Gruppe 1", [2] = "Gruppe 2", [3] = "Gruppe 3", [4] = "Gruppe 4", [5] = "Gruppe 5" },
+                                get = function() return (PH.db.profile.itemCountSettings or {})["groupuses"] or 1 end,
+                                set = function(_, value) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings["groupuses"] = value; PH:GetModule("Visuals"):Init() end,
+                            },
+                            groupColorsHeader = { name = "Gruppenfarben", type = "header", order = 38 },
+                            colorGroup1 = {
+                                name = "Farbe: Gruppe 1", type = "color", order = 39, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {}).colorGroup1 or {r=1,g=1,b=1}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorGroup1 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorGroup2 = {
+                                name = "Farbe: Gruppe 2", type = "color", order = 40, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {}).colorGroup2 or {r=1,g=1,b=1}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorGroup2 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorGroup3 = {
+                                name = "Farbe: Gruppe 3", type = "color", order = 41, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {}).colorGroup3 or {r=1,g=1,b=1}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorGroup3 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorGroup4 = {
+                                name = "Farbe: Gruppe 4", type = "color", order = 42, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {}).colorGroup4 or {r=1,g=1,b=1}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorGroup4 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
+                            colorGroup5 = {
+                                name = "Farbe: Gruppe 5", type = "color", order = 43, hasAlpha = false,
+                                get = function() local c = (PH.db.profile.itemCountSettings or {}).colorGroup5 or {r=1,g=1,b=1}; return c.r,c.g,c.b end,
+                                set = function(_, r, g, b) PH.db.profile.itemCountSettings = PH.db.profile.itemCountSettings or {}; PH.db.profile.itemCountSettings.colorGroup5 = {r=r,g=g,b=b}; PH:GetModule("Visuals"):Init() end,
+                            },
                         },
                     },
 
@@ -392,74 +582,8 @@ function PH:SetupOptions()
                         end,
                     },
 
-                    colorQ1 = {
-                        name = "Farbe Qualität 1 (Bronze)",
-                        type = "color",
-                        order = 12,
 
-                        set = function(_, r, g, b)
-                            PH.db.profile.catSettings[1].colorQ1 = {
-                                r = r,
-                                g = g,
-                                b = b
-                            }
 
-                            PH:GetModule("Visuals"):Init()
-                        end,
-
-                        get = function()
-                            local c = PH.db.profile.catSettings[1].colorQ1
-                                or {r = 1, g = 0.5, b = 0}
-
-                            return c.r, c.g, c.b
-                        end,
-                    },
-
-                    colorQ2 = {
-                        name = "Farbe Qualität 2 (Silber)",
-                        type = "color",
-                        order = 13,
-
-                        set = function(_, r, g, b)
-                            PH.db.profile.catSettings[1].colorQ2 = {
-                                r = r,
-                                g = g,
-                                b = b
-                            }
-
-                            PH:GetModule("Visuals"):Init()
-                        end,
-
-                        get = function()
-                            local c = PH.db.profile.catSettings[1].colorQ2
-                                or {r = 0.8, g = 0.8, b = 0.8}
-
-                            return c.r, c.g, c.b
-                        end,
-                    },
-
-                    colorQ3 = {
-                        name = "Farbe Qualität 3 (Gold)",
-                        type = "color",
-                        order = 14,
-
-                        set = function(_, r, g, b)
-                            PH.db.profile.catSettings[1].colorQ3 = {
-                                r = r,
-                                g = g,
-                                b = b
-                            }
-
-                            PH:GetModule("Visuals"):Init()
-                        end,
-
-                        get = function()
-                            local c = PH.db.profile.catSettings[1].colorQ3
-                                or {r = 1, g = 0.85, b = 0}
-
-                            return c.r, c.g, c.b
-                        end,
-                    },
 
                     defaultBarColor = {
                         name = "Standard Balkenfarbe",

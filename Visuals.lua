@@ -40,6 +40,134 @@ function Visuals:GetItemCount(itemID)
     ) or 0
 end
 
+-- Ermittelt die Bestände getrennt nach Lagerort. Die Taschen bilden die Basis;
+-- die weiteren Werte werden über gezielte API-Abfragen als Differenz ermittelt.
+function Visuals:GetItemCountBreakdown(itemID)
+    if type(itemID) ~= "number" and type(itemID) ~= "string" then
+        return { inventory = 0, bank = 0, uses = 0, reagentBank = 0, accountBank = 0 }
+    end
+
+    local inventory = C_Item.GetItemCount(itemID, false, false, false, false) or 0
+    local bankTotal = C_Item.GetItemCount(itemID, true, false, false, false) or inventory
+    local usesTotal = C_Item.GetItemCount(itemID, false, true, false, false) or inventory
+    local reagentTotal = C_Item.GetItemCount(itemID, false, false, true, false) or inventory
+    local accountTotal = C_Item.GetItemCount(itemID, false, false, false, true) or inventory
+
+    return {
+        inventory = inventory,
+        bank = math.max(0, bankTotal - inventory),
+        uses = math.max(0, usesTotal - inventory),
+        reagentBank = math.max(0, reagentTotal - inventory),
+        accountBank = math.max(0, accountTotal - inventory),
+    }
+end
+
+local COUNT_COMPONENTS = {
+    { key = "inventory", label = "I", colorKey = "colorInventory", settingKey = nil },
+    { key = "bank", label = "B", colorKey = "colorBank", settingKey = "includeBank" },
+    { key = "reagentBank", label = "R", colorKey = "colorReagentBank", settingKey = "includeReagentBank" },
+    { key = "accountBank", label = "W", colorKey = "colorAccountBank", settingKey = "includeAccountBank" },
+    { key = "uses", label = "U", colorKey = "colorUses", settingKey = "includeUses" },
+}
+
+local DEFAULT_COUNT_COLORS = {
+    colorInventory = { r = 0.35, g = 1, b = 0.35 },
+    colorBank = { r = 0.35, g = 0.75, b = 1 },
+    colorReagentBank = { r = 0.75, g = 0.55, b = 1 },
+    colorAccountBank = { r = 1, g = 0.75, b = 0.25 },
+    colorUses = { r = 1, g = 0.55, b = 0.55 },
+}
+
+local function ColorText(value, color)
+    return string.format("|cff%02x%02x%02x%d|r",
+        math.floor((color.r or 1) * 255),
+        math.floor((color.g or 1) * 255),
+        math.floor((color.b or 1) * 255), value)
+end
+
+-- Zentrale Darstellung für Bestände und optionale Qualitätsstufen.
+function Visuals:GetItemCountDisplay(itemIDs, categoryID)
+    if type(itemIDs) ~= "table" then itemIDs = { itemIDs } end
+    local profile = ProfessionsHelper.db and ProfessionsHelper.db.profile
+    local settings = profile and profile.itemCountSettings or {}
+    local legacyQualityColors = profile and profile.catSettings and profile.catSettings[1] or {}
+    local mode = settings.displayMode or "TOTAL"
+    local separator = settings.displayLineBreak == false and "  " or "\n"
+
+    -- Qualitätsstufen bleiben einzeln sichtbar, werden aber über dieselbe
+    -- Bestandsdarstellung (Gesamt/Getrennt/Gruppiert) formatiert.
+    local qualityEnabled = categoryID and settings["qualityCat" .. categoryID]
+    if categoryID == 1 and settings.qualityCat1 == nil then qualityEnabled = true end
+    if qualityEnabled and #itemIDs > 1 then
+        local qualityParts, qualityTotal = {}, 0
+        local qualityDefaults = {
+            { r = 1, g = 0.5, b = 0 },
+            { r = 0.8, g = 0.8, b = 0.8 },
+            { r = 1, g = 0.85, b = 0 },
+        }
+        for index, itemID in ipairs(itemIDs) do
+            local display, total = self:GetItemCountDisplay({ itemID })
+            qualityTotal = qualityTotal + total
+            if display ~= "" then
+                local qualityIndex = math.min(index, 3)
+                local color = settings["colorQuality" .. qualityIndex]
+                    or legacyQualityColors["colorQ" .. qualityIndex]
+                    or qualityDefaults[qualityIndex]
+                local prefix = string.format("|cff%02x%02x%02xQ%d|r ",
+                    math.floor((color.r or 1) * 255),
+                    math.floor((color.g or 1) * 255),
+                    math.floor((color.b or 1) * 255), index)
+                qualityParts[#qualityParts + 1] = prefix .. display
+            end
+        end
+        return table.concat(qualityParts, separator), qualityTotal
+    end
+
+    if mode == "TOTAL" then
+        local total = 0
+        for _, id in ipairs(itemIDs) do total = total + self:GetItemCount(id) end
+        return total > 0 and tostring(total) or "", total
+    end
+
+    local totals = { inventory = 0, bank = 0, uses = 0, reagentBank = 0, accountBank = 0 }
+    for _, id in ipairs(itemIDs) do
+        local values = self:GetItemCountBreakdown(id)
+        for key in pairs(totals) do totals[key] = totals[key] + (values[key] or 0) end
+    end
+
+    local parts, grandTotal = {}, 0
+    if mode == "GROUPED" then
+        local groups = {}
+        for _, component in ipairs(COUNT_COMPONENTS) do
+            local enabled = not component.settingKey or settings[component.settingKey] ~= false
+            local value = enabled and (totals[component.key] or 0) or 0
+            if value > 0 then
+                local group = math.max(1, math.min(5, tonumber(settings["group" .. component.key]) or 1))
+                groups[group] = (groups[group] or 0) + value
+                grandTotal = grandTotal + value
+            end
+        end
+        for group = 1, 5 do
+            local value = groups[group]
+            if value and value > 0 then
+                local color = settings["colorGroup" .. group] or { r = 1, g = 1, b = 1 }
+                parts[#parts + 1] = "G" .. group .. " " .. ColorText(value, color)
+            end
+        end
+    else
+        for _, component in ipairs(COUNT_COMPONENTS) do
+            local enabled = not component.settingKey or settings[component.settingKey] ~= false
+            local value = enabled and (totals[component.key] or 0) or 0
+            grandTotal = grandTotal + value
+            if value > 0 then
+                local color = settings[component.colorKey] or DEFAULT_COUNT_COLORS[component.colorKey]
+                parts[#parts + 1] = component.label .. " " .. ColorText(value, color)
+            end
+        end
+    end
+    return table.concat(parts, separator), grandTotal
+end
+
 local skillLineMapping = { 
     [171] = "Alchemy", [164] = "Blacksmithing", [185] = "Cooking", 
     [333] = "Enchanting", [202] = "Engineering", [356] = "Fishing", 
@@ -589,7 +717,7 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
             
             -- ERWEITERTE FARB-LOGIK:
             -- 1. Schaut in spezifischen Settings (falls übergeben)
-            -- 2. Schaut in catSettings[1] (da liegen jetzt colorQ1, colorQ2 etc.)
+            -- 2. Legacy-Fallback aus catSettings[1] für bestehende Profile
             -- 3. Schaut in global (Fallback)
             -- 4. Nutzt ein hartcodiertes Default
             local c = settings[colorKey] or catDefault[colorKey] or gDB[colorKey] or defaultColor
@@ -600,56 +728,34 @@ function Visuals:CreateBar(name, parent, itemIDs, posX, posY, barColor, customSe
             return t
         end
 
-        -- Wir übergeben Standard-Farben für den Fall, dass die DB leer ist
-        local tB = CreateCenteredText("colorQ1", {r=1, g=0.5, b=0})   -- Orange (Qualität 1)
-        local tS = CreateCenteredText("colorQ2", {r=0.8, g=0.8, b=0.8}) -- Silber (Qualität 2)
-        local tG = CreateCenteredText("colorQ3", {r=1, g=0.85, b=0})  -- Gold (Qualität 3)
+        -- Ein gemeinsames Textfeld nutzt die zentrale Bestandsdarstellung.
+        local tS = CreateCenteredText("colorInventory", DEFAULT_COUNT_COLORS.colorInventory)
 
     -- 6. Update-Logik
     local function Update()
-        local b = self:GetItemCount(itemIDs[1] or 0)
-        local s = self:GetItemCount(itemIDs[2] or 0)
-        local g = itemIDs[3] and self:GetItemCount(itemIDs[3]) or 0
-        
-        tB:ClearAllPoints()
+        local display, total = self:GetItemCountDisplay(itemIDs, 1)
         tS:ClearAllPoints()
-        tG:ClearAllPoints()
+        tS:Show()
+        tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
+        tS:SetWidth(barW + 10)
+        local countSettings = (ProfessionsHelper.db.profile.itemCountSettings or {})
+        local countFontSize = tonumber(countSettings.countFontSizeCat1) or tonumber(countSettings.countFontSize) or 10
+        self:ApplyFontStyle(tS, countFontSize, 1)
+        tS:SetText(display)
+        local countColor = countSettings.colorInventory or DEFAULT_COUNT_COLORS.colorInventory
+        tS:SetTextColor(countColor.r or 1, countColor.g or 1, countColor.b or 1)
 
-        if not itemIDs[3] then 
-            -- FALL: Nur 2 Qualitätsstufen vorhanden
-            tB:Hide() -- Wir verstecken den "Bronze" Text
-            
-            tS:Show()
-            tS:SetPoint("CENTER", bar, "CENTER", 0, 10)
-            tS:SetText(b > 0 and b or "") -- Menge von ID 1 wird als Silber angezeigt
-            
-            tG:Show()
-            tG:SetPoint("CENTER", bar, "CENTER", 0, -10)
-            tG:SetText(s > 0 and s or "") -- Menge von ID 2 wird als Gold angezeigt
-        else 
-            -- FALL: Standard (3 Qualitäten)
-            tB:Show()
-            tB:SetPoint("CENTER", bar, "CENTER", 0, 15)
-            tB:SetText(b > 0 and b or "")
-            
-            tS:Show()
-            tS:SetPoint("CENTER", bar, "CENTER", 0, 0)
-            tS:SetText(s > 0 and s or "")
-            
-            tG:Show()
-            tG:SetPoint("CENTER", bar, "CENTER", 0, -15)
-            tG:SetText(g > 0 and g or "")
-        end
-
-        local total = b + s + g
         bar:SetMinMaxValues(0, 1000)
         bar:SetValue(total)
-        
-        local dID = (g > 0 and itemIDs[3]) or (s > 0 and itemIDs[2]) or itemIDs[1]
-        if dID then icon:SetTexture(C_Item.GetItemIconByID(dID)) end
+
+        local displayItemID = itemIDs[1]
+        for _, itemID in ipairs(itemIDs) do
+            if self:GetItemCount(itemID) > 0 then displayItemID = itemID end
+        end
+        if displayItemID then icon:SetTexture(C_Item.GetItemIconByID(displayItemID)) end
         frame:SetAlpha(total == 0 and 0.4 or 1.0)
     end
-    
+
     frame:RegisterEvent("BAG_UPDATE_DELAYED")
     frame:SetScript("OnEvent", Update)
     Update()
@@ -706,11 +812,12 @@ function Visuals:CreateMaterialIcon(parent, ids, x, y, profName, achievementID)
 
     local function Update()
         -- Items zählen
-        local total = 0
-        for _, id in ipairs(ids) do 
-            total = total + self:GetItemCount(id) 
-        end
-        text:SetText(total > 0 and total or "")
+        local display, total = self:GetItemCountDisplay(ids, 2)
+        local countSettings = (ProfessionsHelper.db.profile.itemCountSettings or {})
+        self:ApplyFontStyle(text, tonumber(countSettings.countFontSizeCat2) or tonumber(countSettings.countFontSize) or fSize, 2)
+        text:SetWidth(140)
+        text:SetJustifyH("CENTER")
+        text:SetText(display)
         icon:SetDesaturated(total == 0); icon:SetAlpha(total == 0 and 0.4 or 1.0)
 
         -- Balken-Logik (Sicherstellen, dass er richtig füllt)
@@ -797,15 +904,12 @@ function Visuals:CreateProfessionIcon(parent, ids, x, y, profName)
 
     local function Update()
         -- Bestand berechnen
-        local totalOwned = 0
-        if type(ids) == "table" then
-            for _, id in ipairs(ids) do 
-                totalOwned = totalOwned + self:GetItemCount(id) 
-            end
-        else
-            totalOwned = self:GetItemCount(ids)
-        end
-        textStock:SetText(totalOwned > 0 and totalOwned or "")
+        local countSettings = (ProfessionsHelper.db.profile.itemCountSettings or {})
+        local stockDisplay, totalOwned = self:GetItemCountDisplay(ids, 3)
+        self:ApplyFontStyle(textStock, tonumber(countSettings.countFontSizeCat3) or tonumber(countSettings.countFontSize) or 10, 3)
+        textStock:SetWidth(120)
+        textStock:SetJustifyH("LEFT")
+        textStock:SetText(stockDisplay)
 
         -- Yield Logik: only display a yield when all recipe alternatives agree.
         local recipeEntry = self:GetRecipeEntry(frame.itemID)
@@ -941,11 +1045,12 @@ function Visuals:CreateFishingIcon(parent, ids, x, y, settingKey)
 
     local function Update()
         -- 1. Bestand zählen
-        local total = 0
-        for _, id in ipairs(ids) do 
-            total = total + self:GetItemCount(id) 
-        end
-        text:SetText(total > 0 and total or "")
+        local display, total = self:GetItemCountDisplay(ids)
+        local countSettings = (ProfessionsHelper.db.profile.itemCountSettings or {})
+        self:ApplyFontStyle(text, tonumber(countSettings.countFontSizeCat4) or tonumber(countSettings.countFontSize) or fSize, 4)
+        text:SetWidth(140)
+        text:SetJustifyH("CENTER")
+        text:SetText(display)
         icon:SetDesaturated(total == 0)
         icon:SetAlpha(total == 0 and 0.4 or 1.0)
 
