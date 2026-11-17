@@ -44,7 +44,6 @@ local function GetActiveDatabase()
     return nil
 end
 
-
 ------------------------------------------------------------
 -- DYNAMISCHE SETTINGS AKTUALISIEREN
 ------------------------------------------------------------

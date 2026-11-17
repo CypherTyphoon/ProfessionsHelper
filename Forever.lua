@@ -766,7 +766,6 @@ ProfessionsHelperData["Forever"].Skills = {
 -- ==========================================
 -- Recipes of professions
 -- ==========================================
-
 ProfessionsHelperData['Forever'].RecipeDB = {}
     -- ========================================
     -- Herbalism

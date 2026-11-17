@@ -20,8 +20,8 @@ Visuals.Config = {
     RowHeight = 60
 }
 
--- Zentrale Item-Zählung: Taschen des Charakters sind immer enthalten.
--- Die vier optionalen Lagerorte/Filter werden über die Settings gesteuert.
+--- Zentrale Item-Zählung: Taschen des Charakters sind immer enthalten.
+--- Die vier optionalen Lagerorte/Filter werden über die Settings gesteuert.
 function Visuals:GetItemCount(itemID)
     if type(itemID) ~= "number" and type(itemID) ~= "string" then
         return 0
