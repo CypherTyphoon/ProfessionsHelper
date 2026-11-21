@@ -1299,7 +1299,7 @@ do
 
     local recipe_ThickLeather = {
         yield = 1,
-        { ids = { 4234 }, amount = 3 },
+        { ids = { 4234 }, amount = 6 },
     }
 
     local recipe_RuggedLeather = {

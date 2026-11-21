@@ -17,6 +17,18 @@ local MATRIX_CATEGORIES = {
 
 local CATEGORY_ORDER = { 1, 2, 3 }
 
+local NAV_ITEMS = {
+    { key = "matrix", label = "PHMatrix", icon = 4549173, iconName = "inv-10-inscription2-repcontracts-scroll-02-uprez-color5" },
+    { key = "cat2", label = "Material-Icons", icon = 236994, iconName = "inv-crate-07" },
+    { key = "cat3", label = "Berufs-Icons", icon = 136247, iconName = "trade-leatherworking" },
+    { key = "settings", label = "Einstellungen", icon = 7349175, iconName = "ui-hud-actionbar-keyring" },
+}
+
+local DISPLAY_MODES = {
+    STANDARD = { label = "isInCity", description = "Nur in Städten" },
+    EVERYWHERE = { label = "isCurrentExp", description = "Innerhalb der aktuellen Expansion" },
+}
+
 local ROW_HEIGHT = 42
 local ICON_SIZE = 28
 
@@ -43,6 +55,8 @@ local function GetProfile()
     local profile = ProfessionsHelper.db.profile
     profile.itemCategoryOverrides =
         profile.itemCategoryOverrides or {}
+    profile.itemDisplayModeOverrides =
+        profile.itemDisplayModeOverrides or {}
 
     return profile
 end
@@ -231,6 +245,38 @@ end
 
 
 ------------------------------------------------------------
+-- ANZEIGEREGELN FÜR CAT 2 UND CAT 3
+------------------------------------------------------------
+
+function ItemMatrix:GetDisplayMode(item)
+    local profile = GetProfile()
+    local ids = type(item) == "table" and item.ids or { item }
+    if profile then
+        for _, itemID in ipairs(ids or {}) do
+            local mode = profile.itemDisplayModeOverrides[tostring(itemID)]
+            if mode == "EVERYWHERE" or mode == "STANDARD" then
+                return mode
+            end
+        end
+    end
+    return "STANDARD"
+end
+
+function ItemMatrix:SetDisplayMode(item, mode)
+    local profile = GetProfile()
+    if not profile or not item then return end
+    if mode ~= "STANDARD" and mode ~= "EVERYWHERE" then return end
+
+    for _, itemID in ipairs(item.ids or { item.id or item }) do
+        profile.itemDisplayModeOverrides[tostring(itemID)] = mode
+    end
+
+    self:RefreshRows()
+    self:RefreshVisuals()
+end
+
+
+------------------------------------------------------------
 -- EIGENER BERUFS-SCAN (analog zu Visuals.lua)
 ------------------------------------------------------------
 
@@ -365,7 +411,24 @@ function ItemMatrix:CollectItems()
             end
         end
     end
+    -- Einheitliche Primärquelle bestimmen, da pairs() keine feste Reihenfolge liefert.
+    for _, item in ipairs(self.items) do
+        table.sort(item.databaseEntries, function(a, b)
+            local categoryA = tostring(a.sourceCategory or ""):lower()
+            local categoryB = tostring(b.sourceCategory or ""):lower()
+            if categoryA ~= categoryB then return categoryA < categoryB end
+            return tostring(a.name or ""):lower() < tostring(b.name or ""):lower()
+        end)
+        if item.databaseEntries[1] then
+            item.sourceCategory = item.databaseEntries[1].sourceCategory
+        end
+    end
+
+    -- Datenbank-Kategorie zuerst, Itemname innerhalb der Gruppe.
     table.sort(self.items, function(a, b)
+        local categoryA = tostring(a.sourceCategory or "Unbekannt"):lower()
+        local categoryB = tostring(b.sourceCategory or "Unbekannt"):lower()
+        if categoryA ~= categoryB then return categoryA < categoryB end
         local nameA = GetItemName(a.id) or a.name or ""
         local nameB = GetItemName(b.id) or b.name or ""
         return nameA:lower() < nameB:lower()
@@ -439,194 +502,305 @@ function ItemMatrix:SetItemCategory(item, category, enabled)
     end
 
     self:SetCategories(item, categories)
+    self:RefreshRows()
     self:RefreshVisuals()
 end
 
 
 ------------------------------------------------------------
--- MATRIX-ZEILE ERSTELLEN
+-- ZEILEN- UND ANSICHTSRENDERING
 ------------------------------------------------------------
 
-function ItemMatrix:CreateRow(item, index)
-    local row = CreateFrame("Frame", nil, self.content)
+function ItemMatrix:GetActiveDisplayRuleText(item, categories)
+    categories = categories or self:GetCategories(item, item.data)
 
-    row:SetHeight(ROW_HEIGHT)
-    row:SetPoint(
-        "TOPLEFT",
-        0,
-        -32 - ((index - 1) * ROW_HEIGHT)
-    )
-    row:SetPoint(
-        "TOPRIGHT",
-        0,
-        -32 - ((index - 1) * ROW_HEIGHT)
-    )
+    -- Die Spalte zeigt die aktuell ausgewählten Kategorien in fester Reihenfolge.
+    -- Alle Kombinationen der drei Kategorie-Buttons sind damit abgedeckt.
+    local labels = {}
 
-    -- Hintergrund
-    local background = row:CreateTexture(nil, "BACKGROUND")
-    background:SetAllPoints()
+    if categories[1] then table.insert(labels, "Balken") end
+    if categories[2] then table.insert(labels, "Material-Icon") end
+    if categories[3] then table.insert(labels, "Berufs-Icon") end
 
-    if index % 2 == 0 then
-        background:SetColorTexture(1, 1, 1, 0.035)
-    else
-        background:SetColorTexture(1, 1, 1, 0.015)
+    if #labels == 0 then
+        return "—"
     end
 
-    -- Icon
+    return table.concat(labels, " / ")
+end
+
+function ItemMatrix:CreateMatrixRow(item, index, yOffset)
+    local row = CreateFrame("Frame", nil, self.content)
+    row:SetHeight(ROW_HEIGHT)
+    local y = yOffset or (32 + ((index - 1) * ROW_HEIGHT))
+    row:SetPoint("TOPLEFT", 0, -y)
+    row:SetPoint("TOPRIGHT", 0, -y)
+
+    local background = row:CreateTexture(nil, "BACKGROUND")
+    background:SetAllPoints()
+    background:SetColorTexture(1, 1, 1, index % 2 == 0 and 0.035 or 0.015)
+
     local icon = row:CreateTexture(nil, "ARTWORK")
     icon:SetSize(ICON_SIZE, ICON_SIZE)
     icon:SetPoint("LEFT", 8, 0)
+    icon:SetTexture(GetItemIcon(item.id) or "Interface\\Icons\\INV_Misc_QuestionMark")
 
-    icon:SetTexture(
-        GetItemIcon(item.id)
-        or "Interface\\Icons\\INV_Misc_QuestionMark"
-    )
-
-    -- Name
-    local nameText = row:CreateFontString(
-        nil,
-        "OVERLAY",
-        "GameFontNormal"
-    )
-
+    local nameText = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     nameText:SetPoint("LEFT", icon, "RIGHT", 10, 0)
-    nameText:SetWidth(330)
+    nameText:SetWidth(235)
     nameText:SetJustifyH("LEFT")
     nameText:SetWordWrap(false)
-
     local displayName = GetItemName(item.id) or item.name or ("Item " .. tostring(item.id))
-    if #item.ids > 1 then
-        local idList = {}
-        for _, id in ipairs(item.ids) do table.insert(idList, tostring(id)) end
-        displayName = displayName .. " (IDs: " .. table.concat(idList, ", ") .. ")"
-    end
     nameText:SetText(displayName)
 
-    row.nameText = nameText
-    row.icon = icon
-
-    -- Checkboxen
     local categories = self:GetCategories(item, item.data)
+    local categoryButtons = {
+        { category = 1, label = "Balken", x = 265, width = 88 },
+        { category = 2, label = "Material-Icon", x = 357, width = 112 },
+        { category = 3, label = "Berufs-Icon", x = 473, width = 108 },
+    }
 
-    for position, category in ipairs(CATEGORY_ORDER) do
-        local check = CreateFrame(
-            "CheckButton",
-            nil,
-            row,
-            "UICheckButtonTemplate"
-        )
-
-        check:SetSize(26, 26)
-        check:SetPoint(
-            "LEFT",
-            row,
-            "LEFT",
-            470 + ((position - 1) * 75),
-            0
-        )
-
-        check:SetChecked(categories[category] == true)
-
-        check:SetScript("OnClick", function(button)
-            self:SetItemCategory(
-                item,
-                category,
-                button:GetChecked() == true
-            )
+    for _, buttonInfo in ipairs(categoryButtons) do
+        local category = buttonInfo.category
+        local label = buttonInfo.label
+        local button = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
+        button:SetSize(buttonInfo.width, 25)
+        button:SetPoint("LEFT", row, "LEFT", buttonInfo.x, 0)
+        -- Buttons bleiben immer aktiv, damit sich die Auswahl direkt
+        -- wieder umschalten lässt. Der Text benennt den Zustand eindeutig.
+        local isSelected = categories[category] == true
+        button:SetText(label .. (isSelected and " an" or " aus"))
+        button:Enable()
+        button:SetAlpha(isSelected and 0.65 or 1)
+        button:SetScript("OnClick", function()
+            self:SetItemCategory(item, category, not isSelected)
         end)
-
-        row["check" .. category] = check
+        row["categoryButton" .. category] = button
     end
 
-    -- Tooltip
-    row:EnableMouse(true)
+    local ruleText = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    ruleText:SetPoint("LEFT", row, "LEFT", 592, 0)
+    ruleText:SetWidth(185)
+    ruleText:SetJustifyH("LEFT")
+    ruleText:SetWordWrap(false)
+    ruleText:SetText(self:GetActiveDisplayRuleText(item, categories))
+    row.activeRuleText = ruleText
 
+    row:EnableMouse(true)
     row:SetScript("OnEnter", function(frame)
         GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
         GameTooltip:SetItemByID(item.id)
+        GameTooltip:AddLine("Kategorien per Button zuordnen oder entfernen.", 1, 1, 1)
+        GameTooltip:AddLine("Aktive Anzeigeregel: " .. self:GetActiveDisplayRuleText(item, categories), 0.7, 0.85, 1)
         GameTooltip:Show()
     end)
-
-    row:SetScript("OnLeave", function()
-        GameTooltip:Hide()
-    end)
-
+    row:SetScript("OnLeave", function() GameTooltip:Hide() end)
     table.insert(self.rows, row)
-
     return row
 end
 
+function ItemMatrix:CreateDisplayModeRow(item, category, index, yOffset)
+    local row = CreateFrame("Frame", nil, self.content)
+    row:SetHeight(ROW_HEIGHT)
+    local y = yOffset or (32 + ((index - 1) * ROW_HEIGHT))
+    row:SetPoint("TOPLEFT", 0, -y)
+    row:SetPoint("TOPRIGHT", 0, -y)
 
-------------------------------------------------------------
--- HEADER ERSTELLEN
-------------------------------------------------------------
+    local background = row:CreateTexture(nil, "BACKGROUND")
+    background:SetAllPoints()
+    background:SetColorTexture(1, 1, 1, index % 2 == 0 and 0.035 or 0.015)
 
-function ItemMatrix:CreateHeader()
+    local icon = row:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(ICON_SIZE, ICON_SIZE)
+    icon:SetPoint("LEFT", 8, 0)
+    icon:SetTexture(GetItemIcon(item.id) or "Interface\\Icons\\INV_Misc_QuestionMark")
+
+    local nameText = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    nameText:SetPoint("LEFT", icon, "RIGHT", 10, 0)
+    nameText:SetWidth(300)
+    nameText:SetJustifyH("LEFT")
+    nameText:SetWordWrap(false)
+    nameText:SetText(GetItemName(item.id) or item.name or ("Item " .. tostring(item.id)))
+
+    local mode = self:GetDisplayMode(item)
+    local status = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    status:SetPoint("LEFT", row, "LEFT", 345, 0)
+    status:SetWidth(130)
+    status:SetJustifyH("LEFT")
+    status:SetText(DISPLAY_MODES[mode].label)
+
+    local cityButton = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
+    cityButton:SetSize(105, 25)
+    cityButton:SetPoint("RIGHT", row, "RIGHT", -118, 0)
+    cityButton:SetText("isInCity")
+    cityButton:SetScript("OnClick", function() self:SetDisplayMode(item, "STANDARD") end)
+
+    local expButton = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
+    expButton:SetSize(105, 25)
+    expButton:SetPoint("RIGHT", row, "RIGHT", -8, 0)
+    expButton:SetText("isCurrentExp")
+    expButton:SetScript("OnClick", function() self:SetDisplayMode(item, "EVERYWHERE") end)
+
+    if mode == "STANDARD" then
+        cityButton:Disable()
+        expButton:Enable()
+    else
+        cityButton:Enable()
+        expButton:Disable()
+    end
+
+    row:EnableMouse(true)
+    row:SetScript("OnEnter", function(frame)
+        GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
+        GameTooltip:SetItemByID(item.id)
+        GameTooltip:AddLine(DISPLAY_MODES[mode].description, 1, 1, 1)
+        GameTooltip:Show()
+    end)
+    row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    table.insert(self.rows, row)
+    return row
+end
+
+function ItemMatrix:CreateDatabaseGroupHeader(categoryName, yOffset)
     local header = CreateFrame("Frame", nil, self.content)
+    header:SetHeight(26)
+    header:SetPoint("TOPLEFT", 0, -yOffset)
+    header:SetPoint("TOPRIGHT", 0, -yOffset)
 
+    local background = header:CreateTexture(nil, "BACKGROUND")
+    background:SetAllPoints()
+    background:SetColorTexture(0.65, 0.48, 0.12, 0.16)
+
+    local label = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    label:SetPoint("LEFT", header, "LEFT", 10, 0)
+    label:SetText(tostring(categoryName or "Unbekannt"))
+
+    table.insert(self.rows, header)
+    return header
+end
+
+local function GetDatabaseCategoryName(item)
+    return tostring(item.sourceCategory or "Unbekannt")
+end
+
+function ItemMatrix:CreateHeader(title, modeHeader)
+    local header = CreateFrame("Frame", nil, self.content)
     header:SetHeight(32)
     header:SetPoint("TOPLEFT", 0, 0)
     header:SetPoint("TOPRIGHT", 0, 0)
 
-    local title = header:CreateFontString(
-        nil,
-        "OVERLAY",
-        "GameFontHighlight"
-    )
+    local itemTitle = header:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    itemTitle:SetPoint("LEFT", 12, 0)
+    itemTitle:SetText(title or "Item")
 
-    title:SetPoint("LEFT", 12, 0)
-    title:SetText("Item")
+    if modeHeader then
+        local ruleTitle = header:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        ruleTitle:SetPoint("LEFT", header, "LEFT", 345, 0)
+        ruleTitle:SetText("Aktive Anzeigeregel")
+    else
+        local categoryTitle = header:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        categoryTitle:SetPoint("LEFT", header, "LEFT", 265, 0)
+        categoryTitle:SetText("Kategorie-Zuordnung")
 
-    for position, category in ipairs(CATEGORY_ORDER) do
-        local text = header:CreateFontString(
-            nil,
-            "OVERLAY",
-            "GameFontHighlight"
-        )
-
-        text:SetWidth(80)
-        text:SetPoint(
-            "LEFT",
-            header,
-            "LEFT",
-            470 + ((position - 1) * 75),
-            0
-        )
-
-        text:SetText(MATRIX_CATEGORIES[category])
+        local ruleTitle = header:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+        ruleTitle:SetPoint("LEFT", header, "LEFT", 592, 0)
+        ruleTitle:SetText("Aktive Anzeigeregel")
     end
-
     return header
 end
 
+function ItemMatrix:GetItemsForCategory(category)
+    local result = {}
+    for _, item in ipairs(self.items) do
+        local categories = self:GetCategories(item, item.data)
+        if categories[category] == true then
+            table.insert(result, item)
+        end
+    end
+    return result
+end
 
-------------------------------------------------------------
--- MATRIX-ZEILEN AKTUALISIEREN
-------------------------------------------------------------
+function ItemMatrix:CreateSettingsView()
+    local title = self.content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOPLEFT", 12, -12)
+    title:SetText("PHMatrix – Einstellungen")
+
+    local info = self.content:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    info:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -18)
+    info:SetPoint("RIGHT", self.content, "RIGHT", -12, 0)
+    info:SetJustifyH("LEFT")
+    info:SetSpacing(5)
+    info:SetText(
+        "Die Anzeigeregeln für Material-Icons und Berufs-Icons werden direkt in den jeweiligen Kategorien festgelegt.\n\n"
+        .. "isInCity: Anzeige nur in Städten der jeweiligen Expansion.\n"
+        .. "isCurrentExp: Anzeige überall innerhalb der jeweiligen aktuellen Expansion.\n\n"
+        .. "Ohne individuelle Auswahl gilt isInCity. Die Regeln verändern keine Quelldaten und gelten nur für Cat 2 und Cat 3."
+    )
+    self.rows = { title, info }
+end
 
 function ItemMatrix:RefreshRows()
-    if not self.content then
-        return
-    end
-
+    if not self.content then return end
     self:ClearRows()
-
     if self.header then
         self.header:Hide()
         self.header:SetParent(nil)
         self.header = nil
     end
 
-    self.header = self:CreateHeader()
-
-    for index, item in ipairs(self.items) do
-        self:CreateRow(item, index)
+    if self.currentView == "settings" then
+        self:CreateSettingsView()
+        self.content:SetHeight(150)
+        return
     end
 
-    local height = 32 + (#self.items * ROW_HEIGHT)
-    self.content:SetHeight(math.max(height, 32))
+    local yOffset = 32
+    local rowIndex = 0
+    local category = nil
+    local items = self.items
+    local modeHeader = false
+
+    if self.currentView == "cat2" or self.currentView == "cat3" then
+        category = self.currentView == "cat2" and 2 or 3
+        items = self:GetItemsForCategory(category)
+        modeHeader = true
+        self.header = self:CreateHeader(MATRIX_CATEGORIES[category], true)
+    else
+        self.header = self:CreateHeader("Item", false)
+    end
+
+    local currentGroup = nil
+    for _, item in ipairs(items) do
+        local groupName = GetDatabaseCategoryName(item)
+        if groupName ~= currentGroup then
+            self:CreateDatabaseGroupHeader(groupName, yOffset)
+            yOffset = yOffset + 26
+            currentGroup = groupName
+        end
+
+        rowIndex = rowIndex + 1
+        if modeHeader then
+            self:CreateDisplayModeRow(item, category, rowIndex, yOffset)
+        else
+            self:CreateMatrixRow(item, rowIndex, yOffset)
+        end
+        yOffset = yOffset + ROW_HEIGHT
+    end
+
+    self.content:SetHeight(math.max(yOffset, 32))
 end
 
+function ItemMatrix:SetView(view)
+    self.currentView = view or "matrix"
+    for _, nav in ipairs(self.navButtons or {}) do
+        if nav.key == self.currentView then
+            nav:SetAlpha(1)
+        else
+            nav:SetAlpha(0.65)
+        end
+    end
+    self:RefreshRows()
+end
 
 ------------------------------------------------------------
 -- VISUALS AKTUALISIEREN
@@ -646,147 +820,109 @@ end
 ------------------------------------------------------------
 
 function ItemMatrix:CreateWindow()
-    if self.frame then
-        return
-    end
+    if self.frame then return end
 
-    local frame = CreateFrame(
-        "Frame",
-        "ProfessionsHelperItemMatrix",
-        UIParent,
-        "BasicFrameTemplateWithInset"
-    )
-
-    frame:SetSize(760, 650)
+    local frame = CreateFrame("Frame", "ProfessionsHelperItemMatrix", UIParent, "BasicFrameTemplateWithInset")
+    frame:SetSize(900, 650)
     frame:SetPoint("CENTER")
     frame:SetMovable(true)
     frame:EnableMouse(true)
     frame:RegisterForDrag("LeftButton")
+    frame:SetScript("OnDragStart", function() frame:StartMoving() end)
+    frame:SetScript("OnDragStop", function() frame:StopMovingOrSizing() end)
+    frame.TitleText:SetText("ProfessionsHelper - PHMatrix")
 
-    frame:SetScript("OnDragStart", function()
-        frame:StartMoving()
-    end)
+    local sidebar = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+    sidebar:SetPoint("TOPLEFT", frame, "TOPLEFT", 8, -32)
+    sidebar:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 8, 45)
+    sidebar:SetWidth(58)
+    sidebar:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8" })
+    sidebar:SetBackdropColor(0.025, 0.025, 0.025, 0.65)
 
-    frame:SetScript("OnDragStop", function()
-        frame:StopMovingOrSizing()
-    end)
-
-    frame.TitleText:SetText("ProfessionsHelper - Item Matrix")
-
-    -- Beschreibung
-    local description = frame:CreateFontString(
-        nil,
-        "OVERLAY",
-        "GameFontNormal"
-    )
-
-    description:SetPoint("TOPLEFT", 18, -38)
-    description:SetPoint("TOPRIGHT", -18, -38)
+    local description = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    description:SetPoint("TOPLEFT", sidebar, "TOPRIGHT", 14, -8)
+    description:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -18, -40)
     description:SetJustifyH("LEFT")
+    description:SetText("Verwalte die Kategorie-Zuordnung und Anzeigeregeln deiner Items.")
 
-    description:SetText(
-        "Lege fest, welchen Kategorien die Items zugeordnet sind."
-    )
-
-    -- ScrollFrame
-    local scrollFrame = CreateFrame(
-        "ScrollFrame",
-        nil,
-        frame,
-        "UIPanelScrollFrameTemplate"
-    )
-
-    scrollFrame:SetPoint("TOPLEFT", 12, -68)
-    scrollFrame:SetPoint("BOTTOMRIGHT", -32, 48)
+    local scrollFrame = CreateFrame("ScrollFrame", nil, frame, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", sidebar, "TOPRIGHT", 10, -42)
+    scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -32, 48)
 
     local content = CreateFrame("Frame", nil, scrollFrame)
-    content:SetWidth(700)
+    content:SetWidth(790)
     content:SetHeight(32)
-
     scrollFrame:SetScrollChild(content)
 
     self.frame = frame
+    self.sidebar = sidebar
     self.scrollFrame = scrollFrame
     self.content = content
+    self.navButtons = {}
+    self.currentView = self.currentView or "matrix"
 
-    -- Aktualisieren
-    local refreshButton = CreateFrame(
-        "Button",
-        nil,
-        frame,
-        "UIPanelButtonTemplate"
-    )
+    for index, navItem in ipairs(NAV_ITEMS) do
+        local button = CreateFrame("Button", nil, sidebar)
+        button:SetSize(46, 46)
+        button:SetPoint("TOP", sidebar, "TOP", 0, -12 - ((index - 1) * 58))
 
+        local texture = button:CreateTexture(nil, "ARTWORK")
+        texture:SetSize(30, 30)
+        texture:SetPoint("CENTER")
+        texture:SetTexture(navItem.icon)
+        button.icon = texture
+        button.key = navItem.key
+
+        button:SetScript("OnEnter", function(selfButton)
+            GameTooltip:SetOwner(selfButton, "ANCHOR_RIGHT")
+            GameTooltip:SetText(navItem.label, 1, 1, 1)
+            GameTooltip:Show()
+        end)
+        button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        button:SetScript("OnClick", function() self:SetView(navItem.key) end)
+        table.insert(self.navButtons, button)
+    end
+
+    local refreshButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     refreshButton:SetSize(100, 26)
-    refreshButton:SetPoint("BOTTOMLEFT", 15, 15)
+    refreshButton:SetPoint("BOTTOMLEFT", 78, 15)
     refreshButton:SetText("Aktualisieren")
+    refreshButton:SetScript("OnClick", function() self:Reload() end)
 
-    refreshButton:SetScript("OnClick", function()
-        self:Reload()
-    end)
-
-    -- Overrides zurücksetzen
-    local resetButton = CreateFrame(
-        "Button",
-        nil,
-        frame,
-        "UIPanelButtonTemplate"
-    )
-
+    local resetButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     resetButton:SetSize(150, 26)
-    resetButton:SetPoint("BOTTOMLEFT", 125, 15)
+    resetButton:SetPoint("LEFT", refreshButton, "RIGHT", 8, 0)
     resetButton:SetText("Overrides löschen")
-
     resetButton:SetScript("OnClick", function()
-        StaticPopupDialogs[
-            "PROFESSIONSHELPER_MATRIX_RESET"
-        ] = {
-            text =
-                "Alle gespeicherten Kategorie-Overrides löschen?\n\n"
-                .. "Die ursprünglichen displayCategory-Werte werden wieder verwendet.",
-
+        StaticPopupDialogs["PROFESSIONSHELPER_MATRIX_RESET"] = {
+            text = "Alle gespeicherten PHMatrix-Overrides löschen?\n\nKategorie-Zuordnungen und individuelle Anzeigeregeln werden zurückgesetzt.",
             button1 = "Zurücksetzen",
             button2 = "Abbrechen",
-
             OnAccept = function()
                 local profile = GetProfile()
-
                 if profile then
                     profile.itemCategoryOverrides = {}
+                    profile.itemDisplayModeOverrides = {}
                 end
-
                 self:RefreshRows()
                 self:RefreshVisuals()
             end,
-
             timeout = 0,
             whileDead = true,
             hideOnEscape = true,
             preferredIndex = 3,
         }
-
-        StaticPopup_Show(
-            "PROFESSIONSHELPER_MATRIX_RESET"
-        )
+        StaticPopup_Show("PROFESSIONSHELPER_MATRIX_RESET")
     end)
 
-    -- Schließen
-    local closeButton = CreateFrame(
-        "Button",
-        nil,
-        frame,
-        "UIPanelButtonTemplate"
-    )
-
+    local closeButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     closeButton:SetSize(80, 26)
     closeButton:SetPoint("BOTTOMRIGHT", -15, 15)
     closeButton:SetText("Schließen")
-
-    closeButton:SetScript("OnClick", function()
-        frame:Hide()
-    end)
+    closeButton:SetScript("OnClick", function() frame:Hide() end)
 
     frame:Hide()
+    self:SetView(self.currentView)
 end
 
 

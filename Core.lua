@@ -24,7 +24,9 @@ local defaults = {
         
         enabledExpansions = { ["TWW"] = true, ["Midnight"] = true, ["Classic"] = true, ["Forever"] = true },
         enabledResources = { ["Ore"] = true, ["Herbs"] = true },
-        itemFilters = {}, 
+        itemFilters = {},
+        itemCategoryOverrides = {},
+        itemDisplayModeOverrides = {},
         
         catSettings = {
             [1] = { scale = 1.0, enabled = true, name = "Balken", fontSize = 10 },

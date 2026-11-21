@@ -271,6 +271,23 @@ local function GetItemCategoryOverride(itemData)
     return nil
 end
 
+
+local function GetItemDisplayMode(itemData)
+    local profile = ProfessionsHelper.db and ProfessionsHelper.db.profile
+    local overrides = profile and profile.itemDisplayModeOverrides
+    if type(overrides) ~= "table" or type(itemData) ~= "table" or type(itemData.IDs) ~= "table" then
+        return "STANDARD"
+    end
+
+    for _, itemID in ipairs(itemData.IDs) do
+        local mode = overrides[tostring(itemID)]
+        if mode == "EVERYWHERE" or mode == "STANDARD" then
+            return mode
+        end
+    end
+    return "STANDARD"
+end
+
 local function MeetsProfessionSkillRequirement(category, categoryName, itemData, professionSkillLevels)
     local profile = ProfessionsHelper.db.profile
     local cat = tonumber(category)
@@ -1278,9 +1295,18 @@ function Visuals:Init()
                             and MeetsProfessionSkillRequirement(cat, catName, itemData, professionSkillLevels) then
                             local showItem = false
 
-                            if catName == "Wood" then showItem = true
-                            elseif (cat == 1 or cat == 5 or cat == 4) and isCurrentExp then showItem = true
-                            elseif (cat == 2 or cat == 3) and isInCity then showItem = true end
+                            if catName == "Wood" then
+                                showItem = true
+                            elseif (cat == 1 or cat == 5 or cat == 4) and isCurrentExp then
+                                showItem = true
+                            elseif cat == 2 or cat == 3 then
+                                local displayMode = GetItemDisplayMode(itemData)
+                                if displayMode == "EVERYWHERE" then
+                                    showItem = isCurrentExp
+                                else
+                                    showItem = isInCity
+                                end
+                            end
 
                             if showItem and buckets[cat] then
                                 local settings = ProfessionsHelper.db.profile.catSettings[cat]
